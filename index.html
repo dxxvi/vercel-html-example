@@ -63,11 +63,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-<div class="tab" title="Configurations - Contacts - Credentials" fontawesome="fa-solid fa-gear">
-Nothing in here
-</div>
 <div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
-[Install Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch.
+[Install Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/cachyos_repositories/what_is_the_cachyos_repo/)
+
+To run Apache httpd in a docker container: specify the user/group to use in `/etc/apache2/apache2.conf` port in `/etc/apache2/ports.conf`, in `/etc/apache2/sites-available/000-default.config` change the port (to match the one used in ports.conf), specify the `&lt;Directory ...&gt;` (copied from apache2.conf) and `Alias /uri /path/to/directory`, start with `/usr/sbin/apachectl start`
+
+Ubuntu: ignore SSL certificates when running apt `apt -o "Acquire::https::Verify-Peer=false" update`
+
+Android: list all packages installed for current user `pm list packages` remove a package for current user `pm uninstall -k --user 0 *package*` list all packages on this phone `pm list packages -u` re-install an uninstalled app `pm install-existing *package*`
 
 `find . -type f -exec ls "{}" \;` or `find . -type f -exec ls "{}" +`: in the 1st command, `;` needs to be escaped, that's why we need `\`. `\;` is like `ls file1; ls file2` and `+` is like `ls file1 file2`
 
@@ -128,6 +131,18 @@ Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo 
 | <kbd>y</kbd> yank                                                        | <kbd>d</kbd> cut                                                             | <kbd>p</kbd> paste
 
 [waybar](https://github.com/Alexays/Waybar) is said to be better than polybar and tint2. [Linux Desktop](https://www.youtube.com/watch?v=kHG5czrQ7WA)
+
+Setup an Ubuntu docker container to run X apps (like IntelliJ)∨
+  - Run a docker container using the host network and docker socket:
+```
+docker run -d --name ubuntu --hostname ubuntu -v /var/run/docker.sock:/var/run/docker.sock --network host ubuntu tail -f /dev/null
+
+docker exec -it ubuntu /bin/bash
+
+ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && export DEBIAN_FRONTEND=noninteractive && apt update -y && apt install -y curl vim openssh-server git zip sudo htop xorg xbase-clients xauth && sed -i -e 's/#Port 22/Port 2222/' -e 's/#AddressFamily any/AddressFamily inet/' -e 's/#ClientAliveInterval 0/ClientAliveInterval 82/' -e 's/#ClientAliveCountMax 3/ClientAliveCountMax 419/' -e 's/#AllowTcpForwarding yes/AllowTcpForwarding yes/' -e 's/#TCPKeepAlive yes/TCPKeepAlive yes/' /etc/ssh/sshd_config && mkdir /run/sshd && chmod 0755 /run/sshd && ssh-keygen -A && /usr/sbin/sshd && sed -i -E '/root.+ALL.+ALL.+ALL.+ALL/a mylinuxaccount ALL=(ALL:ALL) NOPASSWD: ALL' /etc/sudoers
+
+mkdir -p ~/.local/bin && sed -i '$ a export LIBGL_ALWAYS_INDIRECT=1' ~/.bashrc && sed -i "$ a alias ..='cd ..'" ~/.bashrc && sed -i "$ a alias ...='cd ../..'" ~/.bashrc
+```
 
 sed: substitute, add and delete lines∨
   - of course, the one I already knew: substitue: `sed -i 's/*a*/*b*/g' *file.txt*`; multiple substitutions `sed -i -e 's/*a*/*b*/g' -e 's/*c*/*d*/' *file.txt*`
@@ -344,6 +359,43 @@ Download an artifact with maven: `mvn org.apache.maven.plugins:maven-dependency-
 
 git-commit-id maven/gradle plugin generates a `git.properties` file that we can expose via an endpoint.
 
+spotless-maven-plugin∨
+  - maven:
+```
+&lt;plugin&gt;
+  &lt;groupId&gt;com.diffplug.spotless&lt;/groupId&gt;
+  &lt;artifactId&gt;spotless-maven-plugin&lt;/artifactId&gt;
+  &lt;configuration&gt;
+    &lt;java&gt;
+      &lt;removeUnusedImports/&gt;
+      &lt;googleJavaFormat&gt;
+        &lt;formatJavadoc&gt;false&lt;/formatJavadoc&gt;
+      &lt;/googleJavaFormat&gt;
+      &lt;importOrder/&gt;
+    &lt;/java&gt;
+    &lt;pom&gt;
+      &lt;sortPom&gt;
+        &lt;expandEmptyElements&gt;false&lt;/expandEmptyElements&gt;
+        &lt;nrOfIndentSpace&gt;2&lt;/nrOfIndentSpace&gt;
+        &lt;sortDependencies&gt;scope,groupId,artifactId&lt;/sortDependencies&gt;
+        &lt;sortDependencyExclusions&gt;groupId,artifactId&lt;/sortDependencyExclusions&gt;
+        &lt;sortModules&gt;true&lt;/sortModules&gt;
+        &lt;sortPlugins&gt;groupId,artifactId&lt;/sortPlugins&gt;
+        &lt;sortProperties&gt;true&lt;/sortProperties&gt;
+      &lt;/sortPom&gt;
+    &lt;/pom&gt;
+  &lt;/configuration&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;check&lt;/goal&gt;
+      &lt;/goals&gt;
+      &lt;phase&gt;compile&lt;/phase&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;
+```
+
 Kafka∨
   - [Confluent Kafka](https://docs.confluent.io/platform/current/installation/installing_cp/zip-tar.html) download and installation or [previous version](https://www.confluent.io/previous-versions/)
   - To make `KafkaConsumer` return `SpecificRecord`:
@@ -498,6 +550,8 @@ A [sample](https://github.com/rust-lang/rustlings) project structure. Or [setup 
 [Iggy](https://blog.iggy.rs/posts/building-message-streaming-in-rust/): Kafka-like in Rust (single node for now) - [Fluvio](https://fluvio.io/): also in Rust, production-ready, said to be like Kafka + Flink
 
 [This person](https://medium.com/@omprakashsridharan) wrote blogs about server-side Rust in 2022 - 2023.
+
+[Rust blogs in AWS 2024](https://www.shuttle.rs/blog/tags/all)
 
 Functions `Fn`, `FnMut` and `FnOnce`:
 ```
@@ -757,6 +811,8 @@ Use a non-default private key with git (recent versions only): `$env:GIT_SSH_COM
 
 Install a `.msi` file: in cmd `msiexec.exe /i *file.msi* INSTALLDIR=%USERPROFILE%\*some-directory* MSIINSTALLPERUSER=1`
 
+VcXsrv: don't forget to `export LIBGL_ALWAYS_INDIRECT=1` in Linux and `DISPLAY=localhost:0` in Windows
+
 Install python, pip in Windows: unzip the python, install pip with `python get-pip.py` here is [get-pip.py](https://bootstrap.pypa.io/get-pip.py), then modify the file `python312._pth` like this:
 ```
 python312.zip
@@ -780,6 +836,24 @@ PowerShell∨
   - Download with wget: `Invoke-WebRequest -Uri $*uri* -OutFile $*dest*`
   - To run an app with Avecto: `PowerShell Start 'D:\Users\DangTh\PowerShell\pwsh.exe' -Verb Runas`
   - Add something to MS Defender exclusion list: `Add-MpPreference -ExclusionPath 'C:\temp'`, `Add-MpPreference -ExclusionExtension '.java'`. To see those exclusions: Settings | Virus & thread protection (Manage settings) | Exclusions (Add or remove exclusions)
+  - `.bashrc` for PowerShell is at `$PROFILE` (echo it to see its value):
+```
+function To-Parent-Directory { Set-Location ... }
+Set-Alias .. To-Parent-Directory
+
+function To-Grandparent-Directory { Set-Location ../.. }
+Set-Alias ... To-Grandparent-Directory
+
+$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+
+function prompt { // this function make the Windows Terminal tab titles shorter
+  $Host.UI.RawUI.WindowTitle = "$pwd"
+  (Get-Location).toString() -replace 'C:\\Users\\bo','~'
+}
+
+oh-my-posh init pwsh --config "C:\path\to\oh-my-posh.json" | Invoke-Expression
+
+```
 
 Uninstall some apps from cmd (run cmd as Admin) or PowerShell∨
   - `wmic // the prompt turns into wmic:root\cli>`
@@ -788,7 +862,7 @@ Uninstall some apps from cmd (run cmd as Admin) or PowerShell∨
   - `Get-ProvisionedAppxPackage -Online | Where-Object { $_.PackageName -match "xbox" } | ForEach-Object { Remove-ProvisionedAppxPackage -Online -AllUsers -PackageName $_.PackageName }`
 
 Firefox∨
-  - [Firefox zip format](https://ftp.mozilla.org/pub/firefox/candidates/)
+  - [Firefox zip format](https://ftp.mozilla.org/pub/firefox/candidates/) https://ftp.mozilla.org/pub/firefox/candidates/
   - Delete the Firefox under Mozilla in registry (this has corporate-set keys to forbid Firefox extension installation): `reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Mozilla\Firefox /f`
   - [Delete 1 property](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/remove-itemproperty) in the registry: `Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Mozilla\Firefox" -Name "ExtensionSettings" -Force`
   - Clean up Firefox: `rm -rf AppData/Local/Mozilla AppData/Roaming/Mozilla`
@@ -860,6 +934,86 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
 [Fixed income](https://www.investopedia.com/terms/f/fixedincome.asp): a type of assets and securities that pay investors a fixed interest or dividends. For example: government and corporate bonds.
 
 [Capital Markets](https://www.investopedia.com/terms/c/capitalmarkets.asp): where savings and investments are channeled between suppliers (e.g. banks, investors) and those in need (e.g. businesses, governments). The most common capital markets are the stock market and the bond market.
+</div>
+<div class="tab" title="Java Coding Problems - Packt Publishing">
+  css:
+  ```
+  &lt;style&gt;a { text-decoration: none }
+  div.note {
+    padding-left: 6rem;
+    background-image: url(https://learning.oreilly.com/api/v2/epubs/urn:orm:book:9781837633944/files/Images/info.png);
+    background-repeat: no-repeat;
+    background-size: 90px auto;
+    background-position: 0 center;
+  }
+  pre {
+    font-family: 'Fira Code'; color: #3D3B49; background-color: #eef2f6;
+    padding: .5rem 1rem .5rem 1.5rem
+  }
+  pre.programlisting.code { border-left: .35rem solid #e1e1e1 }
+  code { background-color: #EEF2F6; font-family: 'Fira Code' }
+  .hljs-code { color: #383a42 }
+  .hljs-keyword { color: #a626a4 }
+  .hljs-type { color: #986801 }
+  .hljs-variable { color: #996902 }
+  .hljs-string { color: #50a14f }
+  .hljs-title { color: #4078f2 }
+  .hljs-comment { color: #a0a1a7; font-style: italic }
+  h1.chapterNumber { float: left; font-size: 1.8rem; font-weight: 300; color: #666 }
+  h1.chapterNumber:after { content: '.'; display: inline-block; margin-right: 1rem }
+  h1.chapterTitle { float: left; font-size: 1.75rem; font-weight: 300; color: #555 }
+  h1.heading-1 { font-size: 1.6rem; font-weight: 400; color: #1782cf }
+  h2.heading-2 { font-size: 1.4rem; font-weight: 500; color: #cf6617 }
+  h3.heading-3 { font: 500 1.25rem 'Noto Sans'; color: #c114c4 }
+  h4.heading-4 { font-size: 1.1rem; color: #0e9933 }
+  figure.mediaobject { position: relative }
+  figure.mediaobject &gt; p.packt_figref {
+    position: absolute; right: 0; bottom: -.5rem; margin: 0 }
+  div#toc {
+    position: fixed; top: 0; right: 4rem; background: #fff; opacity: .9; z-index: 9;
+    max-height: 82vh; overflow: auto; padding-left: 1rem; padding-right: 1rem }
+  div#toc a { text-decoration: none; color: #333; display: block; }
+  div#toc a:hover { text-decoration: underline; color: #26f }
+  div#toc a.h2 { margin-left: 1rem }
+  div#toc a.h3 { margin-left: 2rem }
+  div#toc &gt; [type="checkbox"] + div { display: none }
+  div#toc &gt; [type="checkbox"]:checked + div { display: block }&lt;/style&gt;
+  ```
+  
+  javascript:
+  ```
+  &lt;script&gt;
+    document.body.parentElement.style.font = "16px/1.44 'Noto Serif'";
+    document.body.parentElement.style.color = '#333';
+    document.body.style.textRendering = 'optimizeLegibility';
+  
+    document.querySelectorAll('h1.chapterNumber + h1.chapterTitle').forEach(h1ChapterTitle =&gt; {
+      const div = document.createElement('div');
+      div.setAttribute('style', 'clear: both');
+      h1ChapterTitle.parentElement.insertBefore(div, h1ChapterTitle.nextSibling);
+    });
+  
+    document.querySelectorAll('figure.mediaobject + p.packt_figref').forEach(p =&gt; {
+      p.previousElementSibling.insertBefore(p, null);
+    });
+  
+    (function() {
+      let toc = `&lt;div id="toc"&gt;
+        &lt;label for="toc-checkbox" style="cursor: pointer"&gt;Table of Contents&lt;/label&gt;
+        &lt;input id="toc-checkbox" type="checkbox" style="display: none"&gt;
+        &lt;div&gt;`;
+      document.querySelectorAll('h1.chapterTitle[id], h1.heading-1[id]').forEach(h =&gt; {
+        if (h.classList.contains('chapterTitle')) {
+          toc += `&lt;a class="h1" href="#${h.getAttribute("id")}"&gt;${h.innerText}&lt;/a&gt;`;
+        } else {
+          toc += `&lt;a class="h2" href="#${h.getAttribute("id")}"&gt;${h.innerText}&lt;/a&gt;`;
+        }
+      });
+      toc += `&lt;/div&gt;&lt;/div&gt;`;
+      document.body.insertAdjacentHTML("beforeend", toc);
+    })();
+  &lt;/script&gt;
+  ```
 </div>
 <script>
   /*
@@ -1035,6 +1189,5 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
     }
   });
 </script>
-
 </body>
 </html>
