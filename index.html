@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="font-size: 16px">
+<html lang="en" style="font-size: 16px; font-family: 'Noto Serif',serif">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,6 +22,7 @@
       --code-color-italic: #36939b;
       --bs-font-sans-serif: "Noto Sans", sans-serif;
       --bs-body-color: #333;
+      --a-in-button-margin: .3rem;
     }
     .accordion {
       --bs-accordion-active-bg: #2c4d6b;
@@ -40,6 +41,9 @@
     button.accordion-button {  padding-left: calc(var(--bs-accordion-btn-padding-x) / 2) }
     button.accordion-button > i:first-child { display: inline-block; width: 1.94em }
     button.accordion-button > code { color: var(--bs-accordion-btn-color); padding-left: .25rem; padding-right: .25rem }
+    button.accordion-button > a { display: inline-block; margin-left: var(--a-in-button-margin); margin-right: var(--a-in-button-margin) }
+    button.accordion-button > a:last-child { display: inline-block; margin-right: 0 }
+    button.accordion-button > a:first-child { display: inline-block; margin-left: 0 }
     h2.accordion-header + div.accordion-collapse { margin-left: 1rem }
     .accordion-button::after { background-image: none; content: '\276F'; color: #fff; transform: none }
     .accordion-button:not(.collapsed)::after { background-image: none }
@@ -64,8 +68,6 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 <div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
-[Install Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/cachyos_repositories/what_is_the_cachyos_repo/)
-
 To run Apache httpd in a docker container: specify the user/group to use in `/etc/apache2/apache2.conf` port in `/etc/apache2/ports.conf`, in `/etc/apache2/sites-available/000-default.config` change the port (to match the one used in ports.conf), specify the `&lt;Directory ...&gt;` (copied from apache2.conf) and `Alias /uri /path/to/directory`, start with `/usr/sbin/apachectl start`
 
 Ubuntu: ignore SSL certificates when running apt `apt -o "Acquire::https::Verify-Peer=false" update`
@@ -130,18 +132,52 @@ Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo 
 | <kbd>v</kbd> visual mode                                                 | <kbd>V</kbd> visual line mode (text is selected by line)                     | <kbd>Ctrl</kbd>+<kbd>v</kbd> visual block mode
 | <kbd>y</kbd> yank                                                        | <kbd>d</kbd> cut                                                             | <kbd>p</kbd> paste
 
-[waybar](https://github.com/Alexays/Waybar) is said to be better than polybar and tint2. [Linux Desktop](https://www.youtube.com/watch?v=kHG5czrQ7WA)
+[Install Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/cachyos_repositories/what_is_the_cachyos_repo/)∨
+  - Make 1 empty partition in Windows with `diskmgmt`, disable Secure Boot in BIOS
+  - After the Arch Linux in the USB started:
+```
+setfont ter-132n                         // to increase the terminal font size
+iwctl                                    // to connect to a wireless network
+  device list                               // will show wlan0
+  station wlan0 get-networks                // to list all the available wireless networks
+  station wlan0 connect *my_wireless_network*
+  exit                                      // run ping google.com to check
+pacman -Sy --noconfirm
+pacman -Sy --noconfirm archlinux-keyring // it's said that these commands should be run separately
+pacman -Sy --noconfirm archinstall
+lsblk                                    // or fdisk -l to see what partitions we have
+cfdisk /dev/nvme0n1                      // to create more partitions: create 1 800MB partition with EFI System type, another with Linux filesystem type
+lsblk                                    // check to see if partitions are created correctly
+mkfs.fat -F32 /dev/nvme0n1p*4* && mkfs.ext4 /dev/nvme0n1p*5* // format the EFI System and regular partitions
+mount /dev/nvme0n1p*5* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*4* /mnt/boot && lsblk // to verify that the mountings are correct
+archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server
+[root@archiso /]# lsblk && pacman -Sy --noconfirm grub efibootmgr dosfstools mtools // choose the option to change root
+  grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+  grub-mkconfig -o /boot/grub/grub.cfg
+```
+  - Boot into the new Arch and add the Windows item to the Grub: uncomment the line `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub`:
+```
+pacman -Sy --noconfirm os-prober && grub-mkconfig -o /boot/grub/grub.cfg
+```
+  - Delete Arch's partitions with `diskmgmt` (EFI System partition cannot be delete here):
+```
+diskpart // run in Administrator cmd
+  list disk
+  select disk 0
+  list partition
+  select partition *5* // select the one with System type
+  list partition     // list again to make sure we select the correct EFI System partition
+  delete partition override
+```
 
 Setup an Ubuntu docker container to run X apps (like IntelliJ)∨
   - Run a docker container using the host network and docker socket:
 ```
 docker run -d --name ubuntu --hostname ubuntu -v /var/run/docker.sock:/var/run/docker.sock --network host ubuntu tail -f /dev/null
-
 docker exec -it ubuntu /bin/bash
-
-ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && export DEBIAN_FRONTEND=noninteractive && apt update -y && apt install -y curl vim openssh-server git zip sudo htop xorg xbase-clients xauth && sed -i -e 's/#Port 22/Port 2222/' -e 's/#AddressFamily any/AddressFamily inet/' -e 's/#ClientAliveInterval 0/ClientAliveInterval 82/' -e 's/#ClientAliveCountMax 3/ClientAliveCountMax 419/' -e 's/#AllowTcpForwarding yes/AllowTcpForwarding yes/' -e 's/#TCPKeepAlive yes/TCPKeepAlive yes/' /etc/ssh/sshd_config && mkdir /run/sshd && chmod 0755 /run/sshd && ssh-keygen -A && /usr/sbin/sshd && sed -i -E '/root.+ALL.+ALL.+ALL.+ALL/a mylinuxaccount ALL=(ALL:ALL) NOPASSWD: ALL' /etc/sudoers
-
-mkdir -p ~/.local/bin && sed -i '$ a export LIBGL_ALWAYS_INDIRECT=1' ~/.bashrc && sed -i "$ a alias ..='cd ..'" ~/.bashrc && sed -i "$ a alias ...='cd ../..'" ~/.bashrc
+ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && export DEBIAN_FRONTEND=noninteractive && apt update -y && apt install -y curl vim openssh-server git zip sudo htop xorg xbase-clients xauth && sed -i -e 's/#Port 22/Port 2222/' -e 's/#AddressFamily any/AddressFamily inet/' -e 's/#ClientAliveInterval 0/ClientAliveInterval 82/' -e 's/#ClientAliveCountMax 3/ClientAliveCountMax 419/' -e 's/#AllowTcpForwarding yes/AllowTcpForwarding yes/' -e 's/#TCPKeepAlive yes/TCPKeepAlive yes/' /etc/ssh/sshd_config && mkdir /run/sshd && chmod 0755 /run/sshd && ssh-keygen -A && /usr/sbin/sshd && sed -i -E '/root.+ALL.+ALL.+ALL.+ALL/a *mylinuxaccount* ALL=(ALL:ALL) NOPASSWD: ALL' /etc/sudoers
+groupadd -g 1904 docker && useradd -d /home/*mylinuxaccount* -m -u 1904 -g docker -s /bin/bash *mylinuxaccount*
+mkdir -p ~/.local/bin ~/.ssh && sed -i '$ a export LIBGL_ALWAYS_INDIRECT=1' ~/.bashrc && sed -i "$ a alias ..='cd ..'" ~/.bashrc && sed -i "$ a alias ...='cd ../..'" ~/.bashrc
 ```
 
 sed: substitute, add and delete lines∨
@@ -398,6 +434,7 @@ spotless-maven-plugin∨
 
 Kafka∨
   - [Confluent Kafka](https://docs.confluent.io/platform/current/installation/installing_cp/zip-tar.html) download and installation or [previous version](https://www.confluent.io/previous-versions/)
+  - [Co-partitioning](https://www.confluent.io/blog/co-partitioning-in-kafka-streams/) in Kafka Stream: a concept to ensure the correct and efficient of joining 2+ streams. That means the topics must have the same number of partitions and the same key hashing method.
   - To make `KafkaConsumer` return `SpecificRecord`:
 ```
 props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class); 
@@ -543,6 +580,7 @@ This is Scala
 This is Kotlin
 </div>
 <div class="tab" title="Rust" fontawesome="fa-brands fa-rust">
+100 exercises to learn Rust [https://rust-exercises.com/](https://rust-exercises.com/)
 [Good blogs](https://www.shuttle.rs/blog/tags/all) - [Free public APIs for testing](https://apipheny.io/free-api/) - `rustup doc` - [Practical Rust 1.x Cookbook](https://www.amazon.com/Practical-Rust-1-x-Cookbook-Microservices-ebook/dp/B0BW47FLQ9/) Feb 2023 - [Rust Standard Library Cookbook](https://www.amazon.com/Rust-Standard-Library-Cookbook-leverage-ebook/dp/B07B8RJ8VJ/) Mar 2018 - [All the books](https://1337x.to/torrent/5828661/Rust-Programming-Language-Book-Pack-3-46-titles/)
 
 A [sample](https://github.com/rust-lang/rustlings) project structure. Or [setup Rust for AoC](https://www.youtube.com/watch?v=fEQv-cqzbPg)
@@ -934,86 +972,6 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
 [Fixed income](https://www.investopedia.com/terms/f/fixedincome.asp): a type of assets and securities that pay investors a fixed interest or dividends. For example: government and corporate bonds.
 
 [Capital Markets](https://www.investopedia.com/terms/c/capitalmarkets.asp): where savings and investments are channeled between suppliers (e.g. banks, investors) and those in need (e.g. businesses, governments). The most common capital markets are the stock market and the bond market.
-</div>
-<div class="tab" title="Java Coding Problems - Packt Publishing">
-  css:
-  ```
-  &lt;style&gt;a { text-decoration: none }
-  div.note {
-    padding-left: 6rem;
-    background-image: url(https://learning.oreilly.com/api/v2/epubs/urn:orm:book:9781837633944/files/Images/info.png);
-    background-repeat: no-repeat;
-    background-size: 90px auto;
-    background-position: 0 center;
-  }
-  pre {
-    font-family: 'Fira Code'; color: #3D3B49; background-color: #eef2f6;
-    padding: .5rem 1rem .5rem 1.5rem
-  }
-  pre.programlisting.code { border-left: .35rem solid #e1e1e1 }
-  code { background-color: #EEF2F6; font-family: 'Fira Code' }
-  .hljs-code { color: #383a42 }
-  .hljs-keyword { color: #a626a4 }
-  .hljs-type { color: #986801 }
-  .hljs-variable { color: #996902 }
-  .hljs-string { color: #50a14f }
-  .hljs-title { color: #4078f2 }
-  .hljs-comment { color: #a0a1a7; font-style: italic }
-  h1.chapterNumber { float: left; font-size: 1.8rem; font-weight: 300; color: #666 }
-  h1.chapterNumber:after { content: '.'; display: inline-block; margin-right: 1rem }
-  h1.chapterTitle { float: left; font-size: 1.75rem; font-weight: 300; color: #555 }
-  h1.heading-1 { font-size: 1.6rem; font-weight: 400; color: #1782cf }
-  h2.heading-2 { font-size: 1.4rem; font-weight: 500; color: #cf6617 }
-  h3.heading-3 { font: 500 1.25rem 'Noto Sans'; color: #c114c4 }
-  h4.heading-4 { font-size: 1.1rem; color: #0e9933 }
-  figure.mediaobject { position: relative }
-  figure.mediaobject &gt; p.packt_figref {
-    position: absolute; right: 0; bottom: -.5rem; margin: 0 }
-  div#toc {
-    position: fixed; top: 0; right: 4rem; background: #fff; opacity: .9; z-index: 9;
-    max-height: 82vh; overflow: auto; padding-left: 1rem; padding-right: 1rem }
-  div#toc a { text-decoration: none; color: #333; display: block; }
-  div#toc a:hover { text-decoration: underline; color: #26f }
-  div#toc a.h2 { margin-left: 1rem }
-  div#toc a.h3 { margin-left: 2rem }
-  div#toc &gt; [type="checkbox"] + div { display: none }
-  div#toc &gt; [type="checkbox"]:checked + div { display: block }&lt;/style&gt;
-  ```
-  
-  javascript:
-  ```
-  &lt;script&gt;
-    document.body.parentElement.style.font = "16px/1.44 'Noto Serif'";
-    document.body.parentElement.style.color = '#333';
-    document.body.style.textRendering = 'optimizeLegibility';
-  
-    document.querySelectorAll('h1.chapterNumber + h1.chapterTitle').forEach(h1ChapterTitle =&gt; {
-      const div = document.createElement('div');
-      div.setAttribute('style', 'clear: both');
-      h1ChapterTitle.parentElement.insertBefore(div, h1ChapterTitle.nextSibling);
-    });
-  
-    document.querySelectorAll('figure.mediaobject + p.packt_figref').forEach(p =&gt; {
-      p.previousElementSibling.insertBefore(p, null);
-    });
-  
-    (function() {
-      let toc = `&lt;div id="toc"&gt;
-        &lt;label for="toc-checkbox" style="cursor: pointer"&gt;Table of Contents&lt;/label&gt;
-        &lt;input id="toc-checkbox" type="checkbox" style="display: none"&gt;
-        &lt;div&gt;`;
-      document.querySelectorAll('h1.chapterTitle[id], h1.heading-1[id]').forEach(h =&gt; {
-        if (h.classList.contains('chapterTitle')) {
-          toc += `&lt;a class="h1" href="#${h.getAttribute("id")}"&gt;${h.innerText}&lt;/a&gt;`;
-        } else {
-          toc += `&lt;a class="h2" href="#${h.getAttribute("id")}"&gt;${h.innerText}&lt;/a&gt;`;
-        }
-      });
-      toc += `&lt;/div&gt;&lt;/div&gt;`;
-      document.body.insertAdjacentHTML("beforeend", toc);
-    })();
-  &lt;/script&gt;
-  ```
 </div>
 <script>
   /*
