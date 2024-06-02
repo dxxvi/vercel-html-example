@@ -142,23 +142,59 @@ iwctl                                    // to connect to a wireless network
   station wlan0 get-networks                // to list all the available wireless networks
   station wlan0 connect *my_wireless_network*
   exit                                      // run ping google.com to check
-pacman -Sy --noconfirm
-pacman -Sy --noconfirm archlinux-keyring // it's said that these commands should be run separately
-pacman -Sy --noconfirm archinstall
+pacman -Sy 
+pacman -Sy archlinux-keyring // it's said that these commands should be run separately
+pacman -Sy archinstall
 lsblk                                    // or fdisk -l to see what partitions we have
 cfdisk /dev/nvme0n1                      // to create more partitions: create 1 800MB partition with EFI System type, another with Linux filesystem type
 lsblk                                    // check to see if partitions are created correctly
 mkfs.fat -F32 /dev/nvme0n1p*4* && mkfs.ext4 /dev/nvme0n1p*5* // format the EFI System and regular partitions
 mount /dev/nvme0n1p*5* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*4* /mnt/boot && lsblk // to verify that the mountings are correct
 archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server
-[root@archiso /]# lsblk && pacman -Sy --noconfirm grub efibootmgr dosfstools mtools // choose the option to change root
+[root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g waybar nnn foot // choose the option to chroot
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
   grub-mkconfig -o /boot/grub/grub.cfg
 ```
+  - This is the `~/.config/foot/foot.ini`:
+```
+[main]
+font=FiraCode Nerd Font Mono:size=12
+line-height=18
+pad=4x4
+initial-window-size-pixels=1200x675
+[scrollback]
+lines=4000
+[cursor]
+style=beam
+unfocused-style=none
+blink=yes
+color=ffffff ff3434
+beam-thickness=1px
+[colors]
+alpha=0.96
+```
   - Boot into the new Arch and add the Windows item to the Grub: uncomment the line `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub`:
 ```
-pacman -Sy --noconfirm os-prober && grub-mkconfig -o /boot/grub/grub.cfg
+pacman -Sy os-prober
+mount /dev/nvme0n1p1 /mnt // mount the Windows EFI partition manually if grub-mkconfig cannot find Windows
+grub-mkconfig -o /boot/grub/grub.cfg
 ```
+  - Stuff:
+```
+git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si
+paru visual-studio-code-bin
+```
+  - Install KDE Plasma:
+```
+pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa
+```
+  - In KDE, when we go to System Settings | Font Management | Install from File..., the .ttf files are copied to directories under `~/.fonts` and a file named `~/.fonts.conf` is created. If I manually copy .ttf files to ~/.fonts, does it work? This is ~/.fonts.conf:
+```
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
+&lt;fontconfig&gt;&lt;dir&gt;~/.fonts&lt;/dir&gt;&lt;/fontconfig&gt;
+```
+  - Plasma 6 [netspeed](https://github.com/dfaust/plasma-applet-netspeed-widget) widget (better than the available one)
   - Delete Arch's partitions with `diskmgmt` (EFI System partition cannot be delete here):
 ```
 diskpart // run in Administrator cmd
@@ -184,7 +220,7 @@ sed: substitute, add and delete lines∨
   - of course, the one I already knew: substitue: `sed -i 's/*a*/*b*/g' *file.txt*`; multiple substitutions `sed -i -e 's/*a*/*b*/g' -e 's/*c*/*d*/' *file.txt*`
   - print the Nth line in the file: `sed -n '*N*p' *file.txt*`
   - delete the first N + 1 lines in the file: `sed -i -e '1,*N*d' *file.txt*`
-  - delete lines containing something in the file: `sed -i -e '/*something*/d' file`
+  - delete lines containing something in the file: `sed -i -e '/*something*/d' file` (no `-e` in Arch)
   - add a line after the Nth line in the file: `sed '*N* a *line to be added*' *file.txt*` (don't forget to add `-i` to edit the file)
   - add a line before the Nth line in the file: `sed '*N* i *line to be added*' *file.txt*`, `$` means the last line
   - add a line after the lines containing a pattern match: `sed '/*PATTERN*/a *line to be added*' *file.txt*`, use `-E` for regex
@@ -206,8 +242,7 @@ Use our private key on a remote machine without copying it there∨
 AWS EC2∨
   - To generate the `accessKeyId` and `secretAccessKey` for the IAM in an ec2 instance:
 ```
-export TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/iam/security-credentials/*our-iam-role-name*"
+export TOKEN=$(curl -X PUT --silent "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && curl --silent -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/iam/security-credentials/*our-iam-role-name*" | jq -r '"export AWS_ACCESS_KEY_ID=\"\(.AccessKeyId)\" \nexport AWS_SECRET_ACCESS_KEY=\"\(.SecretAccessKey)\" \nexport AWS_SESSION_TOKEN=\"\(.Token)\""'
 ```
   - `X11Forwarding` in EC2 instances is not enough, we need `AllowTcpForwarding` too. Install vcxsrv, run `xlaunch`, in PowerShell `$env:DISPLAY="localhost:0"`, then `ssh -Y remote-machine`. In the remote machine `export LIBGL_ALWAYS_INDIRECT=1`
   - Attach an EBS volume to an EC2 instance: `ec2Client.attacheVolume(AttacheVolumeRequest.volumeId("...").instanceId("i-xxx").device("/dev/sdb"))` then `lsblk` to check the real device as it might not be `/dev/sdb` but `/dev/nvme1n1`. Check if the volume has any file system `file -s /dev/nvme1n1`. Format it `mkfs -t ext4 /dev/nvme1n1`. Mount it `mount /dev/nvme1n1 /mnt/something`.
@@ -845,7 +880,9 @@ Use a non-default private key with git (recent versions only): `$env:GIT_SSH_COM
 |<kbd>⇧</kbd>+<kbd>Ctrl</kbd>+<kbd>]</kbd>              | unfold region             |<kbd>option</kbd>+<kbd>command</kbd>+<kbd>]</kbd>        |
 </div>
 <div class="tab" title="PowerShell - Windows" fontawesome="fa-brands fa-windows">
-[Upgrade Windows 11 Home to Pro](https://www.youtube.com/watch?v=2FHn2GzIZrc): disconnect Internet, `Settings` | `System` | `Activation` | `Change Product Key`, use this generic key `VK7JG-NPHTM-C97JM-9MPGT-3V66T`. Finally run [this](https://github.com/massgravel/Microsoft-Activation-Scripts) in powershell `irm https://massgrave.dev/get | iex`
+[Upgrade Windows 11 Home to Pro](https://www.youtube.com/watch?v=2FHn2GzIZrc): disconnect Internet, `Settings` | `System` | `Activation` | `Change Product Key`, use this generic key `VK7JG-NPHTM-C97JM-9MPGT-3V66T`. Finally run [this](https://github.com/massgravel/Microsoft-Activation-Scripts) in powershell `irm https://get.activated.win/get | iex`
+
+[komorebi](https://github.com/LGUG2Z/komorebi): a tiling window manager for Windows written in Rust
 
 Install a `.msi` file: in cmd `msiexec.exe /i *file.msi* INSTALLDIR=%USERPROFILE%\*some-directory* MSIINSTALLPERUSER=1`
 
