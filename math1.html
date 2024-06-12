@@ -1,11 +1,109 @@
 <!DOCTYPE html>
-<html lang="en" style="font-size: 16px; font-family: 'Noto Serif',serif">
+<html lang="en" style="font-size: 30px">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Math 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400..700&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .font1 {
+      font-family: "Edu VIC WA NT Beginner", cursive;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+    }
+    .curly-bracket { font: 100 3rem "Noto Serif" }
+    td input { width: 2rem; text-align: center }
+    .incorrect { color: red; } .correct { color: #3e3 }
+  </style>
 </head>
 <body>
+  <script>
+    function check() {
+      const result = document.getElementById('result');
+      result.classList.remove('incorrect');
+      result.classList.remove('correct');
 
+      const correctx = document.getElementById('x').getAttribute('answer');
+      const answerx = document.getElementById('x').value.trim();
+      const correcty = document.getElementById('y').getAttribute('answer');
+      const answery = document.getElementById('y').value.trim();
+      if (correctx == answerx && correcty == answery) {
+        result.classList.add('correct');
+        result.innerHTML = 'Correct';
+      } else {
+        result.classList.add('incorrect');
+        result.innerHTML = 'Incorrect';
+      }
+    }
+
+    function getRandomInt(n) { // returns a random int i such that -n < a < n
+      const a = Math.floor(Math.random() * n);
+      return Math.floor(Math.random() * 2) == 0 ? a : -a;
+    }
+
+    (function() {
+      const N = 10;
+      const x = getRandomInt(N);
+      const y = getRandomInt(N);
+
+      const a1 = getRandomInt(N);
+      let b1 = getRandomInt(N);
+      const sign1 = b1 >= 0 ? '+' : '-';
+      const c1 = a1 * x + b1 * y;
+      b1 = Math.abs(b1);
+
+      const a2 = getRandomInt(N);
+      let b2 = getRandomInt(N);
+      const sign2 = b2 >= 0 ? '+' : '-';
+      const c2 = a2 * x + b2 * y;
+      b2 = Math.abs(b2);
+
+      const html = `
+        <table>
+          <tr>
+            <td>
+              <table>
+                <tr>
+                  <td rowspan="2" class="curly-bracket">&#123;</td>
+                  <td class="font1">${a1}x</td>
+                  <td class="font1">${sign1}</td>
+                  <td class="font1">${b1}y</td>
+                  <td class="font1">=</td>
+                  <td class="font1">${c1}</td>
+                </tr>
+                <tr>
+                  <td class="font1">${a2}x</td>
+                  <td class="font1">${sign2}</td>
+                  <td class="font1">${b2}y</td>
+                  <td class="font1">=</td>
+                  <td class="font1">${c2}</td>
+                </tr>
+              </table>
+            </td>
+            <td style="padding-left: 2rem;">
+              <table>
+                <tr>
+                  <td class="font1">x</td>
+                  <td class="font1">=</td>
+                  <td><input id="x" type="text" answer="${x}"></td>
+                  <td class="font1" style="padding-left: 2rem">y</td>
+                  <td class="font1">=</td>
+                  <td><input id="y" type="text" answer="${y}"></td>
+                </tr>
+                <tr>
+                  <td colspan="3"><button onclick="check()">Check</button></td>
+                  <td colspan="3" class="font1" id="result"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      `;
+      document.body.insertAdjacentHTML('beforeend', html);
+    })();
+  </script>
 </body>
 </html>
