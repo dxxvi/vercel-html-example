@@ -318,6 +318,8 @@ To run docker in a docker container: run the docker container with `-v /var/run/
 
 To use the exact network as host (e.g. a docker container in an ec2 instance wants to use the IAM on that instance): run the docker container with `--network host` and that means `-p host-port:container-port` is ignored (the container and the host will use the same ports).
 
+To mount a volume to an existing docker container: create an image from the existing docker container `docker commit *container_id* *new_image_name*` then run the *new_image_name* with additional mounts
+
 Expose docker daemon on tcp port and access it from Powershell∨
   - Running `systemctl start docker` shows something like `/usr/lib/systemd/system/docker.service`. Edit the line `ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 ...`
   - Powershell: install chocolatey and `choco install docker-cli` with admin right. Then `$env:DOCKER_HOST="tcp://x.x.x.x:2375"`, `docker image ls` will work.
@@ -390,6 +392,8 @@ Angular∨
 
 </div>
 <div class="tab" title="Java" fontawesome="fa-brands fa-java">
+[DFLib](https://dflib.org/) a lightweight pure Java implementation of a common DataFrame data structure
+
 [Slim docker images for Java apps](https://piotrminkowski.com/2023/11/07/slim-docker-images-for-java/)
 
 [Disable SSL](https://stackoverflow.com/questions/52988677/allow-insecure-https-connection-for-java-jdk-11-httpclient) in Java 11 HttpClient
@@ -468,7 +472,7 @@ spotless-maven-plugin∨
 ```
 
 Kafka∨
-  - [Confluent Kafka](https://docs.confluent.io/platform/current/installation/installing_cp/zip-tar.html) download and installation or [previous version](https://www.confluent.io/previous-versions/)
+  - [Confluent Kafka](https://docs.confluent.io/platform/current/installation/installing_cp/zip-tar.html) download and installation or [previous version](https://www.confluent.io/previous-versions/) - if it's possible, create a trial cloud account.
   - [Co-partitioning](https://www.confluent.io/blog/co-partitioning-in-kafka-streams/) in Kafka Stream: a concept to ensure the correct and efficient of joining 2+ streams. That means the topics must have the same number of partitions and the same key hashing method.
   - To make `KafkaConsumer` return `SpecificRecord`:
 ```
@@ -476,18 +480,24 @@ props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.
 props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true"); 
 props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, ...);
 ```
-  - Kafka Stream: runs in our applications - Apache Flink (more powerful): runs in Flink servers (how to unit test a Flink-based app?)
-  - Kafka Stream task: is the code that does the joining/mapping/filtering ...The max number of tasks is the max number of partitions of all the topics used in that task.
+  - Kafka Streams: runs in our applications - Apache Flink (more powerful): runs in Flink servers (how to unit test a Flink-based app?)
+  - Kafka Streams terminologies:
+      - Processors: source processor (read data, KStream), stream processor, sink processor (write data). A bunch of them put together is called a Topology. A sink processor can be used as a source processor, so, don't draw a source processor connected to a sink processor.
+  - Kafka Streams task: is the code that does the joining/mapping/filtering ...The max number of tasks is the max number of partitions of all the topics used in that task.
       - `KStream`: a partitioned record stream
-      - `KTable`: a partitioned table (changelog stream)
+      - `KTable`: a partitioned table (changelog stream), created with `streamsBuilder.table(topic, consumed, materialized)`. We can bring messages in a KTable to a new KStream with `kTable.toStream`. When do the messages in a KTable go to a KStream? It depends on `StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG` (deprecated. What to use now?)
       - `GlobalKTable`: similar to KTable but unpartitioned
-      - Handling deserialization errors: use the config `DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG`
+      - Increase the number of concurrent Kafka Streams tasks with `StreamsConfig.NUM_STREAM_THREADs_CONFIG`
+      - Handling errors: use the config `StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG`, `StreamsConfig.DEFAULT_PRODUCTION_EXCEPTION_HANDLER_CLASS_CONFIG` (for serialization errors). For application errors (errors happen in the topology), we need to register a `StreamUncaughtExceptionHandler` implementation like this `kafkaStreams.setUncaughtExceptionHandler(new StreamUncaughtExceptionHandler() { ... })`
       - Stateless processing: filter, adding &amp; removing fields (what's this?), rekeying records, branching &amp; merging streams, enriching records, flatMapping
       - Stateful processing:
           - Joining data: enrich an event with info captured in a separate stream/table (`join`, `leftJoin`, `outerJoin`)
           - Aggregating data: maybe in one partition only (`aggregate`, `count`, `reduce`)
           - Windowing data: group events that are close to each other in time (`windowedBy`)
           - States are stored in RocksDB which flushes data to files in `StreamsConfig.STATE_DIR_CONFIG`.
+      - StateStore: why is it needed? Because we want to re-populate the KTable/GlobalKTable when the application starts.
+  - To build a `KStream&lt;K, V&gt;`: `streamsBuilder.stream(TOPIC, Consumed.with(keySerde, valueSerde))`
+  - To build a `KTable&lt;K, V&gt;`: `streamsBuilder.table(TOPIC, Consumed.with(keySerde, valueSerde))` or `streamBuilder.table(TOPIC, Consumed.with(keySerde, valueSerde), Materialized.as(String))`. This is the difference that `Materialized` brings when we use `kTable.toStream(): KStream`: without `Materialized`, messages in KTable go to KStream immediately when they appear in the KTable (i.e. the KTable doesn't have the chance to delete the old messages); with `Materialized`, messages in KTable go to KStream only when there are `cache.max.bytes.buffering` bytes in the messages or after `commit.interval.ms` milliseconds.
 
 Concurrency∨
   - interface `Executor.execute(Runnable): void`
@@ -503,7 +513,7 @@ Concurrency∨
   - Lock:
       - Issues with `synchronized`: locks must be released in the reverse order of lock acquisitions `synchronized (a) { synchronized (b) { ... } }`
       - `interface Lock`: wait forever to get the lock: `.lock()` - try to get the lock: `.tryLock(timeout): boolean` - finally must `.unlock()`. Implementation is `ReentrantLock`.
-      - `interface ReadWriteLock`: still can't find an example of why a read lock is needed. `.writeLock(): Lock` returns the lock for writing - `.readLock(): Lock`: that means only 1 thread can read at a time? Implementation is `ReentrantReadWriteLock`.
+      - `interface ReadWriteLock`: used when there are much more reads than writes. `.writeLock(): Lock` returns the lock for writing - `.readLock(): Lock`: multiple reads at the same time, but while reading, no writing and while writing no reading. Implementation is `ReentrantReadWriteLock`.
 
 Spring Data Redis∨
   - If we have `spring.data.redis.host/port/password/database` then a `redisConnectionFactory` bean is created for us. Otherwise, create that bean like this:
@@ -562,6 +572,7 @@ public &#64;Embeddable class VacationEntry &#123;                          publi
           - `&#64;Entity &#64;DiscriminatorValue("...") class FullTimeEmployee`
       - Joined strategy:
       - Table-per-concrete-class strategy:
+  - 2 ways to fix the N+1 issue: put `@Query("SELECT p FROM ChessPlayer p LEFT JOIN FETCH p.tournaments")` or `@EntityGraph(attributePaths = "tournaments")` on a method in the Spring Data JPA Repository
 
 Composition vs Inheritance∨
   - class inheritance issue:
@@ -832,13 +843,14 @@ Start an http server in the current directory at a specific port: `python -m htt
 All the versions (including release candidates) are [here](https://services.gradle.org/distributions/); system properties in [gradle.properties](https://docs.gradle.org/current/userguide/build_environment.html) e.g. to run gradle and compile the app with different jdks
 
 To exclude a library globally:
-
 ```
 configurations {
   all*.exclude group: 'ch.qos.reload4j', module: 'reload4j'
   all*.exclude group: 'org.slf4j', module: 'slf4j-reload4j'
 }
 ```
+
+To specify the JVM options for Gradle to use: `$env:GRADLE_OPTS="-Dhttps.protocols=TLSv1.2 -Djdk.tls.client.protocols=TLSv.12 -Djavax.net.ssl.trustStore=file.jsk -Djavax.net.ssl.trustStorePassword=..."` or put it in `gradle.properties` under the name `org.gradle.jvmargs`
 </div>
 <div class="tab" title="Git" fontawesome="fa-brands fa-git">
 Delete local branch: `git branch -d *local_branch_name*`
@@ -980,9 +992,22 @@ pipeline {
 <div class="tab" title="Terraform">
 DevOps: to make software delivery better - Terraform: Infrastructure as Code to define, deploy, update and destroy the infrastructure
 
-Versions: 1.1.* (Dec 21 - Apr 22). Now 1.6.*
+Versions: 1.1.x (Dec 21 - Apr 22). Now 1.6.x
 
-`terraform apply`
+Key principals of IaC: __idempotent__ (no matter of the starting state or how many times the code is run, the final state is the same), __immutable__ (steps are repeatable)
+
+Terraform architecture has 4 components:
+  - Providers: to work with different cloud providers
+  - Modules: directories of terraform files. Used to organize files, to reuse, encapsulate
+  - Resources: like VPC, EC2 instances, S3, lambda ...
+  - Templates: a collection of files that describe the desired state of our infrastructure
+
+Terraform workflow:
+  - Write: use HashiCorp Configuration Language (HCL)
+  - Init: `terraform init` download providers
+  - Plan: `terraform plan` shows what resources will be created, updated or deleted.
+  - Apply: `terraform apply`.
+  - Destroy: `terraform destroy` destroy resources
 </div>
 <div class="tab" title="Bánh Flan Caramel" fontawesome="fa-solid fa-cake-candles">
 [9 eggs, 1 cup of sugar, 320 ml of milk (not non-fat), vanilla powder](https://www.youtube.com/watch?v=F4WSf2YCstA) 1 cup = 125ml
