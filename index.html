@@ -392,6 +392,8 @@ Angular∨
 
 </div>
 <div class="tab" title="Java" fontawesome="fa-brands fa-java">
+Get [HTTPS](https://lcl.host/) in your local development
+
 [DFLib](https://dflib.org/) a lightweight pure Java implementation of a common DataFrame data structure
 
 [Slim docker images for Java apps](https://piotrminkowski.com/2023/11/07/slim-docker-images-for-java/)
@@ -492,12 +494,19 @@ props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, ...);
       - Stateless processing: filter, adding &amp; removing fields (what's this?), rekeying records, branching &amp; merging streams, enriching records, flatMapping
       - Stateful processing:
           - Joining data: enrich an event with info captured in a separate stream/table (`join`, `leftJoin`, `outerJoin`)
-          - Aggregating data: maybe in one partition only (`aggregate`, `count`, `reduce`)
+          - Aggregating data: maybe in one partition only (`aggregate`, `count`, `reduce`):
+              - `count`: `kStream.groupBy...().count(PROCESSOR_NAME, Materialized): KTable`. The methods `groupBy...` give us a way to count by keys, by a combination of key and value, ...
+              - `reduce` and `aggregate`: `reduce` doesn't allow a start value
           - Windowing data: group events that are close to each other in time (`windowedBy`)
           - States are stored in RocksDB which flushes data to files in `StreamsConfig.STATE_DIR_CONFIG`.
       - StateStore: why is it needed? Because we want to re-populate the KTable/GlobalKTable when the application starts.
   - To build a `KStream&lt;K, V&gt;`: `streamsBuilder.stream(TOPIC, Consumed.with(keySerde, valueSerde))`
-  - To build a `KTable&lt;K, V&gt;`: `streamsBuilder.table(TOPIC, Consumed.with(keySerde, valueSerde))` or `streamBuilder.table(TOPIC, Consumed.with(keySerde, valueSerde), Materialized.as(String))`. This is the difference that `Materialized` brings when we use `kTable.toStream(): KStream`: without `Materialized`, messages in KTable go to KStream immediately when they appear in the KTable (i.e. the KTable doesn't have the chance to delete the old messages); with `Materialized`, messages in KTable go to KStream only when there are `cache.max.bytes.buffering` bytes in the messages or after `commit.interval.ms` milliseconds.
+  - To build a `KTable&lt;K, V&gt;`: `kStream.toTable(Named, Materialized)` or `streamsBuilder.table(TOPIC, Consumed.with(keySerde, valueSerde))` or `streamBuilder.table(TOPIC, Consumed.with(keySerde, valueSerde), Materialized.as(String))`. Without the `Materialized` argument, the KTable won't be materialized and its updates won't be persisted in a state store (so its state will be gone when the app restarts). Without the `Materialized` argerment, when we use `kTable.toStream(): KStream`, messages in KTable go to KStream immediately when they appear in the KTable (i.e. the KTable doesn't have the chance to delete the old messages); with `Materialized`, messages in KTable go to KStream only when there are `cache.max.bytes.buffering` bytes in the messages or after `commit.interval.ms` milliseconds.
+  - To build a `GlobalKTable&lt;K, V&gt;`: the only way is to build from a topic `streamsBuilder.globalTable(TOPIC, Consumed)`
+  - Joins:
+      - KStream - (Global)KTable: `join`, `leftJoin` which means the join will be triggered when there's a new message in the left stream/table; if the right stream/table doesn't have a match key, the value joiner will receive a null for the right stream/table value.
+      - KTable - KTable: join, leftJoin, `outerJoin`. There's no join between GlobalKTable and GlobalKTable: why? `outerJoin` will trigger the join if there's a message on either side of the join.
+      - KStream - KStream: join, leftJoin, outerJoin
 
 Concurrency∨
   - interface `Executor.execute(Runnable): void`
