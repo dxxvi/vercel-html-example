@@ -6,7 +6,7 @@
   <title>Notes</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Noto+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
@@ -132,7 +132,7 @@ Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo 
 | <kbd>v</kbd> visual mode                                                 | <kbd>V</kbd> visual line mode (text is selected by line)                     | <kbd>Ctrl</kbd>+<kbd>v</kbd> visual block mode
 | <kbd>y</kbd> yank                                                        | <kbd>d</kbd> cut                                                             | <kbd>p</kbd> paste
 
-[Install Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/cachyos_repositories/what_is_the_cachyos_repo/)∨
+[Install Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/cachyos_repositories/how_to_add_cachyos_repo/)∨
   - Make 1 empty partition in Windows with `diskmgmt`, disable Secure Boot in BIOS
   - After the Arch Linux in the USB started:
 ```
@@ -151,7 +151,7 @@ lsblk                                    // check to see if partitions are creat
 mkfs.fat -F32 /dev/nvme0n1p*4* && mkfs.ext4 /dev/nvme0n1p*5* // format the EFI System and regular partitions
 mount /dev/nvme0n1p*5* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*4* /mnt/boot && lsblk // to verify that the mountings are correct
 archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server
-[root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g waybar nnn foot // choose the option to chroot
+[root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g waybar nnn foot networkmanager neovim // choose the option to chroot
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
   grub-mkconfig -o /boot/grub/grub.cfg
 ```
@@ -175,6 +175,7 @@ alpha=0.96
 ```
   - Boot into the new Arch and add the Windows item to the Grub: uncomment the line `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub`:
 ```
+systemctl start NetworkManager && nmcli radio wifi on && nmcli dev wifi connect &lt;SSID&gt; password &lt;password&gt;
 pacman -Sy os-prober
 mount /dev/nvme0n1p1 /mnt // mount the Windows EFI partition manually if grub-mkconfig cannot find Windows
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -325,7 +326,40 @@ Expose docker daemon on tcp port and access it from Powershell∨
   - Powershell: install chocolatey and `choco install docker-cli` with admin right. Then `$env:DOCKER_HOST="tcp://x.x.x.x:2375"`, `docker image ls` will work.
 </div>
 <div class="tab" title="Kubernetes">
-This is Kubernetes
+`kubectl` *[command]* *[TYPE]* *[NAME's]* *[flags]*:
+  - command: `create`, `get`, `describe`, `delete`, `apply` ...:
+      - `kubectl create -f *FILENAME* [flags] // create 1 or more resources from a file`
+      - `kubectl apply -f *FILENAME* [flags] // apply a configuration change to the resource specify in the given file`
+      - `kubectl delete -f *FILENAME* // delete resources from a file`
+      - `kubectl get TYPE [NAME] // list one or more resources`
+      - `kubectl logs POD [-c CONTAINER] [--follow] // print the logs for a container in a pod`
+      - `kubectl exec POD [-c CONTAINER] [-i] [-- COMMAND [args...]] // execute a command in a container in a pod`
+      - `kubectl taint NODE NAME KEY_1=VAL_1:TAINT_EFFECT_1 ... KEY_n=VAL_n:TAINT_EFFECT_n // update the taints on node`
+  - TYPE: configmaps, endpoints, namespaces, nodes, secrets, services, :
+      - **ReplicationController**: pod replica manager which guarantees a desired number of pod replicas running at any given time. However, Deployment does the same job better.
+      - **Deployment**: like ReplicationController (uses ReplicaSet to ensure that a number of pods is running at any time) and more:
+          - Rolling Updates: gradually rolls out new Pod versions while scaling down old ones.
+          - Advanced Features: health check and rollbacks
+      - **ReplicaSet**: ensures that a stable number of pods is running at any given time. ReplicaSet is used by Deployment.
+      - **Service**: is an abstraction layer for a set of pods which provides:
+          - Service Discovery: allows us to select pods by specifying key-value pairs
+          - Load Balancing: a service is assigned a clusterIP, it distributes requests to that clusterIP across the pods in that service
+      - **DaemonSet**: is a controller ensuring that a specified pod is running on every node (we can limit the node by using labels or taints), for example log collector, resource utilization metrics ...
+      - **Job**: a controller that manages short-lived, one-time task (e.g. batch processes, file processing)
+      - **Ingress**: traffic routing. The Ingress controller looks at the defined Ingress rules to determine the service (which does the load balancing) for each request.
+      - **VolumeAttachment**: attach a persistent volume to a specific node for pods running on that node to use.
+
+Taint and Torelation: used to precisely control pod placement in a cluster:
+  - Taints: are attributes added to a node. A taint has 3 parts:
+      - Key: a name to uniquely identity the taint
+      - Value (optional): an additional detail associated with the key
+      - Effect:
+          - NoSchedule: pods cannot be scheduled on the tainted node unless they tolerate the taint
+          - PrefereNoSchedule
+          - NoExecute: existing pods with the taint are evicted and new pods cannot be scheduled on nodes marked with the taint
+  - Tolerations: are permissions assigned to pods allowing them to be scheduled on nodes with matching taints
+
+Helm Chart: is the package manager for Kubernetes application. It put all the resources needed to deploy an application in a single, reusable package. A Helm chart has 3 components: Chart.yaml (chart metadata like name, version, dependencies on other charts), YAML template (defines resources required like Deployment, Service, ConfigMaps, Secrets ...), Values.yaml (contains configuration values that can be customized so that, e.g. we can deploy app in different envs).
 </div>
 <div class="tab" title="Mac" fontawesome="fa-brands fa-apple">
 Cannot be opened because the developer cannot be verified:
@@ -475,11 +509,12 @@ spotless-maven-plugin∨
 
 Kafka∨
   - [Confluent Kafka](https://docs.confluent.io/platform/current/installation/installing_cp/zip-tar.html) download and installation or [previous version](https://www.confluent.io/previous-versions/) - if it's possible, create a trial cloud account.
+  - How to delay sending a message: `ProducerRecord` accepts a timestamp in the future. So, don't use `Thread.sleep` which will block the whole app.
   - [Co-partitioning](https://www.confluent.io/blog/co-partitioning-in-kafka-streams/) in Kafka Stream: a concept to ensure the correct and efficient of joining 2+ streams. That means the topics must have the same number of partitions and the same key hashing method.
   - To make `KafkaConsumer` return `SpecificRecord`:
 ```
 props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class); 
-props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true"); 
+props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true"); // Kafka Streams in Action, 2nd ed also mentions this
 props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, ...);
 ```
   - Kafka Streams: runs in our applications - Apache Flink (more powerful): runs in Flink servers (how to unit test a Flink-based app?)
@@ -506,7 +541,7 @@ props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, ...);
   - Joins:
       - KStream - (Global)KTable: `join`, `leftJoin` which means the join will be triggered when there's a new message in the left stream/table; if the right stream/table doesn't have a match key, the value joiner will receive a null for the right stream/table value.
       - KTable - KTable: join, leftJoin, `outerJoin`. There's no join between GlobalKTable and GlobalKTable: why? `outerJoin` will trigger the join if there's a message on either side of the join.
-      - KStream - KStream: join, leftJoin, outerJoin
+      - KStream - KStream: join, leftJoin, outerJoin. We have to specify a `JoinWindows` which specifies the maximum amount of time difference the 2 messages (with the same key of course) appear in the streams. There's a concept of JoinWindows.ofTimeDifferenceWith(No)Grace`.
 
 Concurrency∨
   - interface `Executor.execute(Runnable): void`
@@ -636,6 +671,9 @@ This is Kotlin
 </div>
 <div class="tab" title="Rust" fontawesome="fa-brands fa-rust">
 100 exercises to learn Rust [https://rust-exercises.com/](https://rust-exercises.com/)
+
+[How to build a tree in Rust](https://dev.to/deciduously/no-more-tears-no-more-knots-arena-allocated-trees-in-rust-44k6)
+
 [Good blogs](https://www.shuttle.rs/blog/tags/all) - [Free public APIs for testing](https://apipheny.io/free-api/) - `rustup doc` - [Practical Rust 1.x Cookbook](https://www.amazon.com/Practical-Rust-1-x-Cookbook-Microservices-ebook/dp/B0BW47FLQ9/) Feb 2023 - [Rust Standard Library Cookbook](https://www.amazon.com/Rust-Standard-Library-Cookbook-leverage-ebook/dp/B07B8RJ8VJ/) Mar 2018 - [All the books](https://1337x.to/torrent/5828661/Rust-Programming-Language-Book-Pack-3-46-titles/)
 
 A [sample](https://github.com/rust-lang/rustlings) project structure. Or [setup Rust for AoC](https://www.youtube.com/watch?v=fEQv-cqzbPg)
