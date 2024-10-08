@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="font-size: 16px; font-family: 'Noto Serif',serif">
+<html lang="en" style="font-size: 18px; font-family: 'Noto Serif',serif">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Noto+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
         crossorigin="anonymous">
   <style>
@@ -42,8 +42,6 @@
     button.accordion-button > i:first-child { display: inline-block; width: 1.94em }
     button.accordion-button > code { color: var(--bs-accordion-btn-color); padding-left: .25rem; padding-right: .25rem }
     button.accordion-button > a { display: inline-block; margin-left: var(--a-in-button-margin); margin-right: var(--a-in-button-margin) }
-    button.accordion-button > a:last-child { display: inline-block; margin-right: 0 }
-    button.accordion-button > a:first-child { display: inline-block; margin-left: 0 }
     h2.accordion-header + div.accordion-collapse { margin-left: 1rem }
     .accordion-button::after { background-image: none; content: '\276F'; color: #fff; transform: none }
     .accordion-button:not(.collapsed)::after { background-image: none }
@@ -51,7 +49,7 @@
     .accordion-button { box-shadow: none !important }
     pre { background: linear-gradient(90deg, #f3f3f3, #fff, #f5f5f5); padding: .5rem .5rem .5rem 1rem; margin-left: 1rem }
     li > pre { margin-left: unset }
-    kbd { 
+    kbd {
       display: inline-block; margin: 0 2px; text-shadow: 0 1px 0 #fff; color: #242729; font: .875em "Noto Serif"; text-align: center;
       line-height: 1.1; background-color: #e4e6e8; border: 1px solid #9fa6ad; border-radius: 3px; min-width: 2.7em;
       box-shadow: 0 1px 1px rgba(12,13,14,0.15),inset 0 1px 0 0 #fff
@@ -59,15 +57,59 @@
     body table.table { width: unset }
     body .table > :not(caption) > * > * { padding-top: .25rem; padding-bottom: .25rem; padding-left: 1.4rem }
     th { font-family: "Noto Serif" }
-    
+
     table.vim-motions kbd { font-size: 1.2rem; padding-left: .3rem; padding-right: .3rem; min-width: 2rem }
   </style>
 </head>
 <body style="font: 1rem/1.43 'Noto Serif'">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+<div class="tab" title="Configurations - Contacts - Credentials" fontawesome="fa-solid fa-gear">
+Bitbucket: ver3mont@proton.me / B!tbu^ket used this to create a Jetbrains account
+
+WellsFargo employee id: 2006770; PIN: 19283746; secret message: tdangvu@gmail.com / !W...q2; WellsFargo ivanti pin: 19820419; Windows login: U848688 / @Qszxaw14efcvdr3; Change password questions: last name of childhood (kc), name first pet (cb), first department (con vit), destination (norman), your food (con khi), memory (hannah); WF Help Desk: 877-590-9000; Dexian: www.dexianbenefits.com: tdangvu@gmail.com / !W...q2; Dexian timesheet: https://hrportal.disys.com thai.dangvu / !W...q2
+
+Broadridge thaivu.dang@broadridge.com SSO: `327692` / `@W...q1` - HR Solutions: (201) 714-3864 - [Workday](https://wd5.myworkday.com/broadridge/login.flex?redirect=n) - Amazon Workspace: `DangTh` / `@Wsxcvfr43ed` registration code: `SLiad+TDJGU7`
+
+[Paychex Flex](https://myapps.paychex.com): t_dangvu / _1Q...w2_ PIN: 1904:
+  - color of 1st car: cb
+  - youngest child's nick name: kc
+  - name of the 1st roommate: kb
+  - combined SAT score: 1904
+
+Confluent Cloud:
+```
+# Required connection configs for Kafka producer, consumer, and admin
+bootstrap.servers=pkc-419q3.us-east4.gcp.confluent.cloud:9092
+security.protocol=SASL_SSL
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username='AFVX6YBXF427JRE5' password='PqgANF3f/7rKrtE0YaY5+cfR7glK5KHgc+rXJITAl2b7+DEyV+jZo3e13TDvv9WP';
+sasl.mechanism=PLAIN
+# Required for correctness in Apache Kafka clients prior to 2.6
+client.dns.lookup=use_all_dns_ips
+
+# Best practice for higher availability in Apache Kafka clients prior to 3.0
+session.timeout.ms=45000
+
+# Best practice for Kafka producer to prevent data loss
+acks=all
+```
+
+TCS (Help Desk 877-827-4639)∨
+  - [https://www.ultimatix.net](https://www.ultimatix.net/) to change password - employeed ID: `2707647` / _`#E...r4`_. Q: favorite sport A: cb - Q: childhood hero A: kc - Q: college library card no A: kb - Q: Oh my God no A: buc minh - Q: last question A: vui qua
+  - Date of joining: Mar 6 2024 - NOAM domain (Windows login): `2707647@tcs.com` / _`$R...t5`_
+  - Use Chrome to go to [https://uxapps.ultimatix.net](https://uxapps.ultimatix.net/) to download an .apk file and install it (must tell the phone to allow app installation from Chrome).
+  - Global ESS [https://gess.ultimatix.net](https://gess.ultimatix.net/) or go to **Employee Services** on https://www.ultimatix.net
+  - My email address (use MS Edge): thai.v2@tcs.com, go to [https://myapp.tcs.com](https://myapp.tcs.com) to access emails `NOAM\2707647` windows login password above
+  - To see PTO days: ultimatix - Global ESS - leave balance report
+  - Use Horizon VMware for VDI: https://vdi1.pnc.com, PingID phone app, `PJ43630` / _`@Q...w1`_
+  - PNC help desk: 800-937-4445
+</div>
 <div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
+[Free DDNS with Cloudflare](https://github.com/devrim/cloudflare-noip)
+
+Plasma [Netspeed widget](https://github.com/dfaust/plasma-applet-netspeed-widget)
+
 To run Apache httpd in a docker container: specify the user/group to use in `/etc/apache2/apache2.conf` port in `/etc/apache2/ports.conf`, in `/etc/apache2/sites-available/000-default.config` change the port (to match the one used in ports.conf), specify the `&lt;Directory ...&gt;` (copied from apache2.conf) and `Alias /uri /path/to/directory`, start with `/usr/sbin/apachectl start`
 
 Ubuntu: ignore SSL certificates when running apt `apt -o "Acquire::https::Verify-Peer=false" update`
@@ -125,14 +167,14 @@ Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo 
 | <kbd>0</kbd> to 1st character of line                                    | <kbd>^</kbd> to 1st non-blank character of line                              | <kbd>$</kbd> to end of line                                | <kbd>g</kbd><kbd>_</kbd> last non-blank character of line
 | <kbd>E</kbd> to end of current WORD                                      | <kbd>W</kbd> to beginning of next WORD                                       | <kbd>B</kbd> to beginning of previous WORD                 | <kbd>g</kbd><kbd>E</kbd> end of previous WORD
 | <kbd>f</kbd><kbd>{character}</kbd> to next {character}                   | <kbd>F</kbd><kbd>{character}</kbd> to previous {character}                   | <kbd>t</kbd><kbd>{character}</kbd> before next {character} | <kbd>T</kbd><kbd>{character}</kbd> before previous {character}
-| <kbd>f</kbd><kbd>{character}</kbd> then <kbd>;</kbd> to next {character} | <kbd>f</kbd><kbd>{character}</kbd> then <kbd>,</kbd> to previous {character} | | 
+| <kbd>f</kbd><kbd>{character}</kbd> then <kbd>;</kbd> to next {character} | <kbd>f</kbd><kbd>{character}</kbd> then <kbd>,</kbd> to previous {character} | |
 | <kbd>&#125;</kbd> next paragraph                                         | <kbd>&#123;</kbd> previous paragraph                                         | |
 | <kbd>/</kbd>{pattern} search forward, then <kbd>↵</kbd>                  | <kbd>?</kbd>{pattern} search backward , then <kbd>↵</kbd>                    | <kbd>n</kbd> next match                                    | <kbd>N</kbd> previous match
 | <kbd>g</kbd><kbd>g</kbd> to top of the file                              | <kbd>G</kbd> to end of file                                                  | {line number}<kbd>g</kbd><kbd>g</kbd> to a specific line   | <kbd>%</kbd> to matching bracket `&#40;&#91;&#123;&#125;&#93;&#41;`
 | <kbd>v</kbd> visual mode                                                 | <kbd>V</kbd> visual line mode (text is selected by line)                     | <kbd>Ctrl</kbd>+<kbd>v</kbd> visual block mode
 | <kbd>y</kbd> yank                                                        | <kbd>d</kbd> cut                                                             | <kbd>p</kbd> paste
 
-[Install Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/cachyos_repositories/how_to_add_cachyos_repo/)∨
+Install [Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/cachyos_repositories/how_to_add_cachyos_repo/)∨
   - Make 1 empty partition in Windows with `diskmgmt`, disable Secure Boot in BIOS
   - After the Arch Linux in the USB started:
 ```
@@ -142,7 +184,7 @@ iwctl                                    // to connect to a wireless network
   station wlan0 get-networks                // to list all the available wireless networks
   station wlan0 connect *my_wireless_network*
   exit                                      // run ping google.com to check
-pacman -Sy 
+pacman -Sy
 pacman -Sy archlinux-keyring // it's said that these commands should be run separately
 pacman -Sy archinstall
 lsblk                                    // or fdisk -l to see what partitions we have
@@ -370,6 +412,8 @@ Cannot be opened because the developer cannot be verified:
 Add spaces to MacOS dock: `defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'; killall Dock`
 </div>
 <div class="tab" title="NodeJS - HTML - CSS" fontawesome="fa-brands fa-node-js">
+[Encrypt and password protect](https://github.com/robinmoisson/staticrypt) the content of your public static HTML file, to be decrypted in-browser without any back-end
+
 [HTML codes](https://www.rapidtables.com/web/html/html-codes.html) for example `&#123;` is `&#38;#123;`
 
 [paged.js](https://pagedjs.org/) paginates any HTML content to produce beautiful print-ready PDF
@@ -440,13 +484,13 @@ Jdk 22 - [Stream Gatherer](https://blog.soebes.io/posts/2024/01/2024-01-07-jdk-g
 
 Using Datadog + profilers [to understand request latency](https://richardstartin.github.io/posts/wallclock-profiler)
 
-New Language [Features](https://jenkov.com/tutorials/java/index.html) from Java 7 - 21 ~ [Compare](https://javaalmanac.io/) Java API of different JDK versions
+New Language [Features](https://jenkov.com/tutorials/java/index.html) from Java 7 - 22 ~ [Compare](https://javaalmanac.io/) Java API of different JDK versions
 
-[JFR events](https://sap.github.io/SapMachine/jfrevents/21.html): when can I have time to play with JFR? 
+[JFR events](https://sap.github.io/SapMachine/jfrevents/21.html): when can I have time to play with JFR?
 
 [Manifold](http://manifold.systems/) is a Java _compiler plugin_ for method extension ~ [BoofCV](http://boofcv.org) computer vision Java library - [Benchmark JDBC connectors and virtual threads](https://mariadb.com/resources/blog/benchmark-jdbc-connectors-and-java-21-virtual-threads/)
 
-Elasticsearch in Action 2nd Edition Dec 2023 - Getting Started with Elastic Stack 8.0 Mar 2022 - Kibana 7 Quick Start Guid Jan 2019
+Spring Kafka [example](https://github.com/j-tim/spring-io-barcelona-2022-spring-kafka-beyond-the-basics)
 
 Install certificates:
   - Java 11+: `keytool -importcert -trustcacerts -storepass changeit -cacerts -noprompt -file */Downloads/certificates/prag.pem* -alias *prag*`
@@ -507,13 +551,15 @@ spotless-maven-plugin∨
 &lt;/plugin&gt;
 ```
 
-Kafka∨
+Kafka [Gently down the stream](https://www.gentlydownthe.stream/)∨
+  - Outbox pattern: to solve the dual write problem: make a db transaction and publish an event: create 1 non-business step in that db transaction which is writing to the outbox table. Then there's another thread that keeps checking the outbox table and publishing events.
+  - [An example](https://developers.redhat.com/articles/2024/06/20/stateful-and-reactive-stream-processing-applications-apache-kafka-quarkus-and) to count the messages by keys, they create 1 TopN message in a KTable, then shows it in a browser using Quarkus.
   - [Confluent Kafka](https://docs.confluent.io/platform/current/installation/installing_cp/zip-tar.html) download and installation or [previous version](https://www.confluent.io/previous-versions/) - if it's possible, create a trial cloud account.
   - How to delay sending a message: `ProducerRecord` accepts a timestamp in the future. So, don't use `Thread.sleep` which will block the whole app.
   - [Co-partitioning](https://www.confluent.io/blog/co-partitioning-in-kafka-streams/) in Kafka Stream: a concept to ensure the correct and efficient of joining 2+ streams. That means the topics must have the same number of partitions and the same key hashing method.
   - To make `KafkaConsumer` return `SpecificRecord`:
 ```
-props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class); 
+props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
 props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true"); // Kafka Streams in Action, 2nd ed also mentions this
 props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, ...);
 ```
@@ -551,7 +597,7 @@ Concurrency∨
       - `ExecutorService.submit(Callable&lt;T>): Future&lt;T>`
       - `ExecutorService.invokeAny(Collection&lt;Callable&lt;T>>, optional timeout): T`
       - `ExecutorService.invokeAll(Collection&lt;Callable&lt;T>>, optional timeout): List&lt;Future&lt;T>>`
-  - interface `ScheduledExecutorService extends ExecutorService` has `schedule(Runnable | Callable, delay): ScheduledFuture`, `scheduleAtFixedRate(Runnable, initialDelay, period): ScheduledFuture&lt;?>` and `scheduleAtFixedDelay(Runnable, initialDelay, delay): ScheduledFuture&lt;?>`. 
+  - interface `ScheduledExecutorService extends ExecutorService` has `schedule(Runnable | Callable, delay): ScheduledFuture`, `scheduleAtFixedRate(Runnable, initialDelay, period): ScheduledFuture&lt;?>` and `scheduleAtFixedDelay(Runnable, initialDelay, delay): ScheduledFuture&lt;?>`.
   - To get the task results in order of completion, use `var completionService = new ExecutorCompletionService&lt;R>(executorService)` then submit a job `completionService.submit(runnable/callable): Future&lt;R>` then get the next completed task result `completionService.poll/take: Future&lt;R>`
   - `ConcurrentHashMap`: `compute/computeIfAbsent/computeIfPresent` are atomic, to create a *ConcurrentHashSet*: `.newKeySet`, reduce: `reduce/reduceEntries[ToInt/Long/Double]/reduceKeys[ToInt/Long/Double]/reduceValues[ToInt/Long/Double](parallelThreshold, (k, v) -> r, (r, r) -> r): R`, parallel search: `search[Entries/Keys/Values](parallelThreshold, (k, v) -> r)`
   - Lock:
@@ -670,7 +716,11 @@ This is Scala
 This is Kotlin
 </div>
 <div class="tab" title="Rust" fontawesome="fa-brands fa-rust">
-100 exercises to learn Rust [https://rust-exercises.com/](https://rust-exercises.com/)
+`rustup doc`: to read The Book and the standard library reference.
+
+100 exercises to learn Rust [https://rust-exercises.com/](https://rust-exercises.com/), resources to [learn](https://github.com/ImplFerris/LearnRust) Rust
+
+[Rust Atomics and Locks](https://marabos.nl/atomics/) Jan 2023
 
 [How to build a tree in Rust](https://dev.to/deciduously/no-more-tears-no-more-knots-arena-allocated-trees-in-rust-44k6)
 
@@ -678,11 +728,11 @@ This is Kotlin
 
 A [sample](https://github.com/rust-lang/rustlings) project structure. Or [setup Rust for AoC](https://www.youtube.com/watch?v=fEQv-cqzbPg)
 
-[Iggy](https://blog.iggy.rs/posts/building-message-streaming-in-rust/): Kafka-like in Rust (single node for now) - [Fluvio](https://fluvio.io/): also in Rust, production-ready, said to be like Kafka + Flink
-
 [This person](https://medium.com/@omprakashsridharan) wrote blogs about server-side Rust in 2022 - 2023.
 
 [Rust blogs in AWS 2024](https://www.shuttle.rs/blog/tags/all)
+
+[Rust with Flutter/Dart](https://cjycode.com/posts/rust-ui-flutter/) with many good appraisals on [HN](https://news.ycombinator.com/item?id=41213711)
 
 Functions `Fn`, `FnMut` and `FnOnce`:
 ```
@@ -726,7 +776,7 @@ To sleep: `std::thread::sleep(std::time::Duration::from_secs(1))`
 borrows elements from the collection, create references to them | takes ownership of the collection and moves elements into the iterator
 can still use the collection after iterating                    | cannot
 read but not modify the elements directly                       | have full ownership of the elements, so can move or modify them
-                                                                | used by the `for` loop 
+                                                                | used by the `for` loop
 
 Moving data around in the memory with `std::mem::` (only when the data types don't implement the `Copy` trait)∨
   - maybe this is useful for `Box` or our custom `struct`
@@ -851,7 +901,7 @@ match message {                                                                 
 while let *some_enum_variable* = *an_enum_value* {               while let Some(...) = *an_enum_value* {
   // need to change the an_enum_value here                     // access the ... and modify the an_enum_value
 }                                                            }
-``` 
+```
   - `enum std::result::Result&lt;T, E&gt; { Ok(T), Err(E) }`
     - `.unwrap()` or `.expect(&str)`: panic with the error E message or our custom message
     - `.unwrap_or(default: T) -> T` `.unwrap_or_else&lt;F>(op: FnOnce(E) -> T) -> T`: if error, return a default value
@@ -897,6 +947,8 @@ configurations {
 }
 ```
 
+To specify program arguments when running a gradle task: `gradlew bootRun --args='--spring.profiles.active=my-profile'`
+
 To specify the JVM options for Gradle to use: `$env:GRADLE_OPTS="-Dhttps.protocols=TLSv1.2 -Djdk.tls.client.protocols=TLSv.12 -Djavax.net.ssl.trustStore=file.jsk -Djavax.net.ssl.trustStorePassword=..."` or put it in `gradle.properties` under the name `org.gradle.jvmargs`
 </div>
 <div class="tab" title="Git" fontawesome="fa-brands fa-git">
@@ -941,7 +993,11 @@ Use a non-default private key with git (recent versions only): `$env:GIT_SSH_COM
 <div class="tab" title="PowerShell - Windows" fontawesome="fa-brands fa-windows">
 [Upgrade Windows 11 Home to Pro](https://www.youtube.com/watch?v=2FHn2GzIZrc): disconnect Internet, `Settings` | `System` | `Activation` | `Change Product Key`, use this generic key `VK7JG-NPHTM-C97JM-9MPGT-3V66T`. Finally run [this](https://github.com/massgravel/Microsoft-Activation-Scripts) in powershell `irm https://get.activated.win/get | iex`
 
+[Traffic Monitor](https://github.com/zhongyang219/TrafficMonitor) can show network speed (in/out), cpu, memory usage in the task bar.
+
 [komorebi](https://github.com/LGUG2Z/komorebi): a tiling window manager for Windows written in Rust
+
+[Marp](https://marp.app/), like reveal.js, allows us to make slides from markdown
 
 Install a `.msi` file: in cmd `msiexec.exe /i *file.msi* INSTALLDIR=%USERPROFILE%\*some-directory* MSIINSTALLPERUSER=1`
 
@@ -1000,6 +1056,7 @@ Firefox∨
   - Delete the Firefox under Mozilla in registry (this has corporate-set keys to forbid Firefox extension installation): `reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Mozilla\Firefox /f`
   - [Delete 1 property](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/remove-itemproperty) in the registry: `Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Mozilla\Firefox" -Name "ExtensionSettings" -Force`
   - Clean up Firefox: `rm -rf AppData/Local/Mozilla AppData/Roaming/Mozilla`
+  - Show all profiles: `about:profiles` - Start with a profile: `firefox -P my-profile`
 </div>
 <div class="tab" title="Jenkins">
 To list files: `http https://artifacts.devops.bfsaws.net/artifactory/GPTM-TEST-DEV/DF-Query/ X-JFrog-Art-Api:xxx | grep -e "-2022 " -e "-Jan-2023 " | sed 's/^.*DFQueryService/abc DFQueryService/g' | sed 's/^.*//g'`
