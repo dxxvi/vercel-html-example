@@ -65,46 +65,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-<div class="tab" title="Configurations - Contacts - Credentials" fontawesome="fa-solid fa-gear">
-Bitbucket: ver3mont@proton.me / B!tbu^ket used this to create a Jetbrains account
-
-WellsFargo employee id: 2006770; PIN: 19283746; secret message: tdangvu@gmail.com / !W...q2; WellsFargo ivanti pin: 19820419; Windows login: U848688 / @Qszxaw14efcvdr3; Change password questions: last name of childhood (kc), name first pet (cb), first department (con vit), destination (norman), your food (con khi), memory (hannah); WF Help Desk: 877-590-9000; Dexian: www.dexianbenefits.com: tdangvu@gmail.com / !W...q2; Dexian timesheet: https://hrportal.disys.com thai.dangvu / !W...q2
-
-Broadridge thaivu.dang@broadridge.com SSO: `327692` / `@W...q1` - HR Solutions: (201) 714-3864 - [Workday](https://wd5.myworkday.com/broadridge/login.flex?redirect=n) - Amazon Workspace: `DangTh` / `@Wsxcvfr43ed` registration code: `SLiad+TDJGU7`
-
-[Paychex Flex](https://myapps.paychex.com): t_dangvu / _1Q...w2_ PIN: 1904:
-  - color of 1st car: cb
-  - youngest child's nick name: kc
-  - name of the 1st roommate: kb
-  - combined SAT score: 1904
-
-Confluent Cloud:
-```
-# Required connection configs for Kafka producer, consumer, and admin
-bootstrap.servers=pkc-419q3.us-east4.gcp.confluent.cloud:9092
-security.protocol=SASL_SSL
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username='AFVX6YBXF427JRE5' password='PqgANF3f/7rKrtE0YaY5+cfR7glK5KHgc+rXJITAl2b7+DEyV+jZo3e13TDvv9WP';
-sasl.mechanism=PLAIN
-# Required for correctness in Apache Kafka clients prior to 2.6
-client.dns.lookup=use_all_dns_ips
-
-# Best practice for higher availability in Apache Kafka clients prior to 3.0
-session.timeout.ms=45000
-
-# Best practice for Kafka producer to prevent data loss
-acks=all
-```
-
-TCS (Help Desk 877-827-4639)∨
-  - [https://www.ultimatix.net](https://www.ultimatix.net/) to change password - employeed ID: `2707647` / _`#E...r4`_. Q: favorite sport A: cb - Q: childhood hero A: kc - Q: college library card no A: kb - Q: Oh my God no A: buc minh - Q: last question A: vui qua
-  - Date of joining: Mar 6 2024 - NOAM domain (Windows login): `2707647@tcs.com` / _`$R...t5`_
-  - Use Chrome to go to [https://uxapps.ultimatix.net](https://uxapps.ultimatix.net/) to download an .apk file and install it (must tell the phone to allow app installation from Chrome).
-  - Global ESS [https://gess.ultimatix.net](https://gess.ultimatix.net/) or go to **Employee Services** on https://www.ultimatix.net
-  - My email address (use MS Edge): thai.v2@tcs.com, go to [https://myapp.tcs.com](https://myapp.tcs.com) to access emails `NOAM\2707647` windows login password above
-  - To see PTO days: ultimatix - Global ESS - leave balance report
-  - Use Horizon VMware for VDI: https://vdi1.pnc.com, PingID phone app, `PJ43630` / _`@Q...w1`_
-  - PNC help desk: 800-937-4445
-</div>
 <div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
 [Free DDNS with Cloudflare](https://github.com/devrim/cloudflare-noip)
 
@@ -174,47 +134,32 @@ Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo 
 | <kbd>v</kbd> visual mode                                                 | <kbd>V</kbd> visual line mode (text is selected by line)                     | <kbd>Ctrl</kbd>+<kbd>v</kbd> visual block mode
 | <kbd>y</kbd> yank                                                        | <kbd>d</kbd> cut                                                             | <kbd>p</kbd> paste
 
-Install [Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/cachyos_repositories/how_to_add_cachyos_repo/)∨
+Install [Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/features/optimized_repos/)∨
   - Make 1 empty partition in Windows with `diskmgmt`, disable Secure Boot in BIOS
   - After the Arch Linux in the USB started:
 ```
-setfont ter-132n                         // to increase the terminal font size
-iwctl                                    // to connect to a wireless network
-  device list                               // will show wlan0
-  station wlan0 get-networks                // to list all the available wireless networks
+setfont ter-132n                    // to increase the terminal font size
+iwctl                               // to connect to a wireless network
+  device list                          // will show wlan0
+  station wlan0 get-networks           // to list all the available wireless networks
   station wlan0 connect *my_wireless_network*
-  exit                                      // run ping google.com to check
+  exit                                 // run ping google.com to check
 pacman -Sy
-pacman -Sy archlinux-keyring // it's said that these commands should be run separately
+pacman -Sy archlinux-keyring        // it's said that these commands should be run separately
 pacman -Sy archinstall
-lsblk                                    // or fdisk -l to see what partitions we have
-cfdisk /dev/nvme0n1                      // to create more partitions: create 1 800MB partition with EFI System type, another with Linux filesystem type
-lsblk                                    // check to see if partitions are created correctly
+lsblk                               // or fdisk -l to see what partitions we have
+cfdisk /dev/nvme0n1                 // to create more partitions: create 1 400MB partition with EFI System type, another with Linux filesystem type
+lsblk                               // check to see if partitions are created correctly
 mkfs.fat -F32 /dev/nvme0n1p*4* && mkfs.ext4 /dev/nvme0n1p*5* // format the EFI System and regular partitions
 mount /dev/nvme0n1p*5* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*4* /mnt/boot && lsblk // to verify that the mountings are correct
-archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server
+archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server, root directory of the mounted device: /mnt
+  Hyprland desktop environment: dolphin dunst grim kitty polkit-kde-agent qt5/6-wayland slurp wofi xdg-desktop-portal-hyprland
+  Server: docker, nginx, sshd
 [root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g waybar nnn foot networkmanager neovim // choose the option to chroot
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
   grub-mkconfig -o /boot/grub/grub.cfg
 ```
-  - This is the `~/.config/foot/foot.ini`:
-```
-[main]
-font=FiraCode Nerd Font Mono:size=12
-line-height=18
-pad=4x4
-initial-window-size-pixels=1200x675
-[scrollback]
-lines=4000
-[cursor]
-style=beam
-unfocused-style=none
-blink=yes
-color=ffffff ff3434
-beam-thickness=1px
-[colors]
-alpha=0.96
-```
+
   - Boot into the new Arch and add the Windows item to the Grub: uncomment the line `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub`:
 ```
 systemctl start NetworkManager && nmcli radio wifi on && nmcli dev wifi connect &lt;SSID&gt; password &lt;password&gt;
@@ -229,7 +174,7 @@ paru visual-studio-code-bin
 ```
   - Install KDE Plasma:
 ```
-pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa
+pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa libnotify bluedevil
 ```
   - In KDE, when we go to System Settings | Font Management | Install from File..., the .ttf files are copied to directories under `~/.fonts` and a file named `~/.fonts.conf` is created. If I manually copy .ttf files to ~/.fonts, does it work? This is ~/.fonts.conf:
 ```
@@ -237,7 +182,6 @@ pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa
 &lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
 &lt;fontconfig&gt;&lt;dir&gt;~/.fonts&lt;/dir&gt;&lt;/fontconfig&gt;
 ```
-  - Plasma 6 [netspeed](https://github.com/dfaust/plasma-applet-netspeed-widget) widget (better than the available one)
   - Delete Arch's partitions with `diskmgmt` (EFI System partition cannot be delete here):
 ```
 diskpart // run in Administrator cmd
@@ -470,6 +414,8 @@ Angular∨
 
 </div>
 <div class="tab" title="Java" fontawesome="fa-brands fa-java">
+Use database for [distributed lock, Kafka topic](https://www.youtube.com/watch?v=ghpljMg8Ecc): use pessimistic/optimistic write.
+
 Get [HTTPS](https://lcl.host/) in your local development
 
 [DFLib](https://dflib.org/) a lightweight pure Java implementation of a common DataFrame data structure
@@ -663,6 +609,25 @@ public &#64;Embeddable class VacationEntry &#123;                          publi
       - Joined strategy:
       - Table-per-concrete-class strategy:
   - 2 ways to fix the N+1 issue: put `@Query("SELECT p FROM ChessPlayer p LEFT JOIN FETCH p.tournaments")` or `@EntityGraph(attributePaths = "tournaments")` on a method in the Spring Data JPA Repository
+  - Use PESSIMISTIC_WRITE to implement a distributed lock (HazelCast provides an implementation of distributed lock), like this:
+```
+interface XXXRepository extends JpaRepository(XXX, ...) {
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @QueryHints({ // exception is thrown if unable to get the lock, works for Oracle only, not Postgres
+      @QueryHint(name = "jakarta.persistence.lock.timeout", value = "1000")
+  })
+  List&lt;XXX&gt; findBy...(...);
+}
+// if we want to use the lock timeout feature in not-Oracle db, we need to use EntityManager
+// However, https://jakarta.ee/learn/docs/jakartaee-tutorial/current/persist/persistence-locking/persistence-locking.html
+//   says it's not guaranteed
+em.createNativeQuery("SET lock_timeout = '5'").executeUpdate(); // this is postgres syntax
+em.createQuery("select l from HerLock l where l.id = :id", HerLock.class)
+    .setParameter("id", id)
+    .setHint("jakarta.persistence.lock.timeout", 999)
+    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+    .getResultList()
+```
 
 Composition vs Inheritance∨
   - class inheritance issue:
@@ -720,6 +685,8 @@ This is Kotlin
 
 100 exercises to learn Rust [https://rust-exercises.com/](https://rust-exercises.com/), resources to [learn](https://github.com/ImplFerris/LearnRust) Rust
 
+Another [place](https://github.com/dcodesdev/rustfinity.com) to do Rust exercises
+
 [Rust Atomics and Locks](https://marabos.nl/atomics/) Jan 2023
 
 [How to build a tree in Rust](https://dev.to/deciduously/no-more-tears-no-more-knots-arena-allocated-trees-in-rust-44k6)
@@ -733,203 +700,6 @@ A [sample](https://github.com/rust-lang/rustlings) project structure. Or [setup 
 [Rust blogs in AWS 2024](https://www.shuttle.rs/blog/tags/all)
 
 [Rust with Flutter/Dart](https://cjycode.com/posts/rust-ui-flutter/) with many good appraisals on [HN](https://news.ycombinator.com/item?id=41213711)
-
-Functions `Fn`, `FnMut` and `FnOnce`:
-```
-let square = |x: i32, y: i32| -> i32 {                // the number of arguments can be 0,
-  println!("Calculating square of {x} then add {y}"); //   then the function body can access variables in the scope that has this function (closure)
-  x * x + y
-}
-```
-
-The `collect&lt;B>() -> B` method of the `Iterator` trait to transform an iterator into a collection
-  - the most basic pattern: take a collection, call `iter` on it, do a bunch of transformations and then `collect()` at the end:
-```
-let a = [3, 2, 1];
-// no need to specify the type of the vector elements          // or use the turbofish
-let double: Vec&lt;_> =                                           let trippled =
-    a.iter().map(|&x| x * 2).collect();                            a.iter().map(|&x| x * 3).collect::&lt;Vec&lt;_>>();
-```
-  - make a string:
-```
-let chars = ['g', 'd', 'k', 'k', 'n'];
-let hello: String = chars.iter().map(|&x| x as u8).map(|x| (x + 1) as char).collect();
-```
-  - given a list of `Result&lt;T, E>`, check if any of them failed:
-```
-let results = [Ok(2), Err("a"), Ok(1), Err("b")];              let other_results = [Ok(2), Ok(1)];
-// this returns Err("a")                                       // this returns Ok(vec![2, 1])
-let result: Result&lt;Vec&lt;_>, &str> =                             let another_result: Result&lt;Vec&lt;_>, &str> =
-    results.iter().cloned().collect();                             results.iter().cloned().collect();
-```
-
-The `.chain(self, other: U)` method of `Iterator` concatenate 2 iterators. As iterators are lazy, the 2nd iterator can be infinite like `std::iter::repeat(...)` and we'll use the method `std::iter::Iterator::take(self, n: usize)` to limit the number of elements we'll process.
-
-If a function is given the ownership of its arguments and the arguments are immutable, then we can do this to make the argument values mutable like this `fn function(a: *SomeType*) { let mut b = a }`
-
-To modify the value inside a `Box`: `let mut x = Box::new(4); *x = 19`
-
-To sleep: `std::thread::sleep(std::time::Duration::from_secs(1))`
-
-`.iter()`                                                       | `.into_iter()`
-----------------------------------------------------------------|-----------------------------------------------------------------------
-borrows elements from the collection, create references to them | takes ownership of the collection and moves elements into the iterator
-can still use the collection after iterating                    | cannot
-read but not modify the elements directly                       | have full ownership of the elements, so can move or modify them
-                                                                | used by the `for` loop
-
-Moving data around in the memory with `std::mem::` (only when the data types don't implement the `Copy` trait)∨
-  - maybe this is useful for `Box` or our custom `struct`
-  - `std::mem::replace&lt;T>(dest: &mut T, src: T) -> T`: move `src` into the referenced `dest`, returns the previous `dest` value. Neither value is dropped.
-  - `std::mem::swap&lt;T>(x: &mut T, y: &mut T)`: swap the values at 2 mutable locations (if we want to swap with a default value, use `take`; if we want to swap with a passed value, use `replace`).
-
-String∨
-  - to split to lines: `std::str::lines() -> Lines&lt;'_>'`
-  - `.into_bytes() -> Vec&lt;u8>` takes ownership of the receiver `self` while `.as_bytes() -> &[u8]`
-  - To iterate a string:
-```
-for (i, &item) in String::from("Hello World").as_bytes().iter().enumerate() { // if we need the index of each byte
-  if (item == b' ') {
-    println!("Found a space");
-  } else {
-    println!("{}: {}", i, item);
-  }
-}
-for c in "hello world".chars() {                                              // if we only need each character
-  println!("{c}");
-}
-```
-
-Vector∨
-  - access, push (to the end) and pop (from the end), insert, remove:
-```
-let mut v: Vec<i32> = vec![1, 5, 2, 4];    // no need of mut if there's no push nor pop
-v.push(3);                                 // we need mut even when we modify an element in a vector (e.g. a vector of struct)
-let third: &i32 = &v[2];                   // & is used so that we access a reference, not the real one
-let third_option: Option&lt;&i32> = v.get(2);
-```
-  - iterate:
-```
-for item in v {                             // if there's any issue, consider using &v
-  println!("item: {}", item);
-}
-for (index, item) in v.iter().enumerate() { // iterate and the item index is needed
-  println!("index: {}, item: {:?}", index, item);
-}
-```
-  - `.retain(&mut self, f: FnMut(&T) -> bool)`: [retains](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.retain) only the elements specified by the predicate
-
-Struct∨
-  - define and use:
-```
-#[derive(Debug)] // so that the struct content can be printed with {:?} in println!
-struct User {                      let user = User {
-  active: bool,                      active: true,
-  username: String,                  username: String::from("user1"),
-  sign_in_count: u64,                sign_in_count: 5,
-}                                  }
-```
-  - methods:
-```
-#[derive(Debug)]
-struct Rectangle {                impl Rectangle {
-  width: u32,                       fn area(&self, message: &str) -> u32 {
-  height: u32,                        println!("Message {} for this rectangle {:?}", str, self);
-}                                     self.width * self.height
-                                    }
-
-                                    fn square(size: u32) -> Self { // methods without &self become "static" methods
-                                      Self {                       // let square = Rectangle::square(4)
-                                        width: size,
-                                        height: size,
-                                      }
-                                    }
-                                  }
-```
-  - implement the `Display` trait so that a `struct` can be printed out with `{}`:
-```
-use std::fmt;                                     impl fmt::Display for Person {
-struct Person { name: String, age: u8 }             fn fmt(&self, f: &mut fmt::Formatter&lt;'_>) -> fmt::Result {
-                                                      write!(f, "used as with println!")
-                                                    }
-                                                  }
-```
-
-Enum∨
-  - define and use:
-```
-  enum IpAddrKind {               let four = IpAddrKind::V4;
-    V4,                           let six  = IpAddrKind::V6;
-    V6,
-  }
-```
-  - think twice before putting `enum` in a `struct` as we can do this:
-```
-  enum IpAddr {                                                   enum Color {                enum Message {
-    V4(u8, u8, u8, u8),                                             Rgb(i32, i32, i32),         Quit,
-    V6(String),                                                     Hsv(i32, i32, i32),         Stop,
-  }                                                               }                             Move { x: i8, y: i8 },
-  let home     = IpAddr::V4(127, 0, 0, 1);                                                      ChangeColor(Color),
-  let loopback = IpAddr::V6(String::from("::1"));                                             }
-```
-  - using `match` with `enum`:
-```
-let message1 = Message::Move { x: 3, y: 4 };
-let message2 = Message::ChangeColor(Color::Rgb(5, 6, 7));
-
-match message {
-  Message::Quit | Message::Stop              => println!("Quitting"), // match one or several values
-  Message::Move { x, y } if x > 99 && y > 99 => println!("Moving to far"),
-  Message::Move { x, y }                     => {
-    println!("Moving to ({}, {})", x, y)                              // if a block { } is used, no need of a comma after that block
-  }
-  Message::ChangeColor(Color::Rgb(r, g, b))  => println!("Changing color to RGB: ({}, {}, {})", r, g, b),
-  Message::ChangeColor(Color::Hsv(h, s, v))  => println!("Changing color to HSV: ({}, {}, {})", h, s, v),
-}
-```
-  - using `if let` if we want to do something with only 1 enum value and optionally do something else with all other enum values:
-```
-let my_message = Message::Move { x = 4, y = 19 };
-match message {                                                                       if let Message::Move { x, y } = my_message {
-  my_message => println!("Moving to ({my_message.x}, {my_message.y})"),                 println!("Moving to ({x}, {y})");
-  _          => println!("Not moving")                                                } else {
-}                                                                                       println!("Not moving");
-                                                                                      }
-```
-  - using `while let`:
-```
-while let *some_enum_variable* = *an_enum_value* {               while let Some(...) = *an_enum_value* {
-  // need to change the an_enum_value here                     // access the ... and modify the an_enum_value
-}                                                            }
-```
-  - `enum std::result::Result&lt;T, E&gt; { Ok(T), Err(E) }`
-    - `.unwrap()` or `.expect(&str)`: panic with the error E message or our custom message
-    - `.unwrap_or(default: T) -> T` `.unwrap_or_else&lt;F>(op: FnOnce(E) -> T) -> T`: if error, return a default value
-    - propagating errors: inside our function which returns `Result&lt;T, E>`, whenever we have a `Result&lt;U, E>` we can put `?` after it to get `U`
-  - `enum std::option::Option&lt;T> { None, Some(T) }`
-    - `*my_option*.unwrap(self) -> T` means that `*my_option*` is moved and cannot be used after this command. To use `*my_option*` again, we need `*my_option*.as_ref().unwrap()` or `*my_option*.as_mut().unwrap()`
-    - `.as_mut(&mut self) -> Option&lt;&mut T>` is used when we want to modify the value inside the `Option` or `.as_ref()` to access the option content. Otherwise, the `option` cannot be used after that.
-    - [This](https://leetcode.com/problems/remove-duplicates-from-sorted-list/solutions/344741/my-idiomatic-solution-rust/) is a very good example of manipulating options.
-    - `Option&lt;i8 | u8 | i16 |...&gt;` can be compared to each others
-
-Trait∨
-  - define and implement:
-```
-trait Summary {                                                        impl Summary for NewsArticle {
-  // we can have default implementations for methods in trait
-  fn summarize(&self) -> String;                                         fn summarize(&self) -> String {
-}                                                                          // format! is a way to concatenate strings
-struct NewsArticle {                                                       format!("{} then {}", self.author, self.content)
-  author: String,                                                        }
-  content: String,                                                     }
-}
-```
-  - extends: `trait MyTrait: YourTrait { ... }`
-  - passing traits as paramaters:
-```
-fn notify(item: &(impl Summary + Display)) { ... }                     fn notify&lt;T: Summary + Display>(item: &T) { ... }
-```
-  - returning types that implement traits: `fn return_summarizable() -> impl Summary { ... }`
 </div>
 <div class="tab" title="Python" fontawesome="fa-brands fa-python">
 Start an http server in the current directory at a specific port: `python -m http.server 8000`
@@ -1001,7 +771,7 @@ Use a non-default private key with git (recent versions only): `$env:GIT_SSH_COM
 
 Install a `.msi` file: in cmd `msiexec.exe /i *file.msi* INSTALLDIR=%USERPROFILE%\*some-directory* MSIINSTALLPERUSER=1`
 
-VcXsrv: don't forget to `export LIBGL_ALWAYS_INDIRECT=1` in Linux and `DISPLAY=localhost:0` in Windows
+VcXsrv (this version [doesn't need admin to install](https://github.com/marchaesen/vcxsrv)): don't forget to `export LIBGL_ALWAYS_INDIRECT=1` in Linux and `DISPLAY=localhost:0` in Windows
 
 Install python, pip in Windows: unzip the python, install pip with `python get-pip.py` here is [get-pip.py](https://bootstrap.pypa.io/get-pip.py), then modify the file `python312._pth` like this:
 ```
