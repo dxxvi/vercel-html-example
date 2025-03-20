@@ -65,10 +65,13 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+
 <div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
 [Free DDNS with Cloudflare](https://github.com/devrim/cloudflare-noip)
 
-To import a gpg key: `gpg --keyserver hkp://pgp.rediris.es --recv-keys *key*`
+To resize windows in Wayland: `wmctrl -l` to get the window ID, `wmctrl -i -r *windowId* -e 0,*x*,*y*,*width*,*height*`
+
+To know how many RAM slots available: `sudo dmidecode --type memory`
 
 To run Apache httpd in a docker container: specify the user/group to use in `/etc/apache2/apache2.conf` port in `/etc/apache2/ports.conf`, in `/etc/apache2/sites-available/000-default.config` change the port (to match the one used in ports.conf), specify the `&lt;Directory ...&gt;` (copied from apache2.conf) and `Alias /uri /path/to/directory`, start with `/usr/sbin/apachectl start`
 
@@ -117,8 +120,8 @@ Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo 
 |<kbd>Ctrl</kbd>+<kbd>U</kbd>                    |                              |                                           |kill to the beginning of the line
 |<kbd>Ctrl</kbd>+<kbd>Y</kbd>                    | <kbd>Ctrl</kbd>+<kbd>Y</kbd> |                                           |paste text from the kill buffer
 |<kbd>Ctrl</kbd>+<kbd>L</kbd>                    | <kbd>Ctrl</kbd>+<kbd>L</kbd> |<kbd>&#8963;</kbd>+<kbd>L</kbd>            |clear screen
-|<kbd>Ctrl</kbd>+<kbd>C</kbd>                    | <kbd>Ctrl</kbd>+<kbd>U</kbd> |<kbd>&#8963;</kbd>+<kbd>U</kbd>            |kill the whole line
-|<kbd>Ctrl</kbd>+<kbd>&#x21e7;</kbd>+<kbd>-</kbd>| <kbd>Ctrl</kbd>+<kbd>-</kbd> |<kbd>&#8963;</kbd>+<kbd>-</kbd>            |undo the last change
+|                                                |<kbd>Ctrl</kbd>+<kbd>U</kbd>  |<kbd>&#8963;</kbd>+<kbd>U</kbd>            |kill the whole line
+|<kbd>Ctrl</kbd>+<kbd>&#x21e7;</kbd>+<kbd>-</kbd>|<kbd>Ctrl</kbd>+<kbd>-</kbd>  |<kbd>&#8963;</kbd>+<kbd>-</kbd>            |undo the last change
 
 | vim motions                                                              | `:set [no]number [no]relativenumber`                                         | `Ctrl-o` in insert mode                                    | c
 |--------------------------------------------------------------------------|------------------------------------------------------------------------------|------------------------------------------------------------|---------------------------------------------------------------
@@ -138,17 +141,18 @@ Install [Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows ho
   - Make 1 empty partition in Windows with `diskmgmt`, disable Secure Boot in BIOS
   - After the Arch Linux in the USB started:
 ```
-setfont ter-132n                    // to increase the terminal font size
-iwctl                               // to connect to a wireless network
-  device list                          // will show wlan0
-  station wlan0 get-networks           // to list all the available wireless networks
+setfont ter-132n                         // to increase the terminal font size
+iwctl                                    // to connect to a wireless network
+  device list                               // will show wlan0
+  station wlan0 get-networks                // to list all the available wireless networks
   station wlan0 connect *my_wireless_network*
-  exit                                 // run ping google.com to check
-pacman -Sy && pacman -Sy archlinux-keyring
-pacman -Sy archinstall              // it's said that these commands should be run separately
-lsblk                               // or fdisk -l to see what partitions we have
-cfdisk /dev/nvme0n1                 // to create more partitions: create 1 400MB partition with EFI System type, another with Linux filesystem type
-lsblk                               // check to see if partitions are created correctly
+  exit                                      // run ping google.com to check
+pacman -Sy
+pacman -Sy archlinux-keyring // it's said that these commands should be run separately
+pacman -Sy archinstall
+lsblk                                    // or fdisk -l to see what partitions we have
+cfdisk /dev/nvme0n1                      // to create more partitions: create 1 400MB (194MB is not enough) partition with EFI System type, another with Linux filesystem type
+lsblk                                    // check to see if partitions are created correctly
 mkfs.fat -F32 /dev/nvme0n1p*4* && mkfs.ext4 /dev/nvme0n1p*5* // format the EFI System and regular partitions
 mount /dev/nvme0n1p*5* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*4* /mnt/boot && lsblk // to verify that the mountings are correct
 archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server, root directory of the mounted device: /mnt
@@ -158,7 +162,24 @@ archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
   grub-mkconfig -o /boot/grub/grub.cfg
 ```
-
+  - This is the `~/.config/foot/foot.ini`:
+```
+[main]
+font=FiraCode Nerd Font Mono:size=12
+line-height=18
+pad=4x4
+initial-window-size-pixels=1200x675
+[scrollback]
+lines=4000
+[cursor]
+style=beam
+unfocused-style=none
+blink=yes
+color=ffffff ff3434
+beam-thickness=1px
+[colors]
+alpha=0.96
+```
   - Boot into the new Arch and add the Windows item to the Grub: uncomment the line `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub`:
 ```
 systemctl start NetworkManager && nmcli radio wifi on && nmcli dev wifi connect &lt;SSID&gt; password &lt;password&gt;
@@ -173,7 +194,7 @@ paru visual-studio-code-bin
 ```
   - Install KDE Plasma:
 ```
-pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa plasma-meta plasma-disks plasma-desktop plasma-thunderbolt plasma-vault plasma-systemmonitor plasma-integration libnotify bluedevil
+pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa libnotify bluedevil
 ```
   - In KDE, when we go to System Settings | Font Management | Install from File..., the .ttf files are copied to directories under `~/.fonts` and a file named `~/.fonts.conf` is created. If I manually copy .ttf files to ~/.fonts, does it work? This is ~/.fonts.conf:
 ```
@@ -396,8 +417,13 @@ function convertImageToBase64(imgUrl, callback) {
 Angular∨
   - A component is annotated with `@Component` which takes a css `selector`, a `templateUrl`, 0 or many `styleUrls` and other non-popular properties like `encapsulation: ViewEncapsulation.Emulated | ShadowDom` (so that the css styles of the page don't affect this component and vice versa), ...
   - Component lifecycle: the Typescript class for the component can implement some interfaces like
-      - `OnChanges`: called before `ngOnInit()` if the component has bound inputs and when the data-bound input properties change
-      - `OnInit`, `DoCheck`, `AfterContentInit`, `AfterContentChecked`, `AfterViewInit`, `AfterViewChecked`, 'OnDestroy'
+      - constructor: initialize variables, inject services
+      - `OnChanges`: called before `ngOnInit()` and any time `@Input` properties change
+      - `OnInit`: called only once, e.g. fetch data from the server, subscribe to Observables
+      - `DoCheck`: called very frequently - during every change detection cycle. So, DO NOT touch this.
+      - `AfterContentInit` and `AfterContentChecked`: never used
+      - `AfterViewInit` and `AfterViewChecked`: we can interact with the DOM elemenets but I never used this
+      - `OnDestroy`: unsubscribe from Observables, it's like the `finally` block in `try ... catch ... finally`
   - Component interaction:
       - Pass data from a parent to its child with `@Input`. We can intercept input property changes with a setter or `ngOnChanges()`
       - Parent listens for child event with `@Output() *someVar* = new EventEmitter&lt;*SomeType*&gt;(); *someVar*.emit(*someTypeInstance*);`
@@ -406,13 +432,23 @@ Angular∨
       - Use `RxJs`: [2 components share a service](https://angular.io/guide/component-interaction#parent-and-children-communicate-using-a-service) which has a `Subject` instance (from `rxjs`) and an observable of that subject. This service must be annotated with `@Injectable()` so that it can be injected to constructors of other services/components. In those other services/components, we need to subscribe to that observable.
   - Content projection: [when](https://angular.io/guide/content-projection) _I have time, I'll write about this_
   - Dynamic components: [also](https://angular.io/guide/dynamic-component-loader) very interesting
-  - Directives: are classes that add additional behavior to elements. 3 directive types: component, attribute directive (`ngClass`, `ngStyle`, `ngModel` to display and update properties) and structural directive (`ngIf`, `ngFor`, `ngSwitch`)
+  - Directives: are classes that add additional behavior to elements. 3 directive types:
+      - component directives: e.g. `&lt;app-my-component&gt;&lt;/app-my-component&gt;`
+      - attribute directives (`ngClass`, `ngStyle`, `ngModel` to display and update properties)
+      - structural directives (`ngIf`, `ngFor`, `ngSwitch`)
   - Forms: [a big subject](https://angular.io/guide/forms-overview) with reactive and template-driven forms.
   - HTTP client: I think nobody will ask about [this](https://angular.io/guide/understanding-communicating-with-http) in interviews
-  - What is multicasting? Error handing in observable?
-
+  - Observables:
+      - `observable.subscribe(nextFunction)` or `observable.subscribe({ next: f1, error: f2 })` an observable runs only when we subscribe to it. If we subscribe to it twice, it'll run twice.
+      - multicasting: I want to subscribe to the observable multiple times to use the data from the observable in multiple places but the observable runs only once. 
 </div>
 <div class="tab" title="Java" fontawesome="fa-brands fa-java">
+Maybe watch this [12-hour video](https://www.youtube.com/watch?v=tseqdcFfTUY) about a patient management system (spring boot, kafka, aws, docker)
+
+How to use [grafana/otel-lgtm container[(https://hub.docker.com/r/grafana/otel-lgtm)?
+
+[Web Frameworks Benchmark](https://web-frameworks-benchmark.netlify.app/result) for Java, Scala, Kotlin, Rust, Go, Python ...
+
 Use database for [distributed lock, Kafka topic](https://www.youtube.com/watch?v=ghpljMg8Ecc): use pessimistic/optimistic write.
 
 Get [HTTPS](https://lcl.host/) in your local development
@@ -425,11 +461,11 @@ Get [HTTPS](https://lcl.host/) in your local development
 
 [Java 21 language update](https://docs.oracle.com/en/java/javase/21/language/pattern-matching-switch-expressions-and-statements.html): a very good to see all the changes in 1 place
 
-Jdk 22 - [Stream Gatherer](https://blog.soebes.io/posts/2024/01/2024-01-07-jdk-gatherer/) (preview) Viktor Klang
+Jdk 24 - [Stream Gatherer](https://www.youtube.com/watch?v=oVdWfU_IObY)
 
 Using Datadog + profilers [to understand request latency](https://richardstartin.github.io/posts/wallclock-profiler)
 
-New Language [Features](https://jenkov.com/tutorials/java/index.html) from Java 7 - 22 ~ [Compare](https://javaalmanac.io/) Java API of different JDK versions
+New Language [Features](https://jenkov.com/tutorials/java/index.html) from Java 7 - 23 ~ [Compare](https://javaalmanac.io/) Java API of different JDK versions
 
 [JFR events](https://sap.github.io/SapMachine/jfrevents/21.html): when can I have time to play with JFR?
 
@@ -443,7 +479,7 @@ Install certificates:
 
 Tell the jvm to use proxy: `-Dhttp.proxyHost=... -Dhttp.proxyPort=... -Dhttp.nonProxyHosts="10.*|*.nbc.net" -Dhttp.proxyUser=... -Dhttp.proxyPassword=...`
 
-To programmatically set log level (check [this](https://prefab.cloud/blog/dynamically-changing-java-log-level/) for ways to do this for all instances of a service. IMO Redis pub/sub is the best. If the service discovery can tell us all the instances, then we can use that):
+To programmatically set log level (check [this](https://prefab.cloud/blog/dynamically-changing-java-log-level/) for ways to do this for all instances of a service. IMO Redis pub/sub is the best. If the service discovery can tell us all the instances, then we can use that). Spring Boot Actuator `/actuator/loggers` does this better:
 ```
 var loggerContext = (ch.qos.logback.classic.LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory()
 List&lt;ch.qos.logback.classic.Logger> loggers = loggerContext.getLoggerList() // need to define a logger for a specific package/class in logback.xml
@@ -657,6 +693,7 @@ class Animal {
 ```
 
 Spring Boot 3 and OpenAPI; Always use `wiremock-standalone` to avoid jetty version conflict∨
+  - IMO, it's better to write some more controllers in `src/test` instead of using wiremock (then we don't need to learn wiremock syntax)
   - `org.springdoc:springdoc-openapi-starter-webmvc-ui` then on a Controller method for an endpoint, we can have `@Operation`, `@ApiResponse`. On an input/output class, we can have `@Schema`. We can create a bean of type `OpenAPI` to security schemes to endpoints (e.g. `authorization: bearer ...`), a bean of type `OpenApiCustomizer` to add some examples that can be seen in `/swagger-ui/index.html`.
 
 Testcontainers∨
@@ -684,8 +721,6 @@ This is Kotlin
 
 100 exercises to learn Rust [https://rust-exercises.com/](https://rust-exercises.com/), resources to [learn](https://github.com/ImplFerris/LearnRust) Rust
 
-Another [place](https://github.com/dcodesdev/rustfinity.com) to do Rust exercises
-
 [Rust Atomics and Locks](https://marabos.nl/atomics/) Jan 2023
 
 [How to build a tree in Rust](https://dev.to/deciduously/no-more-tears-no-more-knots-arena-allocated-trees-in-rust-44k6)
@@ -699,6 +734,203 @@ A [sample](https://github.com/rust-lang/rustlings) project structure. Or [setup 
 [Rust blogs in AWS 2024](https://www.shuttle.rs/blog/tags/all)
 
 [Rust with Flutter/Dart](https://cjycode.com/posts/rust-ui-flutter/) with many good appraisals on [HN](https://news.ycombinator.com/item?id=41213711)
+
+Functions `Fn`, `FnMut` and `FnOnce`:
+```
+let square = |x: i32, y: i32| -> i32 {                // the number of arguments can be 0,
+  println!("Calculating square of {x} then add {y}"); //   then the function body can access variables in the scope that has this function (closure)
+  x * x + y
+}
+```
+
+The `collect&lt;B>() -> B` method of the `Iterator` trait to transform an iterator into a collection
+  - the most basic pattern: take a collection, call `iter` on it, do a bunch of transformations and then `collect()` at the end:
+```
+let a = [3, 2, 1];
+// no need to specify the type of the vector elements          // or use the turbofish
+let double: Vec&lt;_> =                                           let trippled =
+    a.iter().map(|&x| x * 2).collect();                            a.iter().map(|&x| x * 3).collect::&lt;Vec&lt;_>>();
+```
+  - make a string:
+```
+let chars = ['g', 'd', 'k', 'k', 'n'];
+let hello: String = chars.iter().map(|&x| x as u8).map(|x| (x + 1) as char).collect();
+```
+  - given a list of `Result&lt;T, E>`, check if any of them failed:
+```
+let results = [Ok(2), Err("a"), Ok(1), Err("b")];              let other_results = [Ok(2), Ok(1)];
+// this returns Err("a")                                       // this returns Ok(vec![2, 1])
+let result: Result&lt;Vec&lt;_>, &str> =                             let another_result: Result&lt;Vec&lt;_>, &str> =
+    results.iter().cloned().collect();                             results.iter().cloned().collect();
+```
+
+The `.chain(self, other: U)` method of `Iterator` concatenate 2 iterators. As iterators are lazy, the 2nd iterator can be infinite like `std::iter::repeat(...)` and we'll use the method `std::iter::Iterator::take(self, n: usize)` to limit the number of elements we'll process.
+
+If a function is given the ownership of its arguments and the arguments are immutable, then we can do this to make the argument values mutable like this `fn function(a: *SomeType*) { let mut b = a }`
+
+To modify the value inside a `Box`: `let mut x = Box::new(4); *x = 19`
+
+To sleep: `std::thread::sleep(std::time::Duration::from_secs(1))`
+
+`.iter()`                                                       | `.into_iter()`
+----------------------------------------------------------------|-----------------------------------------------------------------------
+borrows elements from the collection, create references to them | takes ownership of the collection and moves elements into the iterator
+can still use the collection after iterating                    | cannot
+read but not modify the elements directly                       | have full ownership of the elements, so can move or modify them
+                                                                | used by the `for` loop
+
+Moving data around in the memory with `std::mem::` (only when the data types don't implement the `Copy` trait)∨
+  - maybe this is useful for `Box` or our custom `struct`
+  - `std::mem::replace&lt;T>(dest: &mut T, src: T) -> T`: move `src` into the referenced `dest`, returns the previous `dest` value. Neither value is dropped.
+  - `std::mem::swap&lt;T>(x: &mut T, y: &mut T)`: swap the values at 2 mutable locations (if we want to swap with a default value, use `take`; if we want to swap with a passed value, use `replace`).
+
+String∨
+  - to split to lines: `std::str::lines() -> Lines&lt;'_>'`
+  - `.into_bytes() -> Vec&lt;u8>` takes ownership of the receiver `self` while `.as_bytes() -> &[u8]`
+  - To iterate a string:
+```
+for (i, &item) in String::from("Hello World").as_bytes().iter().enumerate() { // if we need the index of each byte
+  if (item == b' ') {
+    println!("Found a space");
+  } else {
+    println!("{}: {}", i, item);
+  }
+}
+for c in "hello world".chars() {                                              // if we only need each character
+  println!("{c}");
+}
+```
+
+Vector∨
+  - access, push (to the end) and pop (from the end), insert, remove:
+```
+let mut v: Vec<i32> = vec![1, 5, 2, 4];    // no need of mut if there's no push nor pop
+v.push(3);                                 // we need mut even when we modify an element in a vector (e.g. a vector of struct)
+let third: &i32 = &v[2];                   // & is used so that we access a reference, not the real one
+let third_option: Option&lt;&i32> = v.get(2);
+```
+  - iterate:
+```
+for item in v {                             // if there's any issue, consider using &v
+  println!("item: {}", item);
+}
+for (index, item) in v.iter().enumerate() { // iterate and the item index is needed
+  println!("index: {}, item: {:?}", index, item);
+}
+```
+  - `.retain(&mut self, f: FnMut(&T) -> bool)`: [retains](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.retain) only the elements specified by the predicate
+
+Struct∨
+  - define and use:
+```
+#[derive(Debug)] // so that the struct content can be printed with {:?} in println!
+struct User {                      let user = User {
+  active: bool,                      active: true,
+  username: String,                  username: String::from("user1"),
+  sign_in_count: u64,                sign_in_count: 5,
+}                                  }
+```
+  - methods:
+```
+#[derive(Debug)]
+struct Rectangle {                impl Rectangle {
+  width: u32,                       fn area(&self, message: &str) -> u32 {
+  height: u32,                        println!("Message {} for this rectangle {:?}", str, self);
+}                                     self.width * self.height
+                                    }
+
+                                    fn square(size: u32) -> Self { // methods without &self become "static" methods
+                                      Self {                       // let square = Rectangle::square(4)
+                                        width: size,
+                                        height: size,
+                                      }
+                                    }
+                                  }
+```
+  - implement the `Display` trait so that a `struct` can be printed out with `{}`:
+```
+use std::fmt;                                     impl fmt::Display for Person {
+struct Person { name: String, age: u8 }             fn fmt(&self, f: &mut fmt::Formatter&lt;'_>) -> fmt::Result {
+                                                      write!(f, "used as with println!")
+                                                    }
+                                                  }
+```
+
+Enum∨
+  - define and use:
+```
+  enum IpAddrKind {               let four = IpAddrKind::V4;
+    V4,                           let six  = IpAddrKind::V6;
+    V6,
+  }
+```
+  - think twice before putting `enum` in a `struct` as we can do this:
+```
+  enum IpAddr {                                                   enum Color {                enum Message {
+    V4(u8, u8, u8, u8),                                             Rgb(i32, i32, i32),         Quit,
+    V6(String),                                                     Hsv(i32, i32, i32),         Stop,
+  }                                                               }                             Move { x: i8, y: i8 },
+  let home     = IpAddr::V4(127, 0, 0, 1);                                                      ChangeColor(Color),
+  let loopback = IpAddr::V6(String::from("::1"));                                             }
+```
+  - using `match` with `enum`:
+```
+let message1 = Message::Move { x: 3, y: 4 };
+let message2 = Message::ChangeColor(Color::Rgb(5, 6, 7));
+
+match message {
+  Message::Quit | Message::Stop              => println!("Quitting"), // match one or several values
+  Message::Move { x, y } if x > 99 && y > 99 => println!("Moving to far"),
+  Message::Move { x, y }                     => {
+    println!("Moving to ({}, {})", x, y)                              // if a block { } is used, no need of a comma after that block
+  }
+  Message::ChangeColor(Color::Rgb(r, g, b))  => println!("Changing color to RGB: ({}, {}, {})", r, g, b),
+  Message::ChangeColor(Color::Hsv(h, s, v))  => println!("Changing color to HSV: ({}, {}, {})", h, s, v),
+}
+```
+  - using `if let` if we want to do something with only 1 enum value and optionally do something else with all other enum values:
+```
+let my_message = Message::Move { x = 4, y = 19 };
+match message {                                                                       if let Message::Move { x, y } = my_message {
+  my_message => println!("Moving to ({my_message.x}, {my_message.y})"),                 println!("Moving to ({x}, {y})");
+  _          => println!("Not moving")                                                } else {
+}                                                                                       println!("Not moving");
+                                                                                      }
+```
+  - using `while let`:
+```
+while let *some_enum_variable* = *an_enum_value* {               while let Some(...) = *an_enum_value* {
+  // need to change the an_enum_value here                     // access the ... and modify the an_enum_value
+}                                                            }
+```
+  - `enum std::result::Result&lt;T, E&gt; { Ok(T), Err(E) }`
+    - `.unwrap()` or `.expect(&str)`: panic with the error E message or our custom message
+    - `.unwrap_or(default: T) -> T` `.unwrap_or_else&lt;F>(op: FnOnce(E) -> T) -> T`: if error, return a default value
+    - propagating errors: inside our function which returns `Result&lt;T, E>`, whenever we have a `Result&lt;U, E>` we can put `?` after it to get `U`
+  - `enum std::option::Option&lt;T> { None, Some(T) }`
+    - `*my_option*.unwrap(self) -> T` means that `*my_option*` is moved and cannot be used after this command. To use `*my_option*` again, we need `*my_option*.as_ref().unwrap()` or `*my_option*.as_mut().unwrap()`
+    - `.as_mut(&mut self) -> Option&lt;&mut T>` is used when we want to modify the value inside the `Option` or `.as_ref()` to access the option content. Otherwise, the `option` cannot be used after that.
+    - [This](https://leetcode.com/problems/remove-duplicates-from-sorted-list/solutions/344741/my-idiomatic-solution-rust/) is a very good example of manipulating options.
+    - `Option&lt;i8 | u8 | i16 |...&gt;` can be compared to each others
+
+Trait∨
+  - define and implement:
+```
+trait Summary {                                                        impl Summary for NewsArticle {
+  // we can have default implementations for methods in trait
+  fn summarize(&self) -> String;                                         fn summarize(&self) -> String {
+}                                                                          // format! is a way to concatenate strings
+struct NewsArticle {                                                       format!("{} then {}", self.author, self.content)
+  author: String,                                                        }
+  content: String,                                                     }
+}
+```
+  - extends: `trait MyTrait: YourTrait { ... }`
+  - passing traits as paramaters:
+```
+fn notify(item: &(impl Summary + Display)) { ... }                     fn notify&lt;T: Summary + Display>(item: &T) { ... }
+```
+  - returning types that implement traits: `fn return_summarizable() -> impl Summary { ... }`
 </div>
 <div class="tab" title="Python" fontawesome="fa-brands fa-python">
 Start an http server in the current directory at a specific port: `python -m http.server 8000`
@@ -719,6 +951,11 @@ configurations {
 To specify program arguments when running a gradle task: `gradlew bootRun --args='--spring.profiles.active=my-profile'`
 
 To specify the JVM options for Gradle to use: `$env:GRADLE_OPTS="-Dhttps.protocols=TLSv1.2 -Djdk.tls.client.protocols=TLSv.12 -Djavax.net.ssl.trustStore=file.jsk -Djavax.net.ssl.trustStorePassword=..."` or put it in `gradle.properties` under the name `org.gradle.jvmargs`
+
+This `build.gradle` is perfect when not able to get gradle plugins from the Internet:
+```
+get from PNC
+```
 </div>
 <div class="tab" title="Git" fontawesome="fa-brands fa-git">
 Delete local branch: `git branch -d *local_branch_name*`
@@ -770,7 +1007,7 @@ Use a non-default private key with git (recent versions only): `$env:GIT_SSH_COM
 
 Install a `.msi` file: in cmd `msiexec.exe /i *file.msi* INSTALLDIR=%USERPROFILE%\*some-directory* MSIINSTALLPERUSER=1`
 
-VcXsrv (this version [doesn't need admin to install](https://github.com/marchaesen/vcxsrv)): don't forget to `export LIBGL_ALWAYS_INDIRECT=1` in Linux and `DISPLAY=localhost:0` in Windows
+VcXsrv: don't forget to `export LIBGL_ALWAYS_INDIRECT=1` in Linux and `DISPLAY=localhost:0` in Windows
 
 Install python, pip in Windows: unzip the python, install pip with `python get-pip.py` here is [get-pip.py](https://bootstrap.pypa.io/get-pip.py), then modify the file `python312._pth` like this:
 ```
@@ -861,6 +1098,9 @@ pipeline {
   }
 }
 ```
+</div>
+<div class="tab" title="LocalStack">
+Start: `localstack start` - Update: `localstack update all`
 </div>
 <div class="tab" title="Terraform">
 DevOps: to make software delivery better - Terraform: Infrastructure as Code to define, deploy, update and destroy the infrastructure
@@ -1082,5 +1322,6 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
     }
   });
 </script>
+
 </body>
 </html>
