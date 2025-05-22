@@ -65,7 +65,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-
 <div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
 [Free DDNS with Cloudflare](https://github.com/devrim/cloudflare-noip)
 
@@ -125,7 +124,7 @@ Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo 
 
 | vim motions                                                              | `:set [no]number [no]relativenumber`                                         | `Ctrl-o` in insert mode                                    | c
 |--------------------------------------------------------------------------|------------------------------------------------------------------------------|------------------------------------------------------------|---------------------------------------------------------------
-| <kbd>h</kbd> 🠈                                                           | <kbd>j</kbd> 🠋                                                              | <kbd>k</kbd> 🠉                                             | <kbd>l</kbd> 🠊
+| <kbd>h</kbd> 🠈                                                           | <kbd>j</kbd> 🠋                                                               | <kbd>k</kbd> 🠉                                             | <kbd>l</kbd> 🠊
 | <kbd>e</kbd> to end of current word                                      | <kbd>w</kbd> to beginning of next word                                       | <kbd>b</kbd> to beginning of previous word                 | <kbd>g</kbd><kbd>e</kbd> end of previous word
 | <kbd>0</kbd> to 1st character of line                                    | <kbd>^</kbd> to 1st non-blank character of line                              | <kbd>$</kbd> to end of line                                | <kbd>g</kbd><kbd>_</kbd> last non-blank character of line
 | <kbd>E</kbd> to end of current WORD                                      | <kbd>W</kbd> to beginning of next WORD                                       | <kbd>B</kbd> to beginning of previous WORD                 | <kbd>g</kbd><kbd>E</kbd> end of previous WORD
@@ -161,24 +160,6 @@ archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio
 [root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g waybar nnn foot networkmanager neovim // choose the option to chroot
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
   grub-mkconfig -o /boot/grub/grub.cfg
-```
-  - This is the `~/.config/foot/foot.ini`:
-```
-[main]
-font=FiraCode Nerd Font Mono:size=12
-line-height=18
-pad=4x4
-initial-window-size-pixels=1200x675
-[scrollback]
-lines=4000
-[cursor]
-style=beam
-unfocused-style=none
-blink=yes
-color=ffffff ff3434
-beam-thickness=1px
-[colors]
-alpha=0.96
 ```
   - Boot into the new Arch and add the Windows item to the Grub: uncomment the line `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub`:
 ```
@@ -281,7 +262,7 @@ AWS ECS∨
       - when done, there's a link in the service for the load balancer where there's a DNS name for this load balancer
 
 AWS Lambda∨
-  - All acceptable events are in `com.amazonaws:aws-lambda-java-events`.
+  - [All acceptable events](https://github.com/aws/aws-lambda-java-libs/tree/main/aws-lambda-java-events) are in `com.amazonaws:aws-lambda-java-events`.
   - Every lambda has an execution role which can upload logs to CloudWatch.
   - With API Gateway as a trigger:
       - Create a lambda but don't <kbd>+ Add Trigger</kbd> yet
@@ -297,8 +278,10 @@ AWS Lambda∨
       - Use `com.amazonaws.services.lambda.runtime.events.S3Event` as the input, the output can be anything.
       - `S3Event` has a `List&lt;S3EventNotificationRecord&gt;`. Each record has information about the S3 object (bucket, key, size, owner, arn ...)
 
-AWS EventBridge∨
+AWS EventBridge∨'vvv
   - We can schedule an event based on cron. It can trigger a lambda.
+  - Ways to catch an event from an EventBridge bus:
+      - In AWS lambda `class MyEventBridgeHandler implements com.amazonaws.services.lambda.runtime.RequestHandler&lt;..., ...&gt;` (the `requestHandler` is from `com.amazonaws:aws-lambda-java-core`)
 
 AWS SQS (simple queue service)∨
 
@@ -605,6 +588,10 @@ redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
 redisTemplate.afterPropertiesSet(); // this is very important
 ```
   - Need to test: for every type `T`, we need a Spring bean of type `RedisTemplate&lt;String, T>` otherwise, how do we read an object of type `T` from redis?
+
+Spring Batch∨
+  - Concepts: __Job__: writing a book, __Step__: writing a chapter in the book (a chunk-orient (specific) step example: writing the "introduction" chapter), __Chunk__: writing a paragraph in a chapter.
+  - Why? Because of large volume of data (billions of records): split them into chunks, restartability, recoverability, transaction management, error handling and skipping logic, job monitoring (which are running, completed in how long, failed), the same interfaces (`ItemReader`, `ItemWriter`) to work with different data sources and testing.
 
 JPA∨
   - Collection mapping (this is [what the DB tables look like](https://learning.oreilly.com/api/v2/epubs/urn:orm:book:9781430249269/files/images/9781430249269_Fig05-01.jpg)):
@@ -1100,7 +1087,17 @@ pipeline {
 ```
 </div>
 <div class="tab" title="LocalStack">
-Start: `localstack start` - Update: `localstack update all`
+Start: `docker run --rm -it -p 4566:4566 -p 4510-4559:4510-4559 -p 443:443 -e LOCALSTACK_AUTH_TOKEN=ls-JEXAbUGA-buJo-qOME-xejU-318280160ae5 -v /var/run/docker.sock:/var/run/docker.sock localstack/localstack-pro:4.2.0` the auth token is from [here](https://app.localstack.cloud/workspace/auth-tokens), the version is from [here](https://github.com/localstack/localstack/releases)
+
+Add these files to use with the AWS cli: `~/.aws/config` and `~/.aws/credentials`, then `export AWS_PROFILE=localstack`
+```
+[profile localstack]                          [localstack]
+region=us-east-1                              aws_access_key_id=test
+output=json                                   aws_secret_access_key=test
+endpoint_url=http://localhost:4566
+```
+
+
 </div>
 <div class="tab" title="Terraform">
 DevOps: to make software delivery better - Terraform: Infrastructure as Code to define, deploy, update and destroy the infrastructure
