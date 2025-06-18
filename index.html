@@ -278,7 +278,7 @@ AWS Lambda∨
       - Use `com.amazonaws.services.lambda.runtime.events.S3Event` as the input, the output can be anything.
       - `S3Event` has a `List&lt;S3EventNotificationRecord&gt;`. Each record has information about the S3 object (bucket, key, size, owner, arn ...)
 
-AWS EventBridge∨'vvv
+AWS EventBridge∨
   - We can schedule an event based on cron. It can trigger a lambda.
   - Ways to catch an event from an EventBridge bus:
       - In AWS lambda `class MyEventBridgeHandler implements com.amazonaws.services.lambda.runtime.RequestHandler&lt;..., ...&gt;` (the `requestHandler` is from `com.amazonaws:aws-lambda-java-core`)
@@ -309,6 +309,8 @@ To run docker in a docker container: run the docker container with `-v /var/run/
 To use the exact network as host (e.g. a docker container in an ec2 instance wants to use the IAM on that instance): run the docker container with `--network host` and that means `-p host-port:container-port` is ignored (the container and the host will use the same ports).
 
 To mount a volume to an existing docker container: create an image from the existing docker container `docker commit *container_id* *new_image_name*` then run the *new_image_name* with additional mounts
+
+Oracle database docker image: https://hub.docker.com/r/gvenzl/oracle-free
 
 Expose docker daemon on tcp port and access it from Powershell∨
   - Running `systemctl start docker` shows something like `/usr/lib/systemd/system/docker.service`. Edit the line `ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 ...`
@@ -442,9 +444,7 @@ Get [HTTPS](https://lcl.host/) in your local development
 
 [Disable SSL](https://stackoverflow.com/questions/52988677/allow-insecure-https-connection-for-java-jdk-11-httpclient) in Java 11 HttpClient
 
-[Java 21 language update](https://docs.oracle.com/en/java/javase/21/language/pattern-matching-switch-expressions-and-statements.html): a very good to see all the changes in 1 place
-
-Jdk 24 - [Stream Gatherer](https://www.youtube.com/watch?v=oVdWfU_IObY)
+[Java language changes by release](https://docs.oracle.com/en/java/javase/24/language/java-language-changes-release.html): a very good to see all the changes in 1 place
 
 Using Datadog + profilers [to understand request latency](https://richardstartin.github.io/posts/wallclock-profiler)
 
@@ -592,6 +592,10 @@ redisTemplate.afterPropertiesSet(); // this is very important
 Spring Batch∨
   - Concepts: __Job__: writing a book, __Step__: writing a chapter in the book (a chunk-orient (specific) step example: writing the "introduction" chapter), __Chunk__: writing a paragraph in a chapter.
   - Why? Because of large volume of data (billions of records): split them into chunks, restartability, recoverability, transaction management, error handling and skipping logic, job monitoring (which are running, completed in how long, failed), the same interfaces (`ItemReader`, `ItemWriter`) to work with different data sources and testing.
+  - 2 kinds of step:
+      - tasklet-based step: takes a `Tasklet` implementation and runs the `execute(StepContribution, ChunkContext) -> RepeatStatus` in a transaction until the _repeatStatus_ is not `RepeatStatus.CONTINUABLE`.
+      - chunk-based step: used for item-based processing. It has an `ItemReader`, `ItemProcessor` and `ItemWriter`.
+  - Job lifecycle:
 
 JPA∨
   - Collection mapping (this is [what the DB tables look like](https://learning.oreilly.com/api/v2/epubs/urn:orm:book:9781430249269/files/images/9781430249269_Fig05-01.jpg)):
@@ -631,7 +635,7 @@ public &#64;Embeddable class VacationEntry &#123;                          publi
       - Joined strategy:
       - Table-per-concrete-class strategy:
   - 2 ways to fix the N+1 issue: put `@Query("SELECT p FROM ChessPlayer p LEFT JOIN FETCH p.tournaments")` or `@EntityGraph(attributePaths = "tournaments")` on a method in the Spring Data JPA Repository
-  - Use PESSIMISTIC_WRITE to implement a distributed lock (HazelCast provides an implementation of distributed lock), like this:
+  - Use PESSIMISTIC_WRITE to implement a distributed lock (HazelCast provides an implementation of distributed lock), like this (or [ShedLock](https://github.com/lukas-krecan/ShedLock)):
 ```
 interface XXXRepository extends JpaRepository(XXX, ...) {
   @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -921,6 +925,10 @@ fn notify(item: &(impl Summary + Display)) { ... }                     fn notify
 </div>
 <div class="tab" title="Python" fontawesome="fa-brands fa-python">
 Start an http server in the current directory at a specific port: `python -m http.server 8000`
+
+Anaconda [Linux](https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Linux-x86_64.sh) [Windows](https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Windows-x86_64.exe)
+
+`docker run --rm -p 8888:8888 -v /dev/shm:/home/jovyan/work -e JUPYTER_ENABLE_LAB=yes quay.io/jupyter/datascience-notebook`
 </div>
 <div class="tab" title="Gradle">
 [Using maven BOM](https://docs.gradle.org/current/userguide/platforms.html#sub:bom_import) in `gradle.build`
@@ -1319,6 +1327,5 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
     }
   });
 </script>
-
 </body>
 </html>
