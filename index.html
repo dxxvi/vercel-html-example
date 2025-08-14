@@ -17,10 +17,10 @@
   <style>
     :root {
       --bs-code-color: #0a6e77;
-      --bs-font-monospace: "Fira Code", monospace;
+      --bs-font-monospace: "Fira Code",monospace;
       --code-color-comment: #a1b1b6;
       --code-color-italic: #36939b;
-      --bs-font-sans-serif: "Noto Sans", sans-serif;
+      --bs-font-sans-serif: "Noto Sans",sans-serif;
       --bs-body-color: #333;
       --a-in-button-margin: .3rem;
     }
@@ -56,7 +56,7 @@
     }
     body table.table { width: unset }
     body .table > :not(caption) > * > * { padding-top: .25rem; padding-bottom: .25rem; padding-left: 1.4rem }
-    th { font-family: "Noto Serif" }
+    th { font-family: "Noto Serif",serif }
 
     table.vim-motions kbd { font-size: 1.2rem; padding-left: .3rem; padding-right: .3rem; min-width: 2rem }
   </style>
@@ -150,14 +150,14 @@ pacman -Sy
 pacman -Sy archlinux-keyring // it's said that these commands should be run separately
 pacman -Sy archinstall
 lsblk                                    // or fdisk -l to see what partitions we have
-cfdisk /dev/nvme0n1                      // to create more partitions: create 1 400MB (194MB is not enough) partition with EFI System type, another with Linux filesystem type
+cfdisk /dev/nvme0n1                      // to create more partitions: create 1 419MB partition with EFI System type, another with Linux filesystem type
 lsblk                                    // check to see if partitions are created correctly
-mkfs.fat -F32 /dev/nvme0n1p*4* && mkfs.ext4 /dev/nvme0n1p*5* // format the EFI System and regular partitions
-mount /dev/nvme0n1p*5* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*4* /mnt/boot && lsblk // to verify that the mountings are correct
+mkfs.fat -F32 /dev/nvme0n1p*5* && mkfs.ext4 /dev/nvme0n1p*6* // format the EFI System and regular partitions
+mount /dev/nvme0n1p*6* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*5* /mnt/boot && lsblk // to verify that the mountings are correct
 archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server, root directory of the mounted device: /mnt
   Hyprland desktop environment: dolphin dunst grim kitty polkit-kde-agent qt5/6-wayland slurp wofi xdg-desktop-portal-hyprland
   Server: docker, nginx, sshd
-[root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g waybar nnn foot networkmanager neovim // choose the option to chroot
+[root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g wezterm os-prober networkmanager neovim // choose the option to chroot
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
   grub-mkconfig -o /boot/grub/grub.cfg
 ```
@@ -168,21 +168,9 @@ pacman -Sy os-prober
 mount /dev/nvme0n1p1 /mnt // mount the Windows EFI partition manually if grub-mkconfig cannot find Windows
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
-  - Stuff:
-```
-git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si
-paru visual-studio-code-bin
-```
-  - Install KDE Plasma:
-```
-pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa libnotify bluedevil
-```
-  - In KDE, when we go to System Settings | Font Management | Install from File..., the .ttf files are copied to directories under `~/.fonts` and a file named `~/.fonts.conf` is created. If I manually copy .ttf files to ~/.fonts, does it work? This is ~/.fonts.conf:
-```
-&lt;?xml version="1.0"?&gt;
-&lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
-&lt;fontconfig&gt;&lt;dir&gt;~/.fonts&lt;/dir&gt;&lt;/fontconfig&gt;
-```
+  - Stuff: `git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si && paru -Sy visual-studio-code-bin`
+  - Install KDE Plasma: `pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa libnotify bluedevil`
+  - Copy `.ttf` files to `~/.local/share/fonts` then `fc-cache -f -v`
   - Delete Arch's partitions with `diskmgmt` (EFI System partition cannot be delete here):
 ```
 diskpart // run in Administrator cmd
@@ -428,13 +416,15 @@ Angular∨
       - multicasting: I want to subscribe to the observable multiple times to use the data from the observable in multiple places but the observable runs only once. 
 </div>
 <div class="tab" title="Java" fontawesome="fa-brands fa-java">
+To remove IntelliJ in Linux: try this rm -rf ~/.config/JetBrains ~/.cache/JetBrains ~/.local/share/JetBrains ~/.java
+
 Maybe watch this [12-hour video](https://www.youtube.com/watch?v=tseqdcFfTUY) about a patient management system (spring boot, kafka, aws, docker)
 
 How to use [grafana/otel-lgtm container[(https://hub.docker.com/r/grafana/otel-lgtm)?
 
 [Web Frameworks Benchmark](https://web-frameworks-benchmark.netlify.app/result) for Java, Scala, Kotlin, Rust, Go, Python ...
 
-Use database for [distributed lock, Kafka topic](https://www.youtube.com/watch?v=ghpljMg8Ecc): use pessimistic/optimistic write.
+Use database for [distributed lock, Kafka topic](https://www.youtube.com/watch?v=ghpljMg8Ecc): use pessimistic/optimistic write or [ShedLock](https://github.com/lukas-krecan/ShedLock)
 
 Get [HTTPS](https://lcl.host/) in your local development
 
@@ -705,7 +695,7 @@ genericContainer = new GenericContainer<>(DockerImageName.parse("docker.elastic.
 This is Scala
 </div>
 <div class="tab" title="Kotlin">
-This is Kotlin
+_scope functions_ are built-in functions used to manage the scope of variables, access properties of objects and execute a block of code in a specific context: `run`, `with`, `let`, `also` and `apply`.
 </div>
 <div class="tab" title="Rust" fontawesome="fa-brands fa-rust">
 `rustup doc`: to read The Book and the standard library reference.
@@ -924,11 +914,11 @@ fn notify(item: &(impl Summary + Display)) { ... }                     fn notify
   - returning types that implement traits: `fn return_summarizable() -> impl Summary { ... }`
 </div>
 <div class="tab" title="Python" fontawesome="fa-brands fa-python">
+PyCharm [zip format](https://www.jetbrains.com/pycharm/download/other.html) for Windows
+
 Start an http server in the current directory at a specific port: `python -m http.server 8000`
 
 Anaconda [Linux](https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Linux-x86_64.sh) [Windows](https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Windows-x86_64.exe)
-
-`docker run --rm -p 8888:8888 -v /dev/shm:/home/jovyan/work -e JUPYTER_ENABLE_LAB=yes quay.io/jupyter/datascience-notebook`
 </div>
 <div class="tab" title="Gradle">
 [Using maven BOM](https://docs.gradle.org/current/userguide/platforms.html#sub:bom_import) in `gradle.build`
@@ -1126,6 +1116,9 @@ Terraform workflow:
   - Plan: `terraform plan` shows what resources will be created, updated or deleted.
   - Apply: `terraform apply`.
   - Destroy: `terraform destroy` destroy resources
+</div>
+<div class="tab" title="Android">
+[ReVanced Manager](https://revanced.app) download and install [GmsCore](https://github.com/revanced/gmscore) and [ReVanced Manager](https://revanced.app/download) with `adb install` (don't forget to disable auto update in Google Play Store).
 </div>
 <div class="tab" title="Bánh Flan Caramel" fontawesome="fa-solid fa-cake-candles">
 [9 eggs, 1 cup of sugar, 320 ml of milk (not non-fat), vanilla powder](https://www.youtube.com/watch?v=F4WSf2YCstA) 1 cup = 125ml
