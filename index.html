@@ -61,10 +61,13 @@
     table.vim-motions kbd { font-size: 1.2rem; padding-left: .3rem; padding-right: .3rem; min-width: 2rem }
   </style>
 </head>
-<body style="font: 1rem/1.43 'Noto Serif'">
+<body style="font: 1rem/1.43 'Noto Serif'" password="xxx">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+<div class="tab" title="Do these Leetcode in Java and Rust">
+[Design Movie Rental System](https://leetcode.com/problems/design-movie-rental-system/)
+</div>
 <div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
 [Free DDNS with Cloudflare](https://github.com/devrim/cloudflare-noip)
 
@@ -136,8 +139,8 @@ Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo 
 | <kbd>v</kbd> visual mode                                                 | <kbd>V</kbd> visual line mode (text is selected by line)                     | <kbd>Ctrl</kbd>+<kbd>v</kbd> visual block mode
 | <kbd>y</kbd> yank                                                        | <kbd>d</kbd> cut                                                             | <kbd>p</kbd> paste
 
-Install [Arch Linux](https://www.youtube.com/watch?v=4dKzYmhcGEU) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/features/optimized_repos/)∨
-  - Make 1 empty partition in Windows with `diskmgmt`, disable Secure Boot in BIOS
+Install [Arch Linux](https://www.youtube.com/watch?v=1J_Z_pzzbMo) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/features/optimized_repos/)∨
+  - Make 1 empty partition in Windows with `diskmgmt`, disable BitLocker (click the Windows icon, type `bitlocker`), disable fast startup (Control Panel, search for power, choose Change what the power buttons do, Change settings that are currently unavailable, uncheck Turn on fast startup), disable Secure Boot in BIOS
   - After the Arch Linux in the USB started:
 ```
 setfont ter-132n                         // to increase the terminal font size
@@ -157,7 +160,7 @@ mount /dev/nvme0n1p*6* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*5* /mnt/bo
 archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server, root directory of the mounted device: /mnt
   Hyprland desktop environment: dolphin dunst grim kitty polkit-kde-agent qt5/6-wayland slurp wofi xdg-desktop-portal-hyprland
   Server: docker, nginx, sshd
-[root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g wezterm os-prober networkmanager neovim // choose the option to chroot
+[root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g wezterm os-prober networkmanager neovim power-profiles-daemon // choose the option to chroot
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
   grub-mkconfig -o /boot/grub/grub.cfg
 ```
@@ -420,7 +423,7 @@ To remove IntelliJ in Linux: try this rm -rf ~/.config/JetBrains ~/.cache/JetBra
 
 Maybe watch this [12-hour video](https://www.youtube.com/watch?v=tseqdcFfTUY) about a patient management system (spring boot, kafka, aws, docker)
 
-How to use [grafana/otel-lgtm container[(https://hub.docker.com/r/grafana/otel-lgtm)?
+How to use [grafana/otel-lgtm container](https://hub.docker.com/r/grafana/otel-lgtm)?
 
 [Web Frameworks Benchmark](https://web-frameworks-benchmark.netlify.app/result) for Java, Scala, Kotlin, Rust, Go, Python ...
 
@@ -430,7 +433,7 @@ Get [HTTPS](https://lcl.host/) in your local development
 
 [DFLib](https://dflib.org/) a lightweight pure Java implementation of a common DataFrame data structure
 
-[Slim docker images for Java apps](https://piotrminkowski.com/2023/11/07/slim-docker-images-for-java/)
+[A way to build resilient applications](https://restate.dev) in Go, Java/Kotlin, Python and Rust
 
 [Disable SSL](https://stackoverflow.com/questions/52988677/allow-insecure-https-connection-for-java-jdk-11-httpclient) in Java 11 HttpClient
 
@@ -467,6 +470,31 @@ To test if there's a particular log message at a particular log level (for logba
 Download an artifact with maven: `mvn org.apache.maven.plugins:maven-dependency-plugin:3.3.0:get -Dartifact=org.jetbrains.kotlin:kotlin-stdlib:1.7.21:jar:sources`
 
 git-commit-id maven/gradle plugin generates a `git.properties` file that we can expose via an endpoint.
+
+file ↔ QR code∨
+  - java:
+```
+// com.google.zxing:javase:3.5.3
+void createQrCode(Path filePath, Path qrCodeImagePath) throws Exception {
+    byte[] fileContent = Files.readAllBytes(filePath); // max 927 bytes
+    String encodedFileContent = Base64.getEncoder().encodeToString(fileContent);
+    String qrCodeData = filePath.toFile().getName() + ":" + encodedFileContent;
+    Map&lt;EncodeHintType, Object&gt; hints = Map.of(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+    QRCodeWriter qrCodeWriter = new QRCodeWriter();
+    BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeData, BarcodeFormat.QR_CODE, 999, 999, hints);
+    MatrixToImageWriter.writeToPath(bitMatrix, "PNG", qrCodeImagePath);
+}
+void readFileFromQrCode(String qrCodeImagePath) throws Exception {
+    BufferedImage bufferedImage = ImageIO.read(new File(qrCodeImagePath));
+    BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufferedImage)));
+    Result result = new MultiFormatReader().decode(binaryBitmap);
+    String qrCodeData = result.getText();
+    String[] parts = qrCodeData.split(":", 2);
+    String fileName = parts[0];
+    byte[] fileContent = Base64.getDecoder().decode(parts[1]);
+    Files.write(Path.of("/dev/shm", fileName), fileContent);
+}
+```
 
 spotless-maven-plugin∨
   - maven:
@@ -558,6 +586,19 @@ Concurrency∨
       - Issues with `synchronized`: locks must be released in the reverse order of lock acquisitions `synchronized (a) { synchronized (b) { ... } }`
       - `interface Lock`: wait forever to get the lock: `.lock()` - try to get the lock: `.tryLock(timeout): boolean` - finally must `.unlock()`. Implementation is `ReentrantLock`.
       - `interface ReadWriteLock`: used when there are much more reads than writes. `.writeLock(): Lock` returns the lock for writing - `.readLock(): Lock`: multiple reads at the same time, but while reading, no writing and while writing no reading. Implementation is `ReentrantReadWriteLock`.
+  - `CompletableFuture`: when should a custom Executor be used? when we deal with IO so the custom Executor has only a few threads
+      - to execute some task: `runAsync` returns `Void`, `supplyAsync` returns a type `T`
+      - `thenApply` or `thenApplyAsync`: apply the function to the returned value in the same thread (or different thread if the _Async_ version is used). If the _CompletableFuture_ completes exceptionally, this one also does.
+      - `thenCompose` or `thenComposeAsync`: if _thenApply_ is like _Stream.map_, then _thenCompose_ is like _Stream.flatMap_, i.e. _thenCompose_(_Async_) takes a _Function&lt;T, CompletableFuture&lt;U&gt;&gt;_
+      - `thenAccept` or `thenAcceptAsync`: like _thenApply_ but the function returns nothing
+      - `thenCombine` or `thenCombineAsync`: takes `(CompletionStage&lt;U&gt;, BiFunction&lt;T, U, V&gt;)` 🡲 `CompletableFuture&lt;V&gt;`
+      - static `allOf(CompletableFuture&lt;?&gt;...)`: 🡲 _CompletableFuture&lt;Void&gt;_ which will complete when everything completes
+      - static `anyOf(CompletableFuture&lt;?&gt;...)`: 🡲 _CompletableFuture&lt;Void&gt;_ will complete when any completes (successfully or unsuccessfully)
+      - `exceptionally()` _no Async version?_: takes `Function&lt;Throwable, T&gt;` - this one is similar `handle(BiFunction&lt;T, Throwable, U&gt;)`
+      - want to complete in at most x seconds? `orTimeout(` _3s_ `)` or `completeOnTimeout(T, ` _3s_ `)`
+      - `whenComplete` or `whenCompleteAsync`: takes `BiConsumer&lt;T, Throwable&gt;` and returns the same _CompletableFuture_ but does something else in the _BiConsumer_
+      - `handle` or `handleAsync`: takes `BiFunction&lt;T, Throwable, U&gt;`, it's like `thenApply` but takes care of the exception too
+      - `isCancelled`, `isDone`, `isCompletedExceptionally`, `cancel`
 
 Spring Data Redis∨
   - If we have `spring.data.redis.host/port/password/database` then a `redisConnectionFactory` bean is created for us. Otherwise, create that bean like this:
@@ -1017,6 +1058,7 @@ PowerShell∨
   - Download with wget: `Invoke-WebRequest -Uri $*uri* -OutFile $*dest*`
   - To run an app with Avecto: `PowerShell Start 'D:\Users\DangTh\PowerShell\pwsh.exe' -Verb Runas`
   - Add something to MS Defender exclusion list: `Add-MpPreference -ExclusionPath 'C:\temp'`, `Add-MpPreference -ExclusionExtension '.java'`. To see those exclusions: Settings | Virus & thread protection (Manage settings) | Exclusions (Add or remove exclusions)
+  - `select-string -pattern "..."` is like `grep`
   - `.bashrc` for PowerShell is at `$PROFILE` (echo it to see its value):
 ```
 function To-Parent-Directory { Set-Location ... }
@@ -1036,11 +1078,10 @@ oh-my-posh init pwsh --config "C:\path\to\oh-my-posh.json" | Invoke-Expression
 
 ```
 
-Uninstall some apps from cmd (run cmd as Admin) or PowerShell∨
-  - `wmic // the prompt turns into wmic:root\cli>`
-  - `product get name // get all un-installable program names`
-  - `product where name="*program name*" call uninstall`
-  - `Get-ProvisionedAppxPackage -Online | Where-Object { $_.PackageName -match "xbox" } | ForEach-Object { Remove-ProvisionedAppxPackage -Online -AllUsers -PackageName $_.PackageName }`
+  - Uninstall bloatware using Adminstrator PowerShell:
+```
+@("Microsoft.WindowsStore", "Microsoft.GetHelp", "Microsoft.Copilot", "Microsoft.Windows.Ai.Copilot.Provider", "Microsoft.Copilot_8wekyb3d8bbwe", "Microsoft.XboxGamingOverlay", "Microsoft.YourPhone", "Microsoft.XboxIdentityProvider", "Microsoft.XboxSpeechToTextOverlay", "Microsoft.Windows.DevHome", "Microsoft.MicrosoftOfficeHub", "MicrosoftCorporationII.QuickAssist", "MSTeams", "Microsoft.OutlookForWindows", "Microsoft.Edge.GameAssist", "Microsoft.WidgetsPlatformRuntime", "Microsoft.Xbox.TCUI", "Microsoft.MicrosoftStickyNotes", "Microsoft.BingWeather", "Microsoft.WindowsAlarms", "Microsoft.Windows.Photos", "Microsoft.Todos", "Microsoft.MicrosoftSolitaireCollection", "Microsoft.WindowsSoundRecorder", "Microsoft.PowerAutomateDesktop", "Microsoft.GamingApp", "Clipchamp.Clipchamp", "Microsoft.BingNews", "Microsoft.BingSearch", "Microsoft.WindowsCamera", "Microsoft.ZuneMusic", "Microsoft.WindowsFeedbackHub", "Microsoft.XboxApp", "Microsoft.MixedReality.Portal", "Microsoft.Office.OneNote", "Microsoft.People", "Microsoft.Getstarted", "Microsoft.549981C3F5F10", "Microsoft.SkypeApp", "Microsoft.ZuneVideo", "Microsoft.Microsoft3DViewer", "Microsoft.MSPaint", "Microsoft.WindowsCommunicationsApps", "Microsoft.WindowsMaps") | ForEach-Object { Get-AppxPackage -AllUsers -Name $_ | Remove-AppxPackage }
+```
 
 Firefox∨
   - [Firefox zip format](https://ftp.mozilla.org/pub/firefox/candidates/) https://ftp.mozilla.org/pub/firefox/candidates/
@@ -1319,6 +1360,405 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
       th.parentElement.parentElement.parentElement.classList.add('vim-motions');
     }
   });
+</script>
+<div class="accordion accordion-flush" hint="">
+  <style>
+    .pro-jpa-2 img { max-width: 99% }
+    .pro-jpa-2 { margin: .5rem }
+    .pro-jpa-2 a { text-decoration: none }
+    .pro-jpa-2 p.ChapterNumber, .pro-jpa-2 p.ChapterTitle { font: 1.6rem "Noto Sans", sans-serif }
+    .pro-jpa-2 span.FontName2 { font-family: "Fira Code", monospace }
+    .pro-jpa-2 p.Heading1 { font: 1.4rem sans-serif; color: #13c69d }
+    .pro-jpa-2 pre { background: linear-gradient(90deg, #eef2f6, #fff, #eef2f6); padding: .5rem 1rem }
+    .pro-jpa-2 p.Heading2 { font: 1.2rem sans-serif; color: #9f1ad8 }
+    .pro-jpa-2 p.Heading3 { font: 1rem sans-serif; color: #f62 }
+    .pro-jpa-2 div.notepara { margin-left: 4rem; border-left: .3rem solid #5cd81a; padding-left: 1rem }
+    .pro-jpa-2 td { vertical-align: top; padding-left: 1rem }
+  </style>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jpa-collection-mapping" aria-expanded="false" aria-controls="jpa-collection-mapping">
+        JPA - Collection Mapping (from the book Pro JPA 2, 2nd Edition)
+      </button>
+    </h2>
+    <div id="jpa-collection-mapping" class="accordion-collapse collapse pro-jpa-2">
+      <p class="ChapterNumber"><a id="Chap_5" target="_blank" rel="noopener noreferrer"></a>CHAPTER 5</p>
+      <p class="chapimage"><img src="https://learning.oreilly.com/api/v2/epubs/urn:orm:book:9781430249269/files/images/frontdot.jpg" alt="image" width="82" height="25"></p>
+      <p class="ChapterTitle">Collection Mapping</p>
+    </div>
+  </div>
+</div>
+<div class="accordion accordion-flush" hint="">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jpa-advanced-object-relational-mapping" aria-expanded="false" aria-controls="jpa-advanced-object-relational-mapping">
+        JPA - Advanced Object-Relational Mapping (from the book Pro JPA 2, 2nd Edition)
+      </button>
+    </h2>
+    <div id="jpa-advanced-object-relational-mapping" class="accordion-collapse collapse pro-jpa-2">
+      <p class="ChapterNumber"><a id="Chap_10" target="_blank" rel="noopener noreferrer"></a>CHAPTER 10</p>
+      <p class="chapimage"><img src="https://learning.oreilly.com/api/v2/epubs/urn:orm:book:9781430249269/files/images/frontdot.jpg" alt="image" width="82" height="25"></p>
+      <p class="ChapterTitle">Advanced Object-Relational Mapping<a id="cXXX.634" target="_blank" rel="noopener noreferrer"></a></p>
+    </div>
+  </div>
+</div>
+<div class="accordion accordion-flush" hint="">
+  <style>
+    #spring-boot-3-cookbook img { max-width: 99% }
+    #spring-boot-3-cookbook h1, #spring-boot-3-cookbook h2, #spring-boot-3-cookbook h3 { font-family: 'Noto Sans',sans-serif}
+    #spring-boot-3-cookbook h3 { font-size: 1.1rem; color: #f26 }
+    #spring-boot-3-cookbook h2 { font-size: 1.3rem; color: #1362d1; font-weight: 400 }
+    #spring-boot-3-cookbook h1 { font-size: 1.7rem; color: #f62; font-weight: 300 }
+    #spring-boot-3-cookbook div.flex { display: flex }
+    #spring-boot-3-cookbook div.flex > div.IMG---Figure { position: relative; }
+    #spring-boot-3-cookbook div.IMG---Figure > p.IMG---Caption {
+      position: absolute; margin: 0; right: 1rem; bottom: -.5rem; padding: .4rem .6rem;
+      background-color: rgba(255,255,255,.8); border-radius: 1rem; font-family: sans-serif }
+    #spring-boot-3-cookbook pre code { color: var(--bs-body-color) }
+  </style>
+  <h2 class="accordion-header">
+    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#spring-boot-3-cookbook" aria-expanded="false" aria-controls="spring-boot-3-cookbook">
+      Spring Boot 3 Cookbook: OAuth2 and Observability
+    </button>
+  </h2>
+  <div id="spring-boot-3-cookbook" class="accordion-collapse collapse">
+    <div class="content-body w90">
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch03lvl1sec12">
+              <div class="epub-source">
+                <h1>Securing Spring Boot Applications with OAuth2</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch03lvl1sec14">
+              <div class="epub-source">
+                <h1>Setting up Spring Authorization Server</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch03lvl1sec15">
+              <div class="epub-source">
+                <h1>Protecting a RESTful API using OAuth2</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch03lvl1sec16">
+              <div class="epub-source">
+                <h1>Protecting a RESTful API using OAuth2 with different scopes</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch03lvl1sec17">
+              <div class="epub-source">
+                <h1>Configuring an MVC application with OpenID authentication</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch03lvl1sec18">
+              <div class="epub-source">
+                <h1>Logging in with Google Accounts</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch03lvl1sec19">
+              <div class="epub-source">
+                <h1>Integrating a RESTful API with a cloud IdP</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content-body w90">
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch04lvl1sec20">
+              <div class="epub-source">
+                <h1>Observability, Monitoring, and Application Management</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch04lvl1sec22">
+              <div class="epub-source">
+                <h1>Adding Actuator to your application</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch04lvl1sec23">
+              <div class="epub-source">
+                <h1>Creating a custom Actuator endpoint</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch04lvl1sec24">
+              <div class="epub-source">
+                <h1>Using probes and creating a custom health check</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch04lvl1sec25">
+              <div class="epub-source">
+                <h1>Implementing distributed tracing</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch04lvl1sec26">
+              <div class="epub-source">
+                <h1>Accessing standard metrics</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch04lvl1sec27">
+              <div class="epub-source">
+                <h1>Creating your own metrics</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch04lvl1sec28">
+              <div class="epub-source">
+                <h1>Integrating your application with Prometheus and Grafana</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-10 reset-position">
+            <div class="book-sections" id="book-section-ch04lvl1sec29">
+              <div class="epub-source">
+                <h1>Changing the settings of a running application</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Helper: Concatenate Uint8Arrays
+async function concatUint8Arrays(uint8arrays) {
+  const blob = new Blob(uint8arrays);
+  const buffer = await blob.arrayBuffer();
+  return new Uint8Array(buffer);
+}
+
+// Helper: Compress string to Uint8Array (gzip)
+async function compress(str) {
+  const stream = new Blob([str]).stream();
+  const compressedStream = stream.pipeThrough(new CompressionStream("gzip"));
+  const chunks = [];
+  for await (const chunk of compressedStream) {
+    chunks.push(chunk);
+  }
+  return await concatUint8Arrays(chunks);
+}
+
+// Helper: Decompress Uint8Array to string (gzip)
+async function decompress(compressedBytes) {
+  const stream = new Blob([compressedBytes]).stream();
+  const decompressedStream = stream.pipeThrough(new DecompressionStream("gzip"));
+  const chunks = [];
+  for await (const chunk of decompressedStream) {
+    chunks.push(chunk);
+  }
+  const stringBytes = await concatUint8Arrays(chunks);
+  return new TextDecoder().decode(stringBytes);
+}
+
+// Helper: Uint8Array to Base64 string
+function uint8ToBase64(uint8) {
+  let binary = '';
+  for (let i = 0; i < uint8.length; i++) {
+    binary += String.fromCharCode(uint8[i]);
+  }
+  return btoa(binary);
+}
+
+// Helper: Base64 string to Uint8Array
+function base64ToUint8(base64) {
+  const binary = atob(base64);
+  const uint8 = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    uint8[i] = binary.charCodeAt(i);
+  }
+  return uint8;
+}
+
+// Helper: Derive AES-GCM key from password + salt
+async function deriveKey(password, salt) {
+  const encoder = new TextEncoder();
+  const passwordKey = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits", "deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    {
+      "name": "PBKDF2",
+      salt: salt,
+      "iterations": 100000,
+      "hash": "SHA-256"
+    },
+    passwordKey,
+    { "name": "AES-GCM", "length": 256 },
+    true,
+    ["encrypt", "decrypt"]
+  );
+}
+
+// Encrypt function
+async function encrypt(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.error(`Element with id "${id}" not found`);
+    return;
+  }
+  const content = el.innerHTML;
+  if (!content) {
+    console.log('No content to encrypt');
+    return;
+  }
+  const password = document.body.getAttribute('password');
+  if (!password) {
+    console.error('No password attribute on <body>');
+    return;
+  }
+  try {
+    const compressed = await compress(content);
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const key = await deriveKey(password, salt);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const encryptedBuffer = await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv: iv },
+      key,
+      compressed
+    );
+    const encrypted = new Uint8Array(encryptedBuffer);
+    const totalLength = salt.length + iv.length + encrypted.length;
+    const total = new Uint8Array(totalLength);
+    total.set(salt, 0);
+    total.set(iv, salt.length);
+    total.set(encrypted, salt.length + iv.length);
+    const encryptedStr = uint8ToBase64(total);
+    el.innerHTML = encryptedStr;
+    console.log(`Encrypted content for "${id}"`);
+  } catch (e) {
+    console.error('Encryption failed:', e);
+  }
+}
+
+// Decrypt function
+async function decrypt(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.error(`Element with id "${id}" not found`);
+    return;
+  }
+  let encryptedStr = el.innerHTML.trim();
+  if (!encryptedStr) {
+    console.log('No content to decrypt');
+    return;
+  }
+  const password = document.body.getAttribute('password');
+  if (!password) {
+    console.error('No password attribute on <body>');
+    return;
+  }
+  try {
+    const total = base64ToUint8(encryptedStr);
+    if (total.length < 44) { // Min: 16 salt + 12 IV + 16 tag
+      throw new Error('Invalid encrypted data length');
+    }
+    const salt = total.slice(0, 16);
+    const iv = total.slice(16, 28);
+    const ciphertext = total.slice(28);
+    const key = await deriveKey(password, salt);
+    const decryptedBuffer = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: iv },
+      key,
+      ciphertext
+    );
+    const compressed = new Uint8Array(decryptedBuffer);
+    const content = await decompress(compressed);
+    el.innerHTML = content;
+    console.log(`Decrypted content for "${id}"`);
+  } catch (e) {
+    console.error('Decryption failed (wrong password or invalid data?):', e);
+  }
+}
 </script>
 </body>
 </html>
