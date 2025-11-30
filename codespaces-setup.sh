@@ -8,4 +8,4 @@ sudo apt upgrade -y
 sudo apt install tailscale -y
 
 sudo mkdir -p /var/lib/tailscale
-sudo tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state --socket=/var/run/tailscale/tailscaled.sock
+sudo tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state --socket=/var/lib/tailscale/tailscaled.sock
