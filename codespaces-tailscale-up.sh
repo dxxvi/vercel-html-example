@@ -1,2 +1,2 @@
 #/bin/bash
-sudo tailscale up --auth-key=tskey-auth-kVhyhejYzR11CNTRL-bcJuQw9Gdr8ky7nmnX7kr8VXsF8NtEHo5
+sudo tailscale up --auth-key=tskey-auth-ki8VAumNob11CNTRL-y7aSVorJyBBQ5ZDDGQmrBBTGBrUTKgWAe
