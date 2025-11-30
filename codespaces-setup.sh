@@ -7,5 +7,5 @@ sudo apt update -y
 sudo apt upgrade -y
 sudo apt install tailscale -y
 
-sudo mkdir -p /var/lib/tailscale
-sudo tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state --socket=/var/lib/tailscale/tailscaled.sock
+sudo mkdir -p /var/lib/tailscale && sudo mkdir -p /var/run/tailscale
+sudo tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state --socket=/var/run/tailscale/tailscaled.sock
