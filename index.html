@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 18px; font-family: 'Noto Serif',serif">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Noto+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+        crossorigin="anonymous">
+  <style>
+    :root {
+      --bs-code-color: #0a6e77;
+      --bs-font-monospace: "Fira Code",monospace;
+      --code-color-comment: #a1b1b6;
+      --code-color-italic: #36939b;
+      --bs-font-sans-serif: "Noto Sans",sans-serif;
+      --bs-body-color: #333;
+      --a-in-button-margin: .3rem;
+    }
+    .accordion {
+      --bs-accordion-active-bg: #2c4d6b;
+      --bs-accordion-active-color: #fff;
+      --bs-accordion-btn-bg: #233342;
+      --bs-accordion-btn-color: var(--bs-accordion-active-color);
+      --bs-accordion-btn-icon-transform: rotate(90deg);
+      --bs-accordion-btn-padding-y: .5rem;
+      --bs-accordion-transition: color .82s ease-in-out, background-color .82s ease-in-out, border-color .82s ease-in-out, box-shadow .82s ease-in-out, border-radius .82s ease;
+    }
+    a { text-decoration: none }
+    code, pre { font-size: 1em }
+    code > i { color: var(--code-color-italic) }
+    code > i.comment { color: var(--code-color-comment) }
+    pre code { color: var(--bs-code-color) }
+    button.accordion-button {  padding-left: calc(var(--bs-accordion-btn-padding-x) / 2) }
+    button.accordion-button > i:first-child { display: inline-block; width: 1.94em }
+    button.accordion-button > code { color: var(--bs-accordion-btn-color); padding-left: .25rem; padding-right: .25rem }
+    button.accordion-button > a { display: inline-block; margin-left: var(--a-in-button-margin); margin-right: var(--a-in-button-margin) }
+    h2.accordion-header + div.accordion-collapse { margin-left: 1rem }
+    .accordion-button::after { background-image: none; content: '\276F'; color: #fff; transform: none }
+    .accordion-button:not(.collapsed)::after { background-image: none }
+    .accordion-item { border: 0 }
+    .accordion-button { box-shadow: none !important }
+    pre { background: linear-gradient(90deg, #f3f3f3, #fff, #f5f5f5); padding: .5rem .5rem .5rem 1rem; margin-left: 1rem }
+    li > pre { margin-left: unset }
+    kbd {
+      display: inline-block; margin: 0 2px; text-shadow: 0 1px 0 #fff; color: #242729; font: .875em "Noto Serif"; text-align: center;
+      line-height: 1.1; background-color: #e4e6e8; border: 1px solid #9fa6ad; border-radius: 3px; min-width: 2.7em;
+      box-shadow: 0 1px 1px rgba(12,13,14,0.15),inset 0 1px 0 0 #fff
+    }
+    body table.table { width: unset }
+    body .table > :not(caption) > * > * { padding-top: .25rem; padding-bottom: .25rem; padding-left: 1.4rem }
+    th { font-family: "Noto Serif",serif }
+
+    table.vim-motions kbd { font-size: 1.2rem; padding-left: .3rem; padding-right: .3rem; min-width: 2rem }
+  </style>
+</head>
+<body style="font: 1rem/1.43 'Noto Serif'" password="xxx">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<div class="tab" title="Do these Leetcode in Java and Rust">
+[Design Movie Rental System](https://leetcode.com/problems/design-movie-rental-system/)
+</div>
+<div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
+Take screenshot in KDE Plasma Wayland: `spectacle -f -b -e -S -n -o /dev/shm/test.png` almost a second
+
+[Free DDNS with Cloudflare](https://github.com/devrim/cloudflare-noip)
+
+To know how many RAM slots available: `sudo dmidecode --type memory`
+
+To run Apache httpd in a docker container: specify the user/group to use in `/etc/apache2/apache2.conf` port in `/etc/apache2/ports.conf`, in `/etc/apache2/sites-available/000-default.config` change the port (to match the one used in ports.conf), specify the `&lt;Directory ...&gt;` (copied from apache2.conf) and `Alias /uri /path/to/directory`, start with `/usr/sbin/apachectl start`
+
+Ubuntu: ignore SSL certificates when running apt `apt -o "Acquire::https::Verify-Peer=false" update`
+
+Android: list all packages installed for current user `pm list packages` remove a package for current user `pm uninstall -k --user 0 *package*` list all packages on this phone `pm list packages -u` re-install an uninstalled app `pm install-existing *package*`
+
+`find . -type f -exec ls "{}" \;` or `find . -type f -exec ls "{}" +`: in the 1st command, `;` needs to be escaped, that's why we need `\`. `\;` is like `ls file1; ls file2` and `+` is like `ls file1 file2`
+
+Print the difference between 2 files: `diff --side-by-side --suppress-common-lines --width=210 *file1.java* *file2.java* | cat -n | grep -v -e '&#40;$'`
+
+mount: `sshfs *remote_machine*:/*remote-folder* ~/*local-folder* -C` - unmount: `fusermount3 -u *mountpoint*`
+
+Save SSL certificates in files: `openssl s_client [-proxy 10.51.40.129:3128] -connect *HOSTNAME*:*PORT* -showcerts`, save all `-----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----` in `.pem` files then convert .pem to .crt: `openssl x509 -inform PEM &lt; file.pem > file.crt`
+
+Generate public key from AWS pem file: `ssh-keygen -y -f aws-generated.pem > aws-generated.pub`
+
+substring: `echo "my string" | cut -c2-5 // returns a string from the position 2 to 5`
+
+Regex: replace `([A-Z])\.([A-Z])` with `$1_$2`, look for strings not contain substring `^((?!sub string).)*$`
+
+Keep environment variables in `sudo`: `sudo -E *command*`
+
+To create RSA public, private keys in PEM format (`ssh-keygen` generates keys in a different format): `openssl genrsa -out private-key.pem 2048` then `openssl rsa -in private-key.pem -pubout -outform PEM -out public-key.pem`
+
+Cut by multiple spaces: `*some command* | tr -s ' ' | cut -f...`
+
+Read each line from a command output or from a file:
+```
+while read -r line; do                              while read -r line; do
+  *do something with the variable $line*                *do something with the variable $line*
+done &lt; &lt;(*command*)                                   done &lt; *some-file*
+```
+
+Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo $snowflake`
+
+| Bash                                           | Zsh                          | Zsh in <i class="fa-brands fa-apple"></i> | Comment
+|------------------------------------------------|------------------------------|-------------------------------------------|-------------
+|<kbd>Alt</kbd>+<kbd>D</kbd>                     |                              |                                           |delete to the end of the word
+|<kbd>Ctrl</kbd>+<kbd>W</kbd>                    | <kbd>Ctrl</kbd>+<kbd>W</kbd> |<kbd>&#8963;</kbd>+<kbd>W</kbd>            |delete to the beginning of the word
+|<kbd>Alt</kbd>+<kbd>F</kbd>                     | <kbd>Alt</kbd>+<kbd>➜</kbd>  |                                           |go to the end of the current/next word
+|<kbd>Alt</kbd>+<kbd>B</kbd>                     | <kbd>Alt</kbd>+<kbd>←</kbd>  |                                           |go to the beginning of the current/prev word
+|<kbd>Ctrl</kbd>+<kbd>A</kbd>                    | <kbd>Ctrl</kbd>+<kbd>A</kbd> |<kbd>&#8963;</kbd>+<kbd>A</kbd>            |to the beginning of the line
+|<kbd>Ctrl</kbd>+<kbd>E</kbd>                    | <kbd>Ctrl</kbd>+<kbd>E</kbd> |<kbd>&#8963;</kbd>+<kbd>E</kbd>            |to the end of the line
+|<kbd>Ctrl</kbd>+<kbd>K</kbd>                    | <kbd>Ctrl</kbd>+<kbd>K</kbd> |<kbd>&#8963;</kbd>+<kbd>K</kbd>            |kill to the end of the line
+|<kbd>Ctrl</kbd>+<kbd>U</kbd>                    |                              |                                           |kill to the beginning of the line
+|<kbd>Ctrl</kbd>+<kbd>Y</kbd>                    | <kbd>Ctrl</kbd>+<kbd>Y</kbd> |                                           |paste text from the kill buffer
+|<kbd>Ctrl</kbd>+<kbd>L</kbd>                    | <kbd>Ctrl</kbd>+<kbd>L</kbd> |<kbd>&#8963;</kbd>+<kbd>L</kbd>            |clear screen
+|                                                |<kbd>Ctrl</kbd>+<kbd>U</kbd>  |<kbd>&#8963;</kbd>+<kbd>U</kbd>            |kill the whole line
+|<kbd>Ctrl</kbd>+<kbd>&#x21e7;</kbd>+<kbd>-</kbd>|<kbd>Ctrl</kbd>+<kbd>-</kbd>  |<kbd>&#8963;</kbd>+<kbd>-</kbd>            |undo the last change
+
+| vim motions                                                              | `:set [no]number [no]relativenumber`                                         | `Ctrl-o` in insert mode                                    | c
+|--------------------------------------------------------------------------|------------------------------------------------------------------------------|------------------------------------------------------------|---------------------------------------------------------------
+| <kbd>h</kbd> 🠈                                                           | <kbd>j</kbd> 🠋                                                               | <kbd>k</kbd> 🠉                                             | <kbd>l</kbd> 🠊
+| <kbd>e</kbd> to end of current word                                      | <kbd>w</kbd> to beginning of next word                                       | <kbd>b</kbd> to beginning of previous word                 | <kbd>g</kbd><kbd>e</kbd> end of previous word
+| <kbd>0</kbd> to 1st character of line                                    | <kbd>^</kbd> to 1st non-blank character of line                              | <kbd>$</kbd> to end of line                                | <kbd>g</kbd><kbd>_</kbd> last non-blank character of line
+| <kbd>E</kbd> to end of current WORD                                      | <kbd>W</kbd> to beginning of next WORD                                       | <kbd>B</kbd> to beginning of previous WORD                 | <kbd>g</kbd><kbd>E</kbd> end of previous WORD
+| <kbd>f</kbd><kbd>{character}</kbd> to next {character}                   | <kbd>F</kbd><kbd>{character}</kbd> to previous {character}                   | <kbd>t</kbd><kbd>{character}</kbd> before next {character} | <kbd>T</kbd><kbd>{character}</kbd> before previous {character}
+| <kbd>f</kbd><kbd>{character}</kbd> then <kbd>;</kbd> to next {character} | <kbd>f</kbd><kbd>{character}</kbd> then <kbd>,</kbd> to previous {character} | |
+| <kbd>&#125;</kbd> next paragraph                                         | <kbd>&#123;</kbd> previous paragraph                                         | |
+| <kbd>/</kbd>{pattern} search forward, then <kbd>↵</kbd>                  | <kbd>?</kbd>{pattern} search backward , then <kbd>↵</kbd>                    | <kbd>n</kbd> next match                                    | <kbd>N</kbd> previous match
+| <kbd>g</kbd><kbd>g</kbd> to top of the file                              | <kbd>G</kbd> to end of file                                                  | {line number}<kbd>g</kbd><kbd>g</kbd> to a specific line   | <kbd>%</kbd> to matching bracket `&#40;&#91;&#123;&#125;&#93;&#41;`
+| <kbd>v</kbd> visual mode                                                 | <kbd>V</kbd> visual line mode (text is selected by line)                     | <kbd>Ctrl</kbd>+<kbd>v</kbd> visual block mode
+| <kbd>y</kbd> yank                                                        | <kbd>d</kbd> cut                                                             | <kbd>p</kbd> paste
+
+Install [Arch Linux](https://www.youtube.com/watch?v=1J_Z_pzzbMo) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/features/optimized_repos/)∨
+  - Make 1 empty partition in Windows with `diskmgmt`, disable BitLocker (click the Windows icon, type `bitlocker`), disable fast startup (Control Panel, search for power, choose Change what the power buttons do, Change settings that are currently unavailable, uncheck Turn on fast startup), disable Secure Boot in BIOS
+  - After the Arch Linux in the USB started:
+```
+setfont ter-132n                         // to increase the terminal font size
+iwctl                                    // to connect to a wireless network
+  device list                               // will show wlan0
+  station wlan0 get-networks                // to list all the available wireless networks
+  station wlan0 connect *my_wireless_network*
+  exit                                      // run ping google.com to check
+pacman -Sy
+pacman -Sy archlinux-keyring // it's said that these commands should be run separately
+pacman -Sy archinstall
+lsblk                                    // or fdisk -l to see what partitions we have
+cfdisk /dev/nvme0n1                      // to create more partitions: create 1 419MB partition with EFI System type, another with Linux filesystem type
+lsblk                                    // check to see if partitions are created correctly
+mkfs.fat -F32 /dev/nvme0n1p*5* && mkfs.ext4 /dev/nvme0n1p*6* // format the EFI System and regular partitions
+mount /dev/nvme0n1p*6* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*5* /mnt/boot && lsblk // to verify that the mountings are correct
+archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server, root directory of the mounted device: /mnt
+  Hyprland desktop environment: dolphin dunst grim kitty polkit-kde-agent qt5/6-wayland slurp wofi xdg-desktop-portal-hyprland
+  Server: docker, nginx, sshd
+[root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g wezterm os-prober networkmanager neovim power-profiles-daemon // choose the option to chroot
+  grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+  grub-mkconfig -o /boot/grub/grub.cfg
+```
+  - Boot into the new Arch and add the Windows item to the Grub: uncomment the line `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub`:
+```
+systemctl start NetworkManager && nmcli radio wifi on && nmcli dev wifi connect &lt;SSID&gt; password &lt;password&gt;
+pacman -Sy os-prober
+mount /dev/nvme0n1p1 /mnt // mount the Windows EFI partition manually if grub-mkconfig cannot find Windows
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+  - Stuff: `git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si && paru -Sy visual-studio-code-bin`
+  - Install KDE Plasma: `pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa libnotify bluedevil`
+  - Copy `.ttf` files to `~/.local/share/fonts` then `fc-cache -f -v`
+  - Delete Arch's partitions with `diskmgmt` (EFI System partition cannot be delete here):
+```
+diskpart // run in Administrator cmd
+  list disk
+  select disk 0
+  list partition
+  select partition *5* // select the one with System type
+  list partition     // list again to make sure we select the correct EFI System partition
+  delete partition override
+```
+
+GitHub Codespaces - Tailscale∨
+  - Open codespace from a repo having `.devcontainer/devcontainer.json` like this:
+```
+{
+  "name": "hm",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {}
+  }
+}
+```
+  - Open codespace machine terminnal in Visual Studio Code (so that we can copy/paste):
+      - Set that Firefox profile as default. VS Code Settings (the bottom left gear icon) | Profiles | New Profile, check the "Use this profile as default for new windows".
+      - In https://github.com/codespaces, choose Open in Visual Studio Code
+  - In the codespace machine, run `sudo apt update -y && sudo apt upgrade -y && sudo apt install -y xauth x11-apps && sdk install java && curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscaled --tun=userspace-networking --socks5-server=localhost:1055`. In another terminal `sudo tailscale up`. It'll show something like _To authenticate, visit: https://login.tailscale.com/a/xxxx_. Login to tailscale, then go to that link in the browser and it'll allow you to add the codespace machine to a vpn.
+  - In the Arch machine (make sure it uses the Arch kernel), `sudo su -`, then `rm -rf /var/lib/tailscale/* && systemctl start tailscaled && tailscale up --force-reauth --reset`. It'll show something like _To authenticate, visit: https://login.tailscale.com/a/xxxx_.
+  - In the codespace machine, `sudo passwd codespace`. Start the ssh server with `sudo service ssh start`. The SSH server runs on port 2222.
+  - In the codespace machine, run `xclock` or `xeyes` to verify the X11Forwarding works. For gedit, [firefox](https://ftp.mozilla.org/pub/firefox/candidates/146.0-candidates/), Intellij (which doesn't seem able to find the browser, so unable to use the Ultimate Edition) this env var `GDK_BACKEND=x11` is needed.
+  - We can go to the Settings tab on tailscale website and delete the tailnet.
+
+Setup an Ubuntu docker container to run X apps (like IntelliJ)∨
+  - Run a docker container using the host network and docker socket:
+```
+docker run -d --name ubuntu --hostname ubuntu -v /var/run/docker.sock:/var/run/docker.sock --network host ubuntu tail -f /dev/null
+docker exec -it ubuntu /bin/bash
+ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && export DEBIAN_FRONTEND=noninteractive && apt update -y && apt install -y curl vim openssh-server git zip sudo htop xorg xbase-clients xauth && sed -i -e 's/#Port 22/Port 2222/' -e 's/#AddressFamily any/AddressFamily inet/' -e 's/#ClientAliveInterval 0/ClientAliveInterval 82/' -e 's/#ClientAliveCountMax 3/ClientAliveCountMax 419/' -e 's/#AllowTcpForwarding yes/AllowTcpForwarding yes/' -e 's/#TCPKeepAlive yes/TCPKeepAlive yes/' /etc/ssh/sshd_config && mkdir /run/sshd && chmod 0755 /run/sshd && ssh-keygen -A && /usr/sbin/sshd && sed -i -E '/root.+ALL.+ALL.+ALL.+ALL/a *mylinuxaccount* ALL=(ALL:ALL) NOPASSWD: ALL' /etc/sudoers
+groupadd -g 1904 docker && useradd -d /home/*mylinuxaccount* -m -u 1904 -g docker -s /bin/bash *mylinuxaccount*
+mkdir -p ~/.local/bin ~/.ssh && sed -i '$ a export LIBGL_ALWAYS_INDIRECT=1' ~/.bashrc && sed -i "$ a alias ..='cd ..'" ~/.bashrc && sed -i "$ a alias ...='cd ../..'" ~/.bashrc
+```
+
+sed: substitute, add and delete lines∨
+  - of course, the one I already knew: substitue: `sed -i 's/*a*/*b*/g' *file.txt*`; multiple substitutions `sed -i -e 's/*a*/*b*/g' -e 's/*c*/*d*/' *file.txt*`
+  - print the Nth line in the file: `sed -n '*N*p' *file.txt*`
+  - delete the first N + 1 lines in the file: `sed -i -e '1,*N*d' *file.txt*`
+  - delete lines containing something in the file: `sed -i -e '/*something*/d' file` (no `-e` in Arch)
+  - add a line after the Nth line in the file: `sed '*N* a *line to be added*' *file.txt*` (don't forget to add `-i` to edit the file)
+  - add a line before the Nth line in the file: `sed '*N* i *line to be added*' *file.txt*`, `$` means the last line
+  - add a line after the lines containing a pattern match: `sed '/*PATTERN*/a *line to be added*' *file.txt*`, use `-E` for regex
+  - add a line before the lines containing a pattern match: `sed '/*PATTERN*/i *line to be added*' *file.txt*`
+
+grep: filter∨
+  - get lines longer than 82 characters: `grep '.\{82\}'`
+  - count number of lines longer than 82 characters: `grep -c '.\{82\}'` instead of `grep '.\{82\}' | wc -l`
+
+[jq](https://www.youtube.com/watch?v=j7xZ2VkLYIY)∨
+  - `jq '.' file.json` or `cat file.json | jq '.'`. `.` is like the root, so we can add fields after it.
+
+Use our private key on a remote machine without copying it there∨
+  - Lists fingerprints of all identities currently represented by the agent: `ssh-add -l` which might return an error if the ssh-agent is not started.
+  - In [PowerShell](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement), check the status of ssh-agent with `Get-Service ssh-agent`, start it `Start-Service ssh-agent`: hm ... doesn't work for me
+  - Load our keys into the ssh-agent `ssh-add $env:USERPROFILE\.ssh\id_ed25519`
+  - `ssh -A user@remote-machine`
+
+AWS EC2∨
+  - To generate the `accessKeyId` and `secretAccessKey` for the IAM in an ec2 instance:
+```
+export TOKEN=$(curl -X PUT --silent "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && curl --silent -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/iam/security-credentials/*our-iam-role-name*" | jq -r '"export AWS_ACCESS_KEY_ID=\"\(.AccessKeyId)\" \nexport AWS_SECRET_ACCESS_KEY=\"\(.SecretAccessKey)\" \nexport AWS_SESSION_TOKEN=\"\(.Token)\""'
+```
+  - `X11Forwarding` in EC2 instances is not enough, we need `AllowTcpForwarding` too. Install vcxsrv, run `xlaunch`, in PowerShell `$env:DISPLAY="localhost:0"`, then `ssh -Y remote-machine`. In the remote machine `export LIBGL_ALWAYS_INDIRECT=1`
+  - Attach an EBS volume to an EC2 instance: `ec2Client.attacheVolume(AttacheVolumeRequest.volumeId("...").instanceId("i-xxx").device("/dev/sdb"))` then `lsblk` to check the real device as it might not be `/dev/sdb` but `/dev/nvme1n1`. Check if the volume has any file system `file -s /dev/nvme1n1`. Format it `mkfs -t ext4 /dev/nvme1n1`. Mount it `mount /dev/nvme1n1 /mnt/something`.
+  - Unmount then detach an EBS volume from an EC2 instance before terminating it (`aws ec2 detach-volume` or `ec2Client.detachVolume(detachVolumeRequest)`).
+  - Java example to create an EC2 spot instance that can hibernate:
+```
+IamInstanceProfileSpecification.builder().name("...").build()
+SpotMarketOptions.builder().spotInstanceType(PERSISTENT).instanceInterruptionBehavior(HIBERNATE).maxPrice("2").build()
+InstanceMarketOptionsRequest.builder().marketType(SPOT).spotOptions(spotMarketOptions).build()
+TagSpecification.builder().resourceType(INSTANCE).tags(Tag.builder().key("...").value("...").build(), ...).build()
+EbsBlockDevice.builder().deleteOnTermination(true).volumeSize(...).volumeType(GP3).build()
+BlockDeviceMapping.builder().ebs(ebsBlockDevice, ...).deviceName("/dev/sdh").build()
+RunInstancesRequest.builder().blockDeviceMappings(...).iamInstanceProfile(...).imageId(...).instanceType(T3_LARGE).instanceMarketOptions(...).keyName(...).maxCount(1).minCount(1).securityGroupIds(...).subnetId(...).tagSpecifications(...).userData(Base64.getEncoder().encodeToString(...)).build()
+```
+
+AWS ECS∨
+  - Create a private repository (contains tags of only 1 docker image). AWS console will show us the exact commands to login, push a docker image to ECR.
+  - Create a cluster (can run on Fargate (serverless) or EC2 instances)
+  - Create a task definition: a task definition does the job of docker-compose.yml
+  - Create a load balancer (under EC2):
+      - target group: for ECS the target type is IP address but we don't need to specify any IP address here (that makes sense as the IP addresses are not fixed)
+      - choose Application Load Balancer
+  - Create a service:
+      - a service ensures that a certain number of tasks run at all times
+      - task: a running container with settings defined in the Task Definition
+      - VPC, subnets: ec2 instances will be created in these subnets to run our tasks
+      - security groups: applied for the ec2 instances that run our tasks
+      - there's a section to specify the load balancer. At this moment, we know that load balancer will route traffics to where.
+      - when done, there's a link in the service for the load balancer where there's a DNS name for this load balancer
+
+AWS Lambda∨
+  - [All acceptable events](https://github.com/aws/aws-lambda-java-libs/tree/main/aws-lambda-java-events) are in `com.amazonaws:aws-lambda-java-events`.
+  - Every lambda has an execution role which can upload logs to CloudWatch.
+  - With API Gateway as a trigger:
+      - Create a lambda but don't <kbd>+ Add Trigger</kbd> yet
+      - Create an API Gateway (REST API type)
+      - Add resource (e.g. `countries`, `{countryId}`, `states`, `{stateId}`)
+      - <kbd>Create method</kbd> for the above resource: in this step we need the lambda arn (that's why we need a lambda first)
+      - <kbd>Deploy API</kbd> so that we can specify a stage name.
+      - Refresh the lambda console, we'll see that the API Gateway is added as a trigger. In the Configuration tab, the API Gateway trigger gives use an API endpoint
+      - Code source: to set the jar in s3; Runtime settings: to set the runtime (e.g. Java 21) and the handler method
+      - Logging messages are in CloudWatch
+      - After putting the new jar in s3, we need to go to the lambda console and <kbd>Upload from ▼</kbd> again.
+  - With S3 event as a trigger:
+      - Use `com.amazonaws.services.lambda.runtime.events.S3Event` as the input, the output can be anything.
+      - `S3Event` has a `List&lt;S3EventNotificationRecord&gt;`. Each record has information about the S3 object (bucket, key, size, owner, arn ...)
+
+AWS EventBridge∨
+  - We can schedule an event based on cron. It can trigger a lambda.
+  - Ways to catch an event from an EventBridge bus:
+      - In AWS lambda `class MyEventBridgeHandler implements com.amazonaws.services.lambda.runtime.RequestHandler&lt;..., ...&gt;` (the `requestHandler` is from `com.amazonaws:aws-lambda-java-core`)
+
+AWS SQS (simple queue service)∨
+
+| 2 types of queues | throughput           | delivery type           | ordering
+|-------------------|----------------------|-------------------------|----------------------
+| Standard queues   | unlimited throughput | At-Least-Once delivery  | Best effort ordering
+| FIFO queues       | high throughput      | Exactly-Once processing | FIFO delivery
+
+  - When a message is received, the visibility timeout starts. Nobody can receive the message before the visibility timeout ends. The person who receives the message has to explicitly delete it otherwise he will receive that message again.
+  - Message payload max size is 256KB. Each 64KB is billed as 1 request. If we use the SQS Extended Client library for Java, we can send messages of up to 2GB (message payload will be stored in S3).
+  - Messages are retained in queues for 14 days
+  - We can do a long polling (wait 20s for messages) to reduce the number of requests
+  - [Message group id](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html): not very sure about its purpose. It's advised to have unique message group id if we want to avoid processing duplicates in a multi-producer/consumer system.
+  - SNS is a publish-subscribe service. AWS allows some types of subscribers only like SQS, Lambda, HTTP, email, mobile push notification and SMS.
+  - Amazon MQ is for applications that are using JMS, Active/Rabbit MQ ... to migrate to AWS.
+
+</div>
+<div class="tab" title="Docker" fontawesome="fa-brands fa-docker">
+[Docker Compose UI](https://github.com/louislam/dockge)
+
+A place [to store a docker image](http://ttl.sh/) for 24 hrs
+
+To run docker in a docker container: run the docker container with `-v /var/run/docker.sock:/var/run/docker.sock`
+
+To use the exact network as host (e.g. a docker container in an ec2 instance wants to use the IAM on that instance): run the docker container with `--network host` and that means `-p host-port:container-port` is ignored (the container and the host will use the same ports).
+
+To mount a volume to an existing docker container: create an image from the existing docker container `docker commit *container_id* *new_image_name*` then run the *new_image_name* with additional mounts
+
+Oracle database docker image: https://hub.docker.com/r/gvenzl/oracle-free
+
+Expose docker daemon on tcp port and access it from Powershell∨
+  - Running `systemctl start docker` shows something like `/usr/lib/systemd/system/docker.service`. Edit the line `ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 ...`
+  - Powershell: install chocolatey and `choco install docker-cli` with admin right. Then `$env:DOCKER_HOST="tcp://x.x.x.x:2375"`, `docker image ls` will work.
+</div>
+<div class="tab" title="Kubernetes">
+`kubectl` *[command]* *[TYPE]* *[NAME's]* *[flags]*:
+  - command: `create`, `get`, `describe`, `delete`, `apply` ...:
+      - `kubectl create -f *FILENAME* [flags] // create 1 or more resources from a file`
+      - `kubectl apply -f *FILENAME* [flags] // apply a configuration change to the resource specify in the given file`
+      - `kubectl delete -f *FILENAME* // delete resources from a file`
+      - `kubectl get TYPE [NAME] // list one or more resources`
+      - `kubectl logs POD [-c CONTAINER] [--follow] // print the logs for a container in a pod`
+      - `kubectl exec POD [-c CONTAINER] [-i] [-- COMMAND [args...]] // execute a command in a container in a pod`
+      - `kubectl taint NODE NAME KEY_1=VAL_1:TAINT_EFFECT_1 ... KEY_n=VAL_n:TAINT_EFFECT_n // update the taints on node`
+  - TYPE: configmaps, endpoints, namespaces, nodes, secrets, services, :
+      - **ReplicationController**: pod replica manager which guarantees a desired number of pod replicas running at any given time. However, Deployment does the same job better.
+      - **Deployment**: like ReplicationController (uses ReplicaSet to ensure that a number of pods is running at any time) and more:
+          - Rolling Updates: gradually rolls out new Pod versions while scaling down old ones.
+          - Advanced Features: health check and rollbacks
+      - **ReplicaSet**: ensures that a stable number of pods is running at any given time. ReplicaSet is used by Deployment.
+      - **Service**: is an abstraction layer for a set of pods which provides:
+          - Service Discovery: allows us to select pods by specifying key-value pairs
+          - Load Balancing: a service is assigned a clusterIP, it distributes requests to that clusterIP across the pods in that service
+      - **DaemonSet**: is a controller ensuring that a specified pod is running on every node (we can limit the node by using labels or taints), for example log collector, resource utilization metrics ...
+      - **Job**: a controller that manages short-lived, one-time task (e.g. batch processes, file processing)
+      - **Ingress**: traffic routing. The Ingress controller looks at the defined Ingress rules to determine the service (which does the load balancing) for each request.
+      - **VolumeAttachment**: attach a persistent volume to a specific node for pods running on that node to use.
+
+Taint and Torelation: used to precisely control pod placement in a cluster:
+  - Taints: are attributes added to a node. A taint has 3 parts:
+      - Key: a name to uniquely identity the taint
+      - Value (optional): an additional detail associated with the key
+      - Effect:
+          - NoSchedule: pods cannot be scheduled on the tainted node unless they tolerate the taint
+          - PrefereNoSchedule
+          - NoExecute: existing pods with the taint are evicted and new pods cannot be scheduled on nodes marked with the taint
+  - Tolerations: are permissions assigned to pods allowing them to be scheduled on nodes with matching taints
+
+Helm Chart: is the package manager for Kubernetes application. It put all the resources needed to deploy an application in a single, reusable package. A Helm chart has 3 components: Chart.yaml (chart metadata like name, version, dependencies on other charts), YAML template (defines resources required like Deployment, Service, ConfigMaps, Secrets ...), Values.yaml (contains configuration values that can be customized so that, e.g. we can deploy app in different envs).
+</div>
+<div class="tab" title="Mac" fontawesome="fa-brands fa-apple">
+Cannot be opened because the developer cannot be verified:
+  - locate the app in Finder | &#8963;+click | select Open | click Open: the app will be saved as an exception
+  - or <i class="fa-brands fa-apple"></i> menu | System Settings | Privacy & Security | there's a Open Anyway button for the app we've just failed to open
+  - in case of graalvm, run `find ~/graalvm/Contents/Home/ -name "*.dylib" -exec xattr -d com.apple.quarantine "{}" \;`
+
+Add spaces to MacOS dock: `defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'; killall Dock`
+</div>
+<div class="tab" title="NodeJS - HTML - CSS" fontawesome="fa-brands fa-node-js">
+[Encrypt and password protect](https://github.com/robinmoisson/staticrypt) the content of your public static HTML file, to be decrypted in-browser without any back-end
+
+[HTML codes](https://www.rapidtables.com/web/html/html-codes.html) for example `&#123;` is `&#38;#123;`
+
+[paged.js](https://pagedjs.org/) paginates any HTML content to produce beautiful print-ready PDF
+
+css property: `-moz-osx-font-smoothing`, Roboto Flex font (Google Fonts [filtered for variable only](https://fonts.google.com/?vfonly=true)): adjustable width
+
+Align `dt` and `dd` in `dl`:
+```
+dl { display: grid; grid-template-columns: max-content auto }
+dt { display: grid; align-content: center; grid-column-start: 1 }
+dd { margin-left: 0; grid-column-start: 2 }
+```
+
+`getComputedStyle(*element*).getPropertyValue('*property*')`: [for example](https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle) `getComputedStyle(p).getPropertyValue('font-size')`
+
+[Insert html code to an element](https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML): `*element*.insertAdjacentHTML(*position*, *text*)` where `*position*` can be `beforebegin`, `afterbegin`, `beforeend` or `afterend` and `*text*` is the string to be parsed as HTML and inserted into the tree.
+
+[Get all attributes](https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes) of a html element
+
+Convert image data to base64:
+```
+function convertImageToBase64(imgUrl, callback) {
+  const image = new Image();
+  image.crossOrigin = 'anonymous';
+  image.onload = () => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.height = image.naturalHeight;
+    canvas.width = image.naturalWidth;
+    ctx.drawImage(image, 0, 0);
+    callback && callback(canvas.toDataURL()) // canvas.toDataURL() is what we want
+  };
+  image.src = imgUrl;
+}
+```
+
+Angular∨
+  - A component is annotated with `@Component` which takes a css `selector`, a `templateUrl`, 0 or many `styleUrls` and other non-popular properties like `encapsulation: ViewEncapsulation.Emulated | ShadowDom` (so that the css styles of the page don't affect this component and vice versa), ...
+  - Component lifecycle: the Typescript class for the component can implement some interfaces like
+      - constructor: initialize variables, inject services
+      - `OnChanges`: called before `ngOnInit()` and any time `@Input` properties change
+      - `OnInit`: called only once, e.g. fetch data from the server, subscribe to Observables
+      - `DoCheck`: called very frequently - during every change detection cycle. So, DO NOT touch this.
+      - `AfterContentInit` and `AfterContentChecked`: never used
+      - `AfterViewInit` and `AfterViewChecked`: we can interact with the DOM elemenets but I never used this
+      - `OnDestroy`: unsubscribe from Observables, it's like the `finally` block in `try ... catch ... finally`
+  - Component interaction:
+      - Pass data from a parent to its child with `@Input`. We can intercept input property changes with a setter or `ngOnChanges()`
+      - Parent listens for child event with `@Output() *someVar* = new EventEmitter&lt;*SomeType*&gt;(); *someVar*.emit(*someTypeInstance*);`
+      - Parent can declare a local variable which is of child component type `&lt;child-component #myChildComponent&gt;&lt;/child-component&gt;`. Then __in parent component template__ (not parent component class, if we want to access the child component in the parent component class, use `@ViewChild()`), we can access properties, methods of child component using `myChildComponent.property` or `myChildComponent.method()`.
+      - Parent can declare a local variable in the typescript class `@ViewChild(ChildComponent) private childComponent: ChildComponent;`
+      - Use `RxJs`: [2 components share a service](https://angular.io/guide/component-interaction#parent-and-children-communicate-using-a-service) which has a `Subject` instance (from `rxjs`) and an observable of that subject. This service must be annotated with `@Injectable()` so that it can be injected to constructors of other services/components. In those other services/components, we need to subscribe to that observable.
+  - Content projection: [when](https://angular.io/guide/content-projection) _I have time, I'll write about this_
+  - Dynamic components: [also](https://angular.io/guide/dynamic-component-loader) very interesting
+  - Directives: are classes that add additional behavior to elements. 3 directive types:
+      - component directives: e.g. `&lt;app-my-component&gt;&lt;/app-my-component&gt;`
+      - attribute directives (`ngClass`, `ngStyle`, `ngModel` to display and update properties)
+      - structural directives (`ngIf`, `ngFor`, `ngSwitch`)
+  - Forms: [a big subject](https://angular.io/guide/forms-overview) with reactive and template-driven forms.
+  - HTTP client: I think nobody will ask about [this](https://angular.io/guide/understanding-communicating-with-http) in interviews
+  - Observables:
+      - `observable.subscribe(nextFunction)` or `observable.subscribe({ next: f1, error: f2 })` an observable runs only when we subscribe to it. If we subscribe to it twice, it'll run twice.
+      - multicasting: I want to subscribe to the observable multiple times to use the data from the observable in multiple places but the observable runs only once. 
+</div>
+<div class="tab" title="Java" fontawesome="fa-brands fa-java">
+To remove IntelliJ in Linux: try this rm -rf ~/.config/JetBrains ~/.cache/JetBrains ~/.local/share/JetBrains ~/.java
+
+Maybe watch this [12-hour video](https://www.youtube.com/watch?v=tseqdcFfTUY) about a patient management system (spring boot, kafka, aws, docker)
+
+How to use [grafana/otel-lgtm container](https://hub.docker.com/r/grafana/otel-lgtm)?
+
+[Web Frameworks Benchmark](https://web-frameworks-benchmark.netlify.app/result) for Java, Scala, Kotlin, Rust, Go, Python ...
+
+Use database for [distributed lock, Kafka topic](https://www.youtube.com/watch?v=ghpljMg8Ecc): use pessimistic/optimistic write or [ShedLock](https://github.com/lukas-krecan/ShedLock)
+
+Get [HTTPS](https://lcl.host/) in your local development
+
+[DFLib](https://dflib.org/) a lightweight pure Java implementation of a common DataFrame data structure
+
+[A way to build resilient applications](https://restate.dev) in Go, Java/Kotlin, Python and Rust
+
+[Disable SSL](https://stackoverflow.com/questions/52988677/allow-insecure-https-connection-for-java-jdk-11-httpclient) in Java 11 HttpClient
+
+[Java language changes by release](https://docs.oracle.com/en/java/javase/24/language/java-language-changes-release.html): a very good to see all the changes in 1 place
+
+Using Datadog + profilers [to understand request latency](https://richardstartin.github.io/posts/wallclock-profiler)
+
+New Language [Features](https://jenkov.com/tutorials/java/index.html) from Java 7 - 23 ~ [Compare](https://javaalmanac.io/) Java API of different JDK versions
+
+[JFR events](https://sap.github.io/SapMachine/jfrevents/21.html): when can I have time to play with JFR?
+
+[Manifold](http://manifold.systems/) is a Java _compiler plugin_ for method extension ~ [BoofCV](http://boofcv.org) computer vision Java library - [Benchmark JDBC connectors and virtual threads](https://mariadb.com/resources/blog/benchmark-jdbc-connectors-and-java-21-virtual-threads/)
+
+Spring Kafka [example](https://github.com/j-tim/spring-io-barcelona-2022-spring-kafka-beyond-the-basics)
+
+Install certificates:
+  - Java 11+: `keytool -importcert -trustcacerts -storepass changeit -cacerts -noprompt -file */Downloads/certificates/prag.pem* -alias *prag*`
+  - Java 8: `keytool -importcert -trustcacerts -storepass changeit -keystore $JAVA_HOME/jre/lib/security/cacerts -noprompt -file */Downloads/certificates/prag.pem* -alias *prag*`
+
+Tell the jvm to use proxy: `-Dhttp.proxyHost=... -Dhttp.proxyPort=... -Dhttp.nonProxyHosts="10.*|*.nbc.net" -Dhttp.proxyUser=... -Dhttp.proxyPassword=...`
+
+To programmatically set log level (check [this](https://prefab.cloud/blog/dynamically-changing-java-log-level/) for ways to do this for all instances of a service. IMO Redis pub/sub is the best. If the service discovery can tell us all the instances, then we can use that). Spring Boot Actuator `/actuator/loggers` does this better:
+```
+var loggerContext = (ch.qos.logback.classic.LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory()
+List&lt;ch.qos.logback.classic.Logger> loggers = loggerContext.getLoggerList() // need to define a logger for a specific package/class in logback.xml
+logger.setLevel(ch.qos.logback.classic.Level.DEBUG)
+```
+
+To test if there's a particular log message at a particular log level (for logback only):
+  - Create `var listAppender = new ListAppender&lt;ILoggingEvent>()`
+  - Get the logger that prints out the particular log message: `var logger = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger("*logger.name*")`
+  - Then `logger.addAppender(listAppender); listAppender.start()`. The `listAppender.list` has all the logging events.
+
+Download an artifact with maven: `mvn org.apache.maven.plugins:maven-dependency-plugin:3.3.0:get -Dartifact=org.jetbrains.kotlin:kotlin-stdlib:1.7.21:jar:sources`
+
+git-commit-id maven/gradle plugin generates a `git.properties` file that we can expose via an endpoint.
+
+file ↔ QR code∨
+  - java:
+```
+// com.google.zxing:javase:3.5.3
+void createQrCode(Path filePath, Path qrCodeImagePath) throws Exception {
+    byte[] fileContent = Files.readAllBytes(filePath); // max 927 bytes
+    String encodedFileContent = Base64.getEncoder().encodeToString(fileContent);
+    String qrCodeData = filePath.toFile().getName() + ":" + encodedFileContent;
+    Map&lt;EncodeHintType, Object&gt; hints = Map.of(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+    QRCodeWriter qrCodeWriter = new QRCodeWriter();
+    BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeData, BarcodeFormat.QR_CODE, 999, 999, hints);
+    MatrixToImageWriter.writeToPath(bitMatrix, "PNG", qrCodeImagePath);
+}
+void readFileFromQrCode(String qrCodeImagePath) throws Exception {
+    BufferedImage bufferedImage = ImageIO.read(new File(qrCodeImagePath));
+    BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufferedImage)));
+    Result result = new MultiFormatReader().decode(binaryBitmap);
+    String qrCodeData = result.getText();
+    String[] parts = qrCodeData.split(":", 2);
+    String fileName = parts[0];
+    byte[] fileContent = Base64.getDecoder().decode(parts[1]);
+    Files.write(Path.of("/dev/shm", fileName), fileContent);
+}
+```
+
+spotless-maven-plugin∨
+  - maven:
+```
+&lt;plugin&gt;
+  &lt;groupId&gt;com.diffplug.spotless&lt;/groupId&gt;
+  &lt;artifactId&gt;spotless-maven-plugin&lt;/artifactId&gt;
+  &lt;configuration&gt;
+    &lt;java&gt;
+      &lt;removeUnusedImports/&gt;
+      &lt;googleJavaFormat&gt;
+        &lt;formatJavadoc&gt;false&lt;/formatJavadoc&gt;
+      &lt;/googleJavaFormat&gt;
+      &lt;importOrder/&gt;
+    &lt;/java&gt;
+    &lt;pom&gt;
+      &lt;sortPom&gt;
+        &lt;expandEmptyElements&gt;false&lt;/expandEmptyElements&gt;
+        &lt;nrOfIndentSpace&gt;2&lt;/nrOfIndentSpace&gt;
+        &lt;sortDependencies&gt;scope,groupId,artifactId&lt;/sortDependencies&gt;
+        &lt;sortDependencyExclusions&gt;groupId,artifactId&lt;/sortDependencyExclusions&gt;
+        &lt;sortModules&gt;true&lt;/sortModules&gt;
+        &lt;sortPlugins&gt;groupId,artifactId&lt;/sortPlugins&gt;
+        &lt;sortProperties&gt;true&lt;/sortProperties&gt;
+      &lt;/sortPom&gt;
+    &lt;/pom&gt;
+  &lt;/configuration&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;check&lt;/goal&gt;
+      &lt;/goals&gt;
+      &lt;phase&gt;compile&lt;/phase&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;
+```
+
+Kafka [Gently down the stream](https://www.gentlydownthe.stream/)∨
+  - Outbox pattern: to solve the dual write problem: make a db transaction and publish an event: create 1 non-business step in that db transaction which is writing to the outbox table. Then there's another thread that keeps checking the outbox table and publishing events.
+  - [An example](https://developers.redhat.com/articles/2024/06/20/stateful-and-reactive-stream-processing-applications-apache-kafka-quarkus-and) to count the messages by keys, they create 1 TopN message in a KTable, then shows it in a browser using Quarkus.
+  - [Confluent Kafka](https://docs.confluent.io/platform/current/installation/installing_cp/zip-tar.html) download and installation or [previous version](https://www.confluent.io/previous-versions/) - if it's possible, create a trial cloud account.
+  - How to delay sending a message: `ProducerRecord` accepts a timestamp in the future. So, don't use `Thread.sleep` which will block the whole app.
+  - [Co-partitioning](https://www.confluent.io/blog/co-partitioning-in-kafka-streams/) in Kafka Stream: a concept to ensure the correct and efficient of joining 2+ streams. That means the topics must have the same number of partitions and the same key hashing method.
+  - To make `KafkaConsumer` return `SpecificRecord`:
+```
+props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true"); // Kafka Streams in Action, 2nd ed also mentions this
+props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, ...);
+```
+  - Kafka Streams: runs in our applications - Apache Flink (more powerful): runs in Flink servers (how to unit test a Flink-based app?)
+  - Kafka Streams terminologies:
+      - Processors: source processor (read data, KStream), stream processor, sink processor (write data). A bunch of them put together is called a Topology. A sink processor can be used as a source processor, so, don't draw a source processor connected to a sink processor.
+  - Kafka Streams task: is the code that does the joining/mapping/filtering ...The max number of tasks is the max number of partitions of all the topics used in that task.
+      - `KStream`: a partitioned record stream
+      - `KTable`: a partitioned table (changelog stream), created with `streamsBuilder.table(topic, consumed, materialized)`. We can bring messages in a KTable to a new KStream with `kTable.toStream`. When do the messages in a KTable go to a KStream? It depends on `StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG` (deprecated. What to use now?)
+      - `GlobalKTable`: similar to KTable but unpartitioned
+      - Increase the number of concurrent Kafka Streams tasks with `StreamsConfig.NUM_STREAM_THREADs_CONFIG`
+      - Handling errors: use the config `StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG`, `StreamsConfig.DEFAULT_PRODUCTION_EXCEPTION_HANDLER_CLASS_CONFIG` (for serialization errors). For application errors (errors happen in the topology), we need to register a `StreamUncaughtExceptionHandler` implementation like this `kafkaStreams.setUncaughtExceptionHandler(new StreamUncaughtExceptionHandler() { ... })`
+      - Stateless processing: filter, adding &amp; removing fields (what's this?), rekeying records, branching &amp; merging streams, enriching records, flatMapping
+      - Stateful processing:
+          - Joining data: enrich an event with info captured in a separate stream/table (`join`, `leftJoin`, `outerJoin`)
+          - Aggregating data: maybe in one partition only (`aggregate`, `count`, `reduce`):
+              - `count`: `kStream.groupBy...().count(PROCESSOR_NAME, Materialized): KTable`. The methods `groupBy...` give us a way to count by keys, by a combination of key and value, ...
+              - `reduce` and `aggregate`: `reduce` doesn't allow a start value
+          - Windowing data: group events that are close to each other in time (`windowedBy`)
+          - States are stored in RocksDB which flushes data to files in `StreamsConfig.STATE_DIR_CONFIG`.
+      - StateStore: why is it needed? Because we want to re-populate the KTable/GlobalKTable when the application starts.
+  - To build a `KStream&lt;K, V&gt;`: `streamsBuilder.stream(TOPIC, Consumed.with(keySerde, valueSerde))`
+  - To build a `KTable&lt;K, V&gt;`: `kStream.toTable(Named, Materialized)` or `streamsBuilder.table(TOPIC, Consumed.with(keySerde, valueSerde))` or `streamBuilder.table(TOPIC, Consumed.with(keySerde, valueSerde), Materialized.as(String))`. Without the `Materialized` argument, the KTable won't be materialized and its updates won't be persisted in a state store (so its state will be gone when the app restarts). Without the `Materialized` argerment, when we use `kTable.toStream(): KStream`, messages in KTable go to KStream immediately when they appear in the KTable (i.e. the KTable doesn't have the chance to delete the old messages); with `Materialized`, messages in KTable go to KStream only when there are `cache.max.bytes.buffering` bytes in the messages or after `commit.interval.ms` milliseconds.
+  - To build a `GlobalKTable&lt;K, V&gt;`: the only way is to build from a topic `streamsBuilder.globalTable(TOPIC, Consumed)`
+  - Joins:
+      - KStream - (Global)KTable: `join`, `leftJoin` which means the join will be triggered when there's a new message in the left stream/table; if the right stream/table doesn't have a match key, the value joiner will receive a null for the right stream/table value.
+      - KTable - KTable: join, leftJoin, `outerJoin`. There's no join between GlobalKTable and GlobalKTable: why? `outerJoin` will trigger the join if there's a message on either side of the join.
+      - KStream - KStream: join, leftJoin, outerJoin. We have to specify a `JoinWindows` which specifies the maximum amount of time difference the 2 messages (with the same key of course) appear in the streams. There's a concept of JoinWindows.ofTimeDifferenceWith(No)Grace`.
+
+Concurrency∨
+  - interface `Executor.execute(Runnable): void`
+  - interface `ExecutorService extends Executor`:
+      - `ExecutorService.submit(Runnable): Future&lt;?>`
+      - `ExecutorService.submit(Runnable, T result): Future&lt;T>`
+      - `ExecutorService.submit(Callable&lt;T>): Future&lt;T>`
+      - `ExecutorService.invokeAny(Collection&lt;Callable&lt;T>>, optional timeout): T`
+      - `ExecutorService.invokeAll(Collection&lt;Callable&lt;T>>, optional timeout): List&lt;Future&lt;T>>`
+  - interface `ScheduledExecutorService extends ExecutorService` has `schedule(Runnable | Callable, delay): ScheduledFuture`, `scheduleAtFixedRate(Runnable, initialDelay, period): ScheduledFuture&lt;?>` and `scheduleAtFixedDelay(Runnable, initialDelay, delay): ScheduledFuture&lt;?>`.
+  - To get the task results in order of completion, use `var completionService = new ExecutorCompletionService&lt;R>(executorService)` then submit a job `completionService.submit(runnable/callable): Future&lt;R>` then get the next completed task result `completionService.poll/take: Future&lt;R>`
+  - `ConcurrentHashMap`: `compute/computeIfAbsent/computeIfPresent` are atomic, to create a *ConcurrentHashSet*: `.newKeySet`, reduce: `reduce/reduceEntries[ToInt/Long/Double]/reduceKeys[ToInt/Long/Double]/reduceValues[ToInt/Long/Double](parallelThreshold, (k, v) -> r, (r, r) -> r): R`, parallel search: `search[Entries/Keys/Values](parallelThreshold, (k, v) -> r)`
+  - Lock:
+      - Issues with `synchronized`: locks must be released in the reverse order of lock acquisitions `synchronized (a) { synchronized (b) { ... } }`
+      - `interface Lock`: wait forever to get the lock: `.lock()` - try to get the lock: `.tryLock(timeout): boolean` - finally must `.unlock()`. Implementation is `ReentrantLock`.
+      - `interface ReadWriteLock`: used when there are much more reads than writes. `.writeLock(): Lock` returns the lock for writing - `.readLock(): Lock`: multiple reads at the same time, but while reading, no writing and while writing no reading. Implementation is `ReentrantReadWriteLock`.
+  - `CompletableFuture`: when should a custom Executor be used? when we deal with IO so the custom Executor has only a few threads
+      - to execute some task: `runAsync` returns `Void`, `supplyAsync` returns a type `T`
+      - `thenApply` or `thenApplyAsync`: apply the function to the returned value in the same thread (or different thread if the _Async_ version is used). If the _CompletableFuture_ completes exceptionally, this one also does.
+      - `thenCompose` or `thenComposeAsync`: if _thenApply_ is like _Stream.map_, then _thenCompose_ is like _Stream.flatMap_, i.e. _thenCompose_(_Async_) takes a _Function&lt;T, CompletableFuture&lt;U&gt;&gt;_
+      - `thenAccept` or `thenAcceptAsync`: like _thenApply_ but the function returns nothing
+      - `thenCombine` or `thenCombineAsync`: takes `(CompletionStage&lt;U&gt;, BiFunction&lt;T, U, V&gt;)` 🡲 `CompletableFuture&lt;V&gt;`
+      - static `allOf(CompletableFuture&lt;?&gt;...)`: 🡲 _CompletableFuture&lt;Void&gt;_ which will complete when everything completes
+      - static `anyOf(CompletableFuture&lt;?&gt;...)`: 🡲 _CompletableFuture&lt;Void&gt;_ will complete when any completes (successfully or unsuccessfully)
+      - `exceptionally()` _no Async version?_: takes `Function&lt;Throwable, T&gt;` - this one is similar `handle(BiFunction&lt;T, Throwable, U&gt;)`
+      - want to complete in at most x seconds? `orTimeout(` _3s_ `)` or `completeOnTimeout(T, ` _3s_ `)`
+      - `whenComplete` or `whenCompleteAsync`: takes `BiConsumer&lt;T, Throwable&gt;` and returns the same _CompletableFuture_ but does something else in the _BiConsumer_
+      - `handle` or `handleAsync`: takes `BiFunction&lt;T, Throwable, U&gt;`, it's like `thenApply` but takes care of the exception too
+      - `isCancelled`, `isDone`, `isCompletedExceptionally`, `cancel`
+
+Spring Data Redis∨
+  - If we have `spring.data.redis.host/port/password/database` then a `redisConnectionFactory` bean is created for us. Otherwise, create that bean like this:
+```
+var redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
+redisStandaloneConfiguration.setPassword(redisPassword);
+var redisConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
+redisConnectionFactory.afterPropertiesSet(); // this is very important
+```
+  - Then, create a `RedisTemplate&lt;..., ...>` like:
+```
+var redisTemplate = new RedisTemplate&lt;String, Object>();
+redisTemplate.setConnectionFactory(redisConnectionFactory);
+redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer()); // Jackson is faster than the Java serialization
+redisTemplate.setHashKeySerializer(new GenericJackson2JsonRedisSerializer());
+redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+redisTemplate.afterPropertiesSet(); // this is very important
+```
+  - Need to test: for every type `T`, we need a Spring bean of type `RedisTemplate&lt;String, T>` otherwise, how do we read an object of type `T` from redis?
+
+Spring Batch∨
+  - Concepts: __Job__: writing a book, __Step__: writing a chapter in the book (a chunk-orient (specific) step example: writing the "introduction" chapter), __Chunk__: writing a paragraph in a chapter.
+  - Why? Because of large volume of data (billions of records): split them into chunks, restartability, recoverability, transaction management, error handling and skipping logic, job monitoring (which are running, completed in how long, failed), the same interfaces (`ItemReader`, `ItemWriter`) to work with different data sources and testing.
+  - 2 kinds of step:
+      - tasklet-based step: takes a `Tasklet` implementation and runs the `execute(StepContribution, ChunkContext) -> RepeatStatus` in a transaction until the _repeatStatus_ is not `RepeatStatus.CONTINUABLE`.
+      - chunk-based step: used for item-based processing. It has an `ItemReader`, `ItemProcessor` and `ItemWriter`.
+  - Job lifecycle:
+
+JPA∨
+  - Collection mapping (this is [what the DB tables look like](https://learning.oreilly.com/api/v2/epubs/urn:orm:book:9781430249269/files/images/9781430249269_Fig05-01.jpg)):
+```
+public &#64;Embeddable class VacationEntry &#123;                          public &#64;Entity class Employee {
+  private &#64;Temporal(TemporalType.DATE) Calendar startDate;          private &#64;Id int id;
+  private &#64;Column(name = "DAYS") int daysTaken;                     private long salary;
+}                                                                   private &#64;ElementCollection(targetClass = VacationEntry.class) Collection vacations;
+                                                                    private &#64;ElementCollection Set&lt;String> nickNames;
+```
+  - Transaction:
+      - Propagation
+          - in Spring, the default is `&#64;Transactional(propagation = Propagation.REQUIRED)` which means that a current transaction is supported and a new one is created if none exists
+          - `SUPPORTS` means the current transaction is supported but will execute non-transactionally if none exists
+          - `MANDATORY` supports a current transaction, throws an exception if none exists
+          - `REQUIRES_NEW` creates a new transaction and suspends the current transaction
+          - `NOT_SUPPORTED` executes non-transactionally, suspends the current transaction
+          - `NEVER` executes non-transactionally, throws an exception if a transaction exists
+          - `NESTED` executes within a nested transaction if a transaction exists
+      - Isolation: describes how changes in concurrent transactions are visible to each other
+          - `&#64;Transactional(isolation = Isolation.DEFAULT)`: use the default isolation level of the DB, e.g. Postgres has Read Committed as default
+          - `READ_UNCOMMITTED`: dirty reads *(a transaction reads data written by a concurrent uncommitted transaction)*, non-repeatable reads *(a transaction re-reads data it has previously read and finds that data has been modified by another transaction, i.e. commited after the 1st read)* and phantom reads *(a transaction re-executes a query returning a set of rows that satisfy a search condition and finds that the set of rows has changed due to another recently-committed transaction)* can occur
+          - `READ_COMMITTED`: dirty reads are prevented but non-repeatable and phantom reads can occur
+          - `REPEATABLE_READ`: dirty and non-repeatable reads are prevented but phantom reads can occur
+          - `SERIALIZABLE`: dirty, non-repeatable and phantom reads are prevented
+  - Inheritance:
+      - Class hierarchies:
+          - `&#64;Entity abstract class Employee(id: int, name: String, startDate: Date)`
+          - `&#64;Entity class ContractEmployee(dailyRate: int) extends Employee(id, name, startDate)`
+          - `&#64;Entity abstract class CompanyEmployee(vacation: int) extends Employee(id, name, startDate) // &#64;Entity can be used with abstract class too`
+          - `&#64;Entity class PartTimeEmployee(hourlyRate: int) extends CompanyEmployee(vacation)`
+          - `&#64;Entity class FullTimeEmployee(salary: int) extends CompanyEmployee(vacation)`
+      - `&#64;MappedSuperclass`: denotes a class that stores shared state but is not a persistent class (i.e. no `&#64;Table` on it, no query over it). In the above example, we can put `&#64;MappedSuperclass` on `CompanyEmployee` but then we won't be able to find all company employees in 1 shot.
+      - Single-table strategy: the most common and performant way. Then we need a discriminator column and discriminator values.
+          - `&#64;Entity &#64;Table &#64;DiscriminatorColumn(name = "...") abstract class Employee`
+          - `&#64;Entity &#64;DiscriminatorValue("...") class FullTimeEmployee`
+      - Joined strategy:
+      - Table-per-concrete-class strategy:
+  - 2 ways to fix the N+1 issue: put `@Query("SELECT p FROM ChessPlayer p LEFT JOIN FETCH p.tournaments")` or `@EntityGraph(attributePaths = "tournaments")` on a method in the Spring Data JPA Repository
+  - Use PESSIMISTIC_WRITE to implement a distributed lock (HazelCast provides an implementation of distributed lock), like this (or [ShedLock](https://github.com/lukas-krecan/ShedLock)):
+```
+interface XXXRepository extends JpaRepository(XXX, ...) {
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @QueryHints({ // exception is thrown if unable to get the lock, works for Oracle only, not Postgres
+      @QueryHint(name = "jakarta.persistence.lock.timeout", value = "1000")
+  })
+  List&lt;XXX&gt; findBy...(...);
+}
+// if we want to use the lock timeout feature in not-Oracle db, we need to use EntityManager
+// However, https://jakarta.ee/learn/docs/jakartaee-tutorial/current/persist/persistence-locking/persistence-locking.html
+//   says it's not guaranteed
+em.createNativeQuery("SET lock_timeout = '5'").executeUpdate(); // this is postgres syntax
+em.createQuery("select l from HerLock l where l.id = :id", HerLock.class)
+    .setParameter("id", id)
+    .setHint("jakarta.persistence.lock.timeout", 999)
+    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+    .getResultList()
+```
+
+Composition vs Inheritance∨
+  - class inheritance issue:
+```
+class Animal { void walk() { ... } }
+class FlyingAnimal extends Animal { void fly() { ... } }
+class SwimmingAnimal extends Animal { void swim() { ... } } // now, how to define an animal that can fly and swim?
+```
+  - ~~object composition~~: this is not object composition:
+```
+interface Animal { default void walk() { ... } }
+interface FlyingAnimal extends Animal { default void fly() { ... } }
+interface SwimmingAnimal extends Animal { default void swim() { ... } }
+class Duck implements FlyingAnimal, SwimmingAnimal { } // we can do this because we can implement multiple interfaces
+```
+  - object composition:
+```
+class WalkingAbility { ... }
+class FlyingAbility { ... }
+class SwimmingAbility { ... }
+class Animal {
+  private WalkingAbility wa;
+  private FlyingAbility fa;
+  private SwimmingAbility sa;
+  public static Animal createDog(WalkingAbility _wa, SwimmingAbility _sa) { ... }
+  public static Animal createDuck(WalkingAbility _wa, SwimmingAbility _sa, FlyingAbility _fa) { ... }
+}
+```
+
+Spring Boot 3 and OpenAPI; Always use `wiremock-standalone` to avoid jetty version conflict∨
+  - IMO, it's better to write some more controllers in `src/test` instead of using wiremock (then we don't need to learn wiremock syntax)
+  - `org.springdoc:springdoc-openapi-starter-webmvc-ui` then on a Controller method for an endpoint, we can have `@Operation`, `@ApiResponse`. On an input/output class, we can have `@Schema`. We can create a bean of type `OpenAPI` to security schemes to endpoints (e.g. `authorization: bearer ...`), a bean of type `OpenApiCustomizer` to add some examples that can be seen in `/swagger-ui/index.html`.
+
+Testcontainers∨
+  - [No need to start and stop the container](https://java.testcontainers.org/test_framework_integration/manual_lifecycle_control/) in every test: test classes need to `extends` an abstract class with a static variable for the container and a static block to start that container. No need to stop the container as Ryuk will do it.
+  - If a specific container doesn't work, a generic container is good enough:
+```
+genericContainer = new GenericContainer<>(DockerImageName.parse("docker.elastic.co/elasticsearch/elasticsearch:7.10.2"))
+    .withExposedPort(9200, 9300) // look for these info in docker-compose.yml
+    .withEnv("...", "...")
+    .waitingFor(
+        new LogMessageWaitStrategy() // we can get the LogMessageWaitStrategy source code and modify it to print the logging messages
+            .withRegEx("...")
+            .withTimes(1)        // the docker container is said to start completely when we see a logging message matching the above regex this many times
+            .withStartupTimeout(Duration.ofMinutes(2)));
+```
+</div>
+<div class="tab" title="Scala">
+This is Scala
+</div>
+<div class="tab" title="Kotlin">
+_scope functions_ are built-in functions used to manage the scope of variables, access properties of objects and execute a block of code in a specific context: `run`, `with`, `let`, `also` and `apply`.
+</div>
+<div class="tab" title="Rust" fontawesome="fa-brands fa-rust">
+`rustup doc`: to read The Book and the standard library reference.
+
+100 exercises to learn Rust [https://rust-exercises.com/](https://rust-exercises.com/), resources to [learn](https://github.com/ImplFerris/LearnRust) Rust
+
+[Rust Atomics and Locks](https://marabos.nl/atomics/) Jan 2023
+
+[How to build a tree in Rust](https://dev.to/deciduously/no-more-tears-no-more-knots-arena-allocated-trees-in-rust-44k6)
+
+[Good blogs](https://www.shuttle.rs/blog/tags/all) - [Free public APIs for testing](https://apipheny.io/free-api/) - `rustup doc` - [Practical Rust 1.x Cookbook](https://www.amazon.com/Practical-Rust-1-x-Cookbook-Microservices-ebook/dp/B0BW47FLQ9/) Feb 2023 - [Rust Standard Library Cookbook](https://www.amazon.com/Rust-Standard-Library-Cookbook-leverage-ebook/dp/B07B8RJ8VJ/) Mar 2018 - [All the books](https://1337x.to/torrent/5828661/Rust-Programming-Language-Book-Pack-3-46-titles/)
+
+A [sample](https://github.com/rust-lang/rustlings) project structure. Or [setup Rust for AoC](https://www.youtube.com/watch?v=fEQv-cqzbPg)
+
+[Rust with Flutter/Dart](https://cjycode.com/posts/rust-ui-flutter/) with many good appraisals on [HN](https://news.ycombinator.com/item?id=41213711)
+</div>
+<div class="tab" title="Python" fontawesome="fa-brands fa-python">
+PyCharm [zip format](https://www.jetbrains.com/pycharm/download/other.html) for Windows
+
+Start an http server in the current directory at a specific port: `python -m http.server 8000`
+
+Anaconda [Linux](https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Linux-x86_64.sh) [Windows](https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Windows-x86_64.exe)
+</div>
+<div class="tab" title="Gradle">
+[Using maven BOM](https://docs.gradle.org/current/userguide/platforms.html#sub:bom_import) in `gradle.build`
+
+All the versions (including release candidates) are [here](https://services.gradle.org/distributions/); system properties in [gradle.properties](https://docs.gradle.org/current/userguide/build_environment.html) e.g. to run gradle and compile the app with different jdks
+
+To exclude a library globally:
+```
+configurations {
+  all*.exclude group: 'ch.qos.reload4j', module: 'reload4j'
+  all*.exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+}
+```
+
+To specify program arguments when running a gradle task: `gradlew bootRun --args='--spring.profiles.active=my-profile'`
+
+To specify the JVM options for Gradle to use: `$env:GRADLE_OPTS="-Dhttps.protocols=TLSv1.2 -Djdk.tls.client.protocols=TLSv.12 -Djavax.net.ssl.trustStore=file.jsk -Djavax.net.ssl.trustStorePassword=..."` or put it in `gradle.properties` under the name `org.gradle.jvmargs`
+
+This `build.gradle` is perfect when not able to get gradle plugins from the Internet:
+```
+get from PNC
+```
+</div>
+<div class="tab" title="Git" fontawesome="fa-brands fa-git">
+Delete local branch: `git branch -d *local_branch_name*`
+
+Delete remote branch: `git push origin --delete *remote_branch_name*`
+
+Update the local list of remote branches: `git remote update origin --prune`
+
+Merge from another branch: `git pull && git merge --squash origin/master`     If conflict: `git merge --abort`
+
+Make git ignore SSL verification: `export GIT_SSL_NO_VERIFY=true`
+
+Overwrite the current local branch with the remote master: `git fetch --all && git reset --hard origin/master`
+
+Make a file executable (so that when it is checked out, it's executable):
+```
+git add file.sh && git ls-files --stage // that file will have 100644
+git update-index --chmod=+x file.sh && git ls-files --stage // that file will have 100755
+git commit -m "..." && git push
+```
+
+Show info about a commit id (e.g. date, ...): `git show *commit-id*`
+
+Automatically create a remote branch for the current local branch: `git config --global push.autoSetupRemote true`
+
+Use proxy: `git config --global http.proxy http://1.2.3.4:8080` (this works for both http and https repositories). To not use proxy: `git config --global --unset http.proxy`
+
+Use a non-default private key with git (recent versions only): `$env:GIT_SSH_COMMAND='ssh -i non-default-private-key -o IdentitiesOnly=yes'`
+</div>
+<div class="tab" title="VS Code">
+| Windows                                               |                           | Mac                                                     |
+|------------------------------------------------------:|:-------------------------:|:--------------------------------------------------------|
+|<kbd>Alt</kbd>+ click                                  | multiple cursor           |<kbd>option</kbd>+ click                                 |
+|<kbd>⇧</kbd>+<kbd>Alt</kbd>+<kbd>&#8593;/&#8595;</kbd> | copy line up/down         |<kbd>⇧</kbd>+<kbd>option</kbd>+<kbd>&#8593;/&#8595;</kbd>|
+|<kbd>Alt</kbd>+<kbd>&#8593;/&#8595;</kbd>              | move line up/down         |<kbd>option</kbd>+<kbd>&#8593;/&#8595;</kbd>             |
+|<kbd>⇧</kbd>+<kbd>Ctrl</kbd>+<kbd>K</kbd>              | delete line               |<kbd>⇧</kbd>+<kbd>command</kbd>+<kbd>K</kbd>             |
+|<kbd>⇧</kbd>+<kbd>Ctrl</kbd>+<kbd>\</kbd>              | jump to mactching bracket |<kbd>⇧</kbd>+<kbd>command</kbd>+<kbd>\</kbd>             |
+|<kbd>⇧</kbd>+<kbd>Ctrl</kbd>+<kbd>[</kbd>              | fold region               |<kbd>option</kbd>+<kbd>command</kbd>+<kbd>[</kbd>        |
+|<kbd>⇧</kbd>+<kbd>Ctrl</kbd>+<kbd>]</kbd>              | unfold region             |<kbd>option</kbd>+<kbd>command</kbd>+<kbd>]</kbd>        |
+</div>
+<div class="tab" title="PowerShell - Windows" fontawesome="fa-brands fa-windows">
+[Upgrade Windows 11 Home to Pro](https://www.youtube.com/watch?v=2FHn2GzIZrc): disconnect Internet, `Settings` | `System` | `Activation` | `Change Product Key`, use this generic key `VK7JG-NPHTM-C97JM-9MPGT-3V66T`. Finally run [this](https://github.com/massgravel/Microsoft-Activation-Scripts) in powershell `irm https://get.activated.win/get | iex`
+
+[Traffic Monitor](https://github.com/zhongyang219/TrafficMonitor) can show network speed (in/out), cpu, memory usage in the task bar.
+
+[komorebi](https://github.com/LGUG2Z/komorebi): a tiling window manager for Windows written in Rust
+
+[Marp](https://marp.app/), like reveal.js, allows us to make slides from markdown
+
+Install a `.msi` file: in cmd `msiexec.exe /i *file.msi* INSTALLDIR=%USERPROFILE%\*some-directory* MSIINSTALLPERUSER=1`
+
+VcXsrv: don't forget to `export LIBGL_ALWAYS_INDIRECT=1` in Linux and `DISPLAY=localhost:0` in Windows
+
+Install python, pip in Windows: unzip the python, install pip with `python get-pip.py` here is [get-pip.py](https://bootstrap.pypa.io/get-pip.py), then modify the file `python312._pth` like this:
+```
+python312.zip
+.
+Lib\site-packages
+```
+
+| Windows Terminal | ...                                                                        | ...
+|------------------|----------------------------------------------------------------------------|------------------------------------------
+|                  | <kbd>Alt</kbd>+<kbd>Shft</kbd>+<kbd>-/+</kbd>                              | create a new pane vertically/horizontally
+|                  | <kbd>Ctrl</kbd>+<kbd>Shft</kbd>+<kbd>W</kbd>                               | close
+|                  | <kbd>Alt</kbd>+<kbd>&#x2190;&#x2191;&#x2193;&#x2192;</kbd>                 | move around
+|                  | <kbd>Alt</kbd>+<kbd>Shft</kbd>+<kbd>&#x2190;&#x2191;&#x2193;&#x2192;</kbd> | resize
+|                  | The cursor doesn't blink                                                   | try this `printf "\e[?12h"`
+
+PowerShell∨
+  - Allow scripts to run in PowerShell: `Set-ExecutionPolicy Bypass -Scope Process`
+  - Change window title: `$host.ui.RawUI.WindowTitle="*New Title*"`
+  - Set an environment variable: `$env:PATH += "..."` or `$env:PATH = "...;$env:PATH"` for example `$env:HTTPS_PROXY=$env:HTTP_PROXY='http://1.2.3.4:8080'`. To show all env vars: `dir env:`
+  - Run a PowerShell script in background: `start-job -filepath *path\to\file.ps1*`
+  - Download with wget: `Invoke-WebRequest -Uri $*uri* -OutFile $*dest*`
+  - To run an app with Avecto: `PowerShell Start 'D:\Users\DangTh\PowerShell\pwsh.exe' -Verb Runas`
+  - Add something to MS Defender exclusion list: `Add-MpPreference -ExclusionPath 'C:\temp'`, `Add-MpPreference -ExclusionExtension '.java'`. To see those exclusions: Settings | Virus & thread protection (Manage settings) | Exclusions (Add or remove exclusions)
+  - `select-string -pattern "..."` is like `grep`
+  - `.bashrc` for PowerShell is at `$PROFILE` (echo it to see its value):
+```
+function To-Parent-Directory { Set-Location ... }
+Set-Alias .. To-Parent-Directory
+
+function To-Grandparent-Directory { Set-Location ../.. }
+Set-Alias ... To-Grandparent-Directory
+
+$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+
+function prompt { // this function make the Windows Terminal tab titles shorter
+  $Host.UI.RawUI.WindowTitle = "$pwd"
+  (Get-Location).toString() -replace 'C:\\Users\\bo','~'
+}
+
+oh-my-posh init pwsh --config "C:\path\to\oh-my-posh.json" | Invoke-Expression
+
+```
+
+  - Uninstall bloatware using Adminstrator PowerShell:
+```
+@("Microsoft.WindowsStore", "Microsoft.GetHelp", "Microsoft.Copilot", "Microsoft.Windows.Ai.Copilot.Provider", "Microsoft.Copilot_8wekyb3d8bbwe", "Microsoft.XboxGamingOverlay", "Microsoft.YourPhone", "Microsoft.XboxIdentityProvider", "Microsoft.XboxSpeechToTextOverlay", "Microsoft.Windows.DevHome", "Microsoft.MicrosoftOfficeHub", "MicrosoftCorporationII.QuickAssist", "MSTeams", "Microsoft.OutlookForWindows", "Microsoft.Edge.GameAssist", "Microsoft.WidgetsPlatformRuntime", "Microsoft.Xbox.TCUI", "Microsoft.MicrosoftStickyNotes", "Microsoft.BingWeather", "Microsoft.WindowsAlarms", "Microsoft.Windows.Photos", "Microsoft.Todos", "Microsoft.MicrosoftSolitaireCollection", "Microsoft.WindowsSoundRecorder", "Microsoft.PowerAutomateDesktop", "Microsoft.GamingApp", "Clipchamp.Clipchamp", "Microsoft.BingNews", "Microsoft.BingSearch", "Microsoft.WindowsCamera", "Microsoft.ZuneMusic", "Microsoft.WindowsFeedbackHub", "Microsoft.XboxApp", "Microsoft.MixedReality.Portal", "Microsoft.Office.OneNote", "Microsoft.People", "Microsoft.Getstarted", "Microsoft.549981C3F5F10", "Microsoft.SkypeApp", "Microsoft.ZuneVideo", "Microsoft.Microsoft3DViewer", "Microsoft.MSPaint", "Microsoft.WindowsCommunicationsApps", "Microsoft.WindowsMaps") | ForEach-Object { Get-AppxPackage -AllUsers -Name $_ | Remove-AppxPackage }
+```
+
+Firefox∨
+  - [Firefox zip format](https://ftp.mozilla.org/pub/firefox/candidates/) https://ftp.mozilla.org/pub/firefox/candidates/
+  - Delete the Firefox under Mozilla in registry (this has corporate-set keys to forbid Firefox extension installation): `reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Mozilla\Firefox /f`
+  - [Delete 1 property](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/remove-itemproperty) in the registry: `Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Mozilla\Firefox" -Name "ExtensionSettings" -Force`
+  - Clean up Firefox: `rm -rf AppData/Local/Mozilla AppData/Roaming/Mozilla`
+  - Show all profiles: `about:profiles` - Start with a profile: `firefox -P my-profile`
+</div>
+<div class="tab" title="Jenkins">
+To list files: `http https://artifacts.devops.bfsaws.net/artifactory/GPTM-TEST-DEV/DF-Query/ X-JFrog-Art-Api:xxx | grep -e "-2022 " -e "-Jan-2023 " | sed 's/^.*DFQueryService/abc DFQueryService/g' | sed 's/^.*//g'`
+
+To delete: `http DELETE https://artifacts.devops.bfsaws.net/artifactory/GPTM-TEST-DEV/DF-Query/*file.ext* X-JFrog-Art-Api:xxx` __Note__: this can be done with a folder too
+
+Search in Jira: `project = gptmcr and assignee in (..., ...) order by key desc, assignee asc`
+
+Declarative pipeline:
+```
+pipeline {
+  agent { label 'aws_set2_node1 || aws_set1_node1 || aws_set1_node2' }
+  options {
+    timeout(time: 100, unit: 'SECONDS')
+  }
+  environment {
+    SA_GPTM_CI = credentials('sa-gptm-ci')
+  }
+  stages {
+    stage('...') {
+      steps {
+        sh '''
+          echo "" >> ~/.ssh/authorized_keys.jenkins
+          echo "ssh-ed25519 ..." >> ~/.ssh/authorized_keys.jenkins
+        '''
+      }
+    }
+  }
+  post {
+    always{
+      cleanWs()
+    }
+  }
+}
+```
+</div>
+<div class="tab" title="LocalStack">
+Start: `docker run --rm -it -p 4566:4566 -p 4510-4559:4510-4559 -p 443:443 -e LOCALSTACK_AUTH_TOKEN=ls-JEXAbUGA-buJo-qOME-xejU-318280160ae5 -v /var/run/docker.sock:/var/run/docker.sock localstack/localstack-pro:4.2.0` the auth token is from [here](https://app.localstack.cloud/workspace/auth-tokens), the version is from [here](https://github.com/localstack/localstack/releases)
+
+Add these files to use with the AWS cli: `~/.aws/config` and `~/.aws/credentials`, then `export AWS_PROFILE=localstack`
+```
+[profile localstack]                          [localstack]
+region=us-east-1                              aws_access_key_id=test
+output=json                                   aws_secret_access_key=test
+endpoint_url=http://localhost:4566
+```
+
+
+</div>
+<div class="tab" title="Terraform">
+DevOps: to make software delivery better - Terraform: Infrastructure as Code to define, deploy, update and destroy the infrastructure
+
+Versions: 1.1.x (Dec 21 - Apr 22). Now 1.6.x
+
+Key principals of IaC: __idempotent__ (no matter of the starting state or how many times the code is run, the final state is the same), __immutable__ (steps are repeatable)
+
+Terraform architecture has 4 components:
+  - Providers: to work with different cloud providers
+  - Modules: directories of terraform files. Used to organize files, to reuse, encapsulate
+  - Resources: like VPC, EC2 instances, S3, lambda ...
+  - Templates: a collection of files that describe the desired state of our infrastructure
+
+Terraform workflow:
+  - Write: use HashiCorp Configuration Language (HCL)
+  - Init: `terraform init` download providers
+  - Plan: `terraform plan` shows what resources will be created, updated or deleted.
+  - Apply: `terraform apply`.
+  - Destroy: `terraform destroy` destroy resources
+</div>
+<div class="tab" title="Android">
+[ReVanced Manager](https://revanced.app) download and install [GmsCore](https://github.com/revanced/gmscore) and [ReVanced Manager](https://revanced.app/download) with `adb install` (don't forget to disable auto update in Google Play Store).
+</div>
+<div class="tab" title="Bánh Flan Caramel" fontawesome="fa-solid fa-cake-candles">
+[9 eggs, 1 cup of sugar, 320 ml of milk (not non-fat), vanilla powder](https://www.youtube.com/watch?v=F4WSf2YCstA) 1 cup = 125ml
+
+In a non-stick pan: .5 cup of sugar, 1 spoon of water (just enough to make the sugar wet), cook medium heat until the sugar turns into caramel, quickly remove it.
+
+.5 cup of sugar + 2.5 cups of milk, cook until it's hot but not boiling.
+
+Whisk 9 eggs in a bowl. Pour the hot/warm milk into it while whisking. Put a bit vanilla there. Pour it out through a strainer. Remove all the bubbles. Cool it down for 10 mins.
+
+Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mins.
+</div>
+<div class="tab" title="Finance Knowledge" fontawesome="fa-solid fa-piggy-bank">
+[Underlying asset](https://www.investopedia.com/terms/u/underlying-asset.asp) are the financial assets upon which a derivative's price is based.
+
+[Derivative](https://www.investopedia.com/terms/d/derivative.asp): a financial contract with a price that depends on underlying asset or group of assets. A derivative is set between 2 or more parties that can trade on an exchange. For example: options
+
+[Option](https://www.investopedia.com/terms/o/option.asp): a financial instrument that is based on the value of underlying securities such as stocks, indexes and ETFs (exchange traded funds)
+
+[Investment securities](https://www.investopedia.com/terms/i/investment-securities.asp): a category of securities. They are tradable assets such as equities or fixed income instruments. They are purchased with the intention of holding them for investment.
+
+[Equity](https://www.investopedia.com/terms/e/equity.asp): the amount of money that would be returned to a shareholder if all the assets are liquidated and all the debts are paid off.
+
+[Fixed income](https://www.investopedia.com/terms/f/fixedincome.asp): a type of assets and securities that pay investors a fixed interest or dividends. For example: government and corporate bonds.
+
+[Capital Markets](https://www.investopedia.com/terms/c/capitalmarkets.asp): where savings and investments are channeled between suppliers (e.g. banks, investors) and those in need (e.g. businesses, governments). The most common capital markets are the stock market and the bond market.
+</div>
+<script>
+  /*
+   * s is a line in <code>...</code>
+   * `&amp;amp;` will be replaced with `&amp;`
+   * the `// till the end of the line` will be put in a <i class="comment">// till the end of the line</i>
+   * the `*something here*` will be put in `<i>something here</i>`
+   * Return the new line.
+   */
+  function fixAmpersandAndMakeComment(s) {
+    let startPosition = 0;
+    while (true) { // TODO needs unit tests
+      s = s.replaceAll('&amp;amp;', '&amp;');
+      let i = s.indexOf('*', startPosition);
+      if (i < 0) break;
+
+      if (s.substring(i + 1, i + 2) !== ' ' && s.substring(i + 1, i + 2) != '.' && s.substring(i - 1, i) != '.') {
+        let j = s.indexOf('*', i + 1);
+        if (j > i && s.substring(j - 1, j) !== ' ') {
+          s = s.substring(0, i) + `<i>${s.substring(i + 1, j)}</i>` + s.substring(j + 1);
+          startPosition = j + 1;
+        } else {
+          startPosition = i + 1;
+        }
+      } else  {
+        startPosition = i + 1;
+      }
+    }
+
+    let i = s.indexOf('// ');
+    if (i >= 0) {
+      return s.substring(0, i) + `<i class="comment">${s.substring(i)}</i>`;
+    }
+
+    return s;
+  }
+
+  /*
+   * If `<...>` is used in <code>, the browser thinks that it's a tag. So we have to write `&lt;...>`.
+   * But then, showdown converts them to `&amp;lt;` and `&amp;gt;`.
+   * This method replaces `&amp;lt;` with `&lt;` and `&amp;gt;` with `&gt;`.
+   */
+  function fixLessGreaterThan(s) {
+    return s.replaceAll('&amp;lt;', '&lt;').replaceAll('&amp;gt;', '&gt;');
+  }
+
+  const converter = new showdown.Converter({tables: true, literalMidWordUnderscores: true, strikethrough: true});
+  let i = 1; // used to create the id for each accordion item
+
+  const allAccordionItemHtmls = Array.from(document.querySelectorAll('div.tab'))
+    .map(div => {
+      const accordionItem = `
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}">
+            <i class="${div.getAttribute('fontawesome')}"></i>${div.getAttribute('title')}
+          </button>
+        </h2>
+        <div id="collapse${i}" class="accordion-collapse collapse">
+          <div class="accordion-body">${converter.makeHtml(div.innerHTML)}</div>
+        </div>
+      </div>
+      `;
+      div.parentElement.removeChild(div);
+      i += 1;
+      return accordionItem;
+    })
+    .join('\n');
+  document.body.insertAdjacentHTML('afterbegin', `<div class="accordion accordion-flush" id="myAccordionNotes">${allAccordionItemHtmls}</div>`);
+
+  // add <i> inside <code></code>
+  document.querySelectorAll('code').forEach(code => {
+    const newInnerHtml = code.innerHTML.split('\n')
+      .map(line => fixAmpersandAndMakeComment(line))
+      .map(line => fixLessGreaterThan(line))
+      .join('\n');
+    code.innerHTML = newInnerHtml;
+  });
+
+  // move <pre> inside the above <li> if <li> ends with `:`
+  Array.from(document.querySelectorAll('li:last-child'))
+    .filter(li => li.innerText.endsWith(':'))
+    .forEach(li => {
+      const ul = li.parentElement;
+      const pre = ul.nextElementSibling;
+      if (pre != null && pre.nodeName == 'PRE') {
+        pre.style.marginTop = '.2em';
+        li.innerHTML += pre.outerHTML;
+        pre.parentElement.removeChild(pre);
+      }
+    });
+
+  // if <p> is followed by an <ul> which is followed by another <ul>, merge these <ul> together
+  document.querySelectorAll('p + ul + ul')
+    .forEach(ul => {
+      const firstUl = ul.previousElementSibling;
+      while (ul) {
+        let nextUl = ul.nextElementSibling;
+        firstUl.insertAdjacentHTML('beforeend', ul.innerHTML);
+        ul.parentElement.removeChild(ul);
+        if (nextUl && nextUl.localName != 'ul') nextUl = null;
+        ul = nextUl;
+      }
+    });
+
+  // make <p> ending with a `∨` and followed by <ul> an accordion
+/* TODO this function is not used?
+  function removePTag(markdown) { // calls converter.makeHtml which returns <p>...</p> then removes <p> and fixes the < or >
+    console.log('markdown', markdown);
+    return converter.makeHtml(markdown).replace('<p>', '').replace('</p>', '').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+  }
+*/
+  Array.from(document.querySelectorAll('p + ul'))
+    .filter(ul => ul.previousElementSibling.innerText.endsWith('∨'))
+    .forEach(ul => {
+      const p = ul.previousElementSibling;
+      p.insertAdjacentHTML('beforebegin', `
+        <div class="accordion accordion-flush">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}">
+                ${p.innerHTML.substring(0, p.innerHTML.length - 1)}
+              </button>
+            </h2>
+            <div id="collapse${i}" class="accordion-collapse collapse">${ul.outerHTML}</div>
+          </div>
+        </div>
+      `);
+      p.parentElement.removeChild(p);
+      ul.parentElement.removeChild(ul);
+      i += 1;
+    });
+
+  // make <p> ending with a `∨` and followed by a <table> which is followed by an <ul> an accordion
+    Array.from(document.querySelectorAll('p + table + ul'))
+      .filter(ul => ul.previousElementSibling.previousElementSibling.innerText.endsWith('∨'))
+      .forEach(ul => {
+        const table = ul.previousElementSibling;
+        const p = table.previousElementSibling;
+        p.insertAdjacentHTML('beforebegin', `
+          <div class="accordion accordion-flush">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}">
+                  ${p.innerHTML.substring(0, p.innerHTML.length - 1)}
+                </button>
+              </h2>
+              <div id="collapse${i}" class="accordion-collapse collapse">
+                ${table.outerHTML}
+                ${ul.outerHTML}
+              </div>
+            </div>
+          </div>
+        `);
+        p.parentElement.removeChild(p);
+        table.parentElement.removeChild(table);
+        ul.parentElement.removeChild(ul);
+        i += 1;
+      });
+
+  // if <p> endings with `:` and followed by <ul> or <pre>, make them close to each other
+  Array.from(document.querySelectorAll('p + ul, p + pre'))
+    .filter(ulORpre => ulORpre.previousElementSibling.innerText.endsWith(':'))
+    .forEach(ulORpre => ulORpre.previousElementSibling.style.marginBottom = '.2rem');
+
+  // add bootstrap `table` class to all <table>
+  document.querySelectorAll('table').forEach(table => table.classList.add('table'));
+
+  // this is used to increase the font size of kbd in vim motions
+  document.querySelectorAll('th').forEach(th => {
+    if (th.innerText === 'vim motions') {
+      th.parentElement.parentElement.parentElement.classList.add('vim-motions');
+    }
+  });
+</script>
+
+<script>
+async function concatUint8Arrays(uint8arrays) {
+  const blob = new Blob(uint8arrays);
+  const buffer = await blob.arrayBuffer();
+  return new Uint8Array(buffer);
+}
+
+async function compress(str) { // compress string to Uint8Array (gzip)
+  const stream = new Blob([str]).stream();
+  const compressedStream = stream.pipeThrough(new CompressionStream("gzip"));
+  const chunks = [];
+  for await (const chunk of compressedStream) {
+    chunks.push(chunk);
+  }
+  return await concatUint8Arrays(chunks);
+}
+
+async function decompress(compressedBytes) { // decompress Uint8Array to string (gzip)
+  const stream = new Blob([compressedBytes]).stream();
+  const decompressedStream = stream.pipeThrough(new DecompressionStream("gzip"));
+  const chunks = [];
+  for await (const chunk of decompressedStream) {
+    chunks.push(chunk);
+  }
+  const stringBytes = await concatUint8Arrays(chunks);
+  return new TextDecoder().decode(stringBytes);
+}
+
+function uint8ToBase64(uint8) {
+  let binary = '';
+  for (let i = 0; i < uint8.length; i++) {
+    binary += String.fromCharCode(uint8[i]);
+  }
+  return btoa(binary);
+}
+
+function base64ToUint8(base64) {
+  const binary = atob(base64);
+  const uint8 = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    uint8[i] = binary.charCodeAt(i);
+  }
+  return uint8;
+}
+
+async function deriveKey(password, salt) { // derive AES-GCM key from password + salt
+  const encoder = new TextEncoder();
+  const passwordKey = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits", "deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    {
+      "name": "PBKDF2",
+      salt: salt,
+      "iterations": 100000,
+      "hash": "SHA-256"
+    },
+    passwordKey,
+    { "name": "AES-GCM", "length": 256 },
+    true,
+    ["encrypt", "decrypt"]
+  );
+}
+
+async function encrypt(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.error(`Element with id "${id}" not found`);
+    return;
+  }
+  const content = el.innerHTML;
+  if (!content) {
+    console.log('No content to encrypt');
+    return;
+  }
+  const password = document.body.getAttribute('password');
+  if (!password) {
+    console.error('No password attribute on <body>');
+    return;
+  }
+  try {
+    const compressed = await compress(content);
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const key = await deriveKey(password, salt);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const encryptedBuffer = await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv: iv },
+      key,
+      compressed
+    );
+    const encrypted = new Uint8Array(encryptedBuffer);
+    const totalLength = salt.length + iv.length + encrypted.length;
+    const total = new Uint8Array(totalLength);
+    total.set(salt, 0);
+    total.set(iv, salt.length);
+    total.set(encrypted, salt.length + iv.length);
+    const encryptedStr = uint8ToBase64(total);
+    el.innerHTML = encryptedStr;
+    console.log(`Encrypted content for "${id}"`);
+  } catch (e) {
+    console.error('Encryption failed:', e);
+  }
+}
+
+async function decrypt(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.error(`Element with id "${id}" not found`);
+    return;
+  }
+  let encryptedStr = el.innerHTML.trim();
+  if (!encryptedStr) {
+    console.log('No content to decrypt');
+    return;
+  }
+  const password = document.body.getAttribute('password');
+  if (!password) {
+    console.error('No password attribute on <body>');
+    return;
+  }
+  try {
+    const total = base64ToUint8(encryptedStr);
+    if (total.length < 44) { // Min: 16 salt + 12 IV + 16 tag
+      throw new Error('Invalid encrypted data length');
+    }
+    const salt = total.slice(0, 16);
+    const iv = total.slice(16, 28);
+    const ciphertext = total.slice(28);
+    const key = await deriveKey(password, salt);
+    const decryptedBuffer = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: iv },
+      key,
+      ciphertext
+    );
+    const compressed = new Uint8Array(decryptedBuffer);
+    const content = await decompress(compressed);
+    el.innerHTML = content;
+    console.log(`Decrypted content for "${id}"`);
+  } catch (e) {
+    console.error('Decryption failed (wrong password or invalid data?):', e);
+  }
+}
+</script>
+</body>
+</html>

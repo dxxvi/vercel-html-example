@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 40px">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Math 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400..700&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    .font1 {
+      font-family: "Edu VIC WA NT Beginner", cursive;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+      text-align: right;
+    }
+    .curly-bracket { font: 100 3rem "Noto Serif"; color: #555 }
+    td input { width: 2rem; text-align: center }
+    td.x { text-align: right }
+    td.eq { padding-left: .3rem; padding-right: .3rem }
+    td.rhs { text-align: left }
+    .incorrect { color: red; } .correct { color: #3e3 }
+    span.font1 sup { font-size: 80% }
+  </style>
+</head>
+<body style="color: #333">
+  <script>
+    function check() {
+      const result = document.getElementById('result');
+      result.classList.remove('incorrect');
+      result.classList.remove('correct');
+
+      const correctx = document.getElementById('x').getAttribute('answer');
+      const answerx = document.getElementById('x').value.trim();
+      const correcty = document.getElementById('y').getAttribute('answer');
+      const answery = document.getElementById('y').value.trim();
+      if (correctx == answerx && correcty == answery) {
+        result.classList.add('correct');
+        result.innerHTML = 'Correct';
+      } else {
+        result.classList.add('incorrect');
+        result.innerHTML = 'Incorrect';
+      }
+    }
+
+    function getRandomInt(n) { // returns a random int i such that -n < a < n
+      const a = Math.floor(Math.random() * n);
+      return Math.floor(Math.random() * 2) == 0 ? a : -a;
+    }
+
+
+    function representation(n) {
+      if (n === 1) return '';
+      if (n === -1) return '-';
+      return n;
+    }
+
+    function representationXY(n, s) {
+      if (n === 0) return '';
+      return representation(n) + s;
+    }
+
+    (function() {
+      const N = 10;
+      const x = getRandomInt(N);
+      const y = getRandomInt(N);
+
+      const a1 = getRandomInt(N);
+      let b1 = getRandomInt(N);
+      const sign1 = b1 > 0 ? (a1 === 0 ? '' : '+') : (b1 === 0 ? '' : '-');
+      const c1 = a1 * x + b1 * y;
+      b1 = Math.abs(b1);
+
+      const a2 = getRandomInt(N);
+      let b2 = getRandomInt(N);
+      const sign2 = b2 > 0 ? (a2 === 0 ? '' : '+') : (b2 === 0 ? '' : '-');
+      const c2 = a2 * x + b2 * y;
+      b2 = Math.abs(b2);
+
+      let html = `
+        <table>
+          <tr>
+            <td>
+              <table>
+                <tr>
+                  <td rowspan="2" class="curly-bracket">&#123;</td>
+                  <td class="font1 x">${representationXY(a1, 'x')}</td>
+                  <td class="font1">${sign1}</td>
+                  <td class="font1">${representationXY(b1, 'y')}</td>
+                  <td class="font1 eq">=</td>
+                  <td class="font1 rhs">${c1}</td>
+                </tr>
+                <tr>
+                  <td class="font1 x">${representationXY(a2, 'x')}</td>
+                  <td class="font1">${sign2}</td>
+                  <td class="font1">${representationXY(b2, 'y')}</td>
+                  <td class="font1 eq">=</td>
+                  <td class="font1 rhs">${c2}</td>
+                </tr>
+              </table>
+            </td>
+            <td style="padding-left: 2rem;">
+              <table>
+                <tr>
+                  <td class="font1">x</td>
+                  <td class="font1">=</td>
+                  <td><input id="x" type="text" answer="${x}"></td>
+                  <td class="font1" style="padding-left: 2rem">y</td>
+                  <td class="font1">=</td>
+                  <td><input id="y" type="text" answer="${y}"></td>
+                </tr>
+                <tr>
+                  <td colspan="3"><button onclick="check()">Check</button></td>
+                  <td colspan="3" class="font1" id="result"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      `;
+      document.body.insertAdjacentHTML('beforeend', html);
+
+      // show 3-power equations
+      const coefs = [
+        // [2 (a), 3 (b), 4 (c), 5 (d)], // show ax^3 + bx^2 + cx + d = 0
+      ];
+      /*
+       (x - a)(bx - c)(dx - e) = 0 where -3 <= a <= 3, -9 <= b, c, d <= 9
+       (x - a)[bdx^2 - (be + cd)x + ec] = bdx^3 - (be + cd + abd)x^2 + (abe + acd + ec)x - aec
+       */
+      (function() {
+        let a = getRandomInt(4);
+        let b = getRandomInt(10);
+        let c = getRandomInt(10);
+        let d = getRandomInt(10);
+        let e = getRandomInt(10);
+        console.log('a =', a, 'b =', b, ' c=', c, ' d=', d, ' e=', e);
+        coefs.push([b*d, -b*e - c*d - a*b*d, a*b*e + a*c*d + e*c, -a*e*c]);
+      })();
+      for (let i = 0; i < coefs.length; i++) {
+        let a = coefs[i][0];
+        if (a === 1) a = '';
+        if (a === -1) a = '-';
+        const power3Part = a === 0 ? `` : `<span class="font1">${a}x<sup>3</sup></span>`;
+
+        let b = coefs[i][1];
+        const signb = b === 0 ? '' : (b > 0 ? '+' : '-');
+        b = Math.abs(b);
+        if (b === 1) b = '';
+        const power2Part = b === 0 ? `` : `<span class="font1 sign">${signb}</span> <span class="font1">${b}x<sup>2</sup></span>`;
+
+        let c = coefs[i][2];
+        const signc = c === 0 ? '' : (c > 0 ? '+' : '-');
+        c = Math.abs(c);
+        if (c === 1) c = '';
+        const power1Part = c === 0 ? `` : `<span class="font1 sign">${signc}</span> <span class="font1">${c}x</span>`;
+
+        let d = coefs[i][3];
+        const signd = d === 0 ? '' : (d > 0 ? '+' : '-');
+        d = Math.abs(d);
+        if (d === 0) d = '';
+        const power0Part = d === 0 ? `` : `<span class="font1 sign">${signd}</span> <span class="font1">${d}</span>`;
+        html = `
+        <div style="margin-top: 1rem">
+          ${power3Part}
+          ${power2Part}
+          ${power1Part}
+          ${power0Part}
+          <span class="font1"> = 0</span>
+        </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', html);
+      }
+    })();
+  </script>
+</body>
+</html>
