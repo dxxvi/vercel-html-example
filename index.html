@@ -71,7 +71,7 @@
 <div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
 Take screenshot in KDE Plasma Wayland: `spectacle -f -b -e -S -n -o /dev/shm/test.png` almost a second
 
-[Free DDNS with Cloudflare](https://github.com/devrim/cloudflare-noip)
+Cloudflare tunnel: to access local apps from outside: `paru -Sy cloudflared && cloudflared tunnel --url http://localhost:8080`
 
 To know how many RAM slots available: `sudo dmidecode --type memory`
 
@@ -158,19 +158,17 @@ lsblk                                    // check to see if partitions are creat
 mkfs.fat -F32 /dev/nvme0n1p*5* && mkfs.ext4 /dev/nvme0n1p*6* // format the EFI System and regular partitions
 mount /dev/nvme0n1p*6* /mnt && mkdir /mnt/boot && mount /dev/nvme0n1p*5* /mnt/boot && lsblk // to verify that the mountings are correct
 archinstall // choose Pre-mounted configuration, Grub bootloader, pipewire audio server, root directory of the mounted device: /mnt
-  Hyprland desktop environment: dolphin dunst grim kitty polkit-kde-agent qt5/6-wayland slurp wofi xdg-desktop-portal-hyprland
-  Server: docker, nginx, sshd
 [root@archiso /]# lsblk && pacman -Sy grub efibootmgr dosfstools mtools ntfs-3g wezterm os-prober networkmanager neovim power-profiles-daemon // choose the option to chroot
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
   grub-mkconfig -o /boot/grub/grub.cfg
 ```
   - Boot into the new Arch and add the Windows item to the Grub: uncomment the line `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub`:
 ```
-systemctl start NetworkManager && nmcli radio wifi on && nmcli dev wifi connect &lt;SSID&gt; password &lt;password&gt;
 pacman -Sy os-prober
 mount /dev/nvme0n1p1 /mnt // mount the Windows EFI partition manually if grub-mkconfig cannot find Windows
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
+  - Change the font used in the grub menu: `sudo grub-mkfont -s 20 -o /boot/grub/fonts/myfont.pf2 ~/.local/share/fonts/myfont.ttf`, add `GRUB_FONT="/boot/grub/fonts/myfont.pf2"` to `/etc/default/grub`, finally `sudo grub-mkconfig -o /boot/grub/grub.cfg`
   - Stuff: `git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si && paru -Sy visual-studio-code-bin`
   - Install KDE Plasma: `pacman -Sy plasma-desktop kscreen plasma-nm plasma-pa libnotify bluedevil`
   - Copy `.ttf` files to `~/.local/share/fonts` then `fc-cache -f -v`
@@ -205,7 +203,7 @@ GitHub Codespaces - Tailscale∨
   - In the codespace machine, run `xclock` or `xeyes` to verify the X11Forwarding works. For gedit, [firefox](https://ftp.mozilla.org/pub/firefox/candidates/146.0-candidates/), Intellij (which doesn't seem able to find the browser, so unable to use the Ultimate Edition) this env var `GDK_BACKEND=x11` is needed.
   - We can go to the Settings tab on tailscale website and delete the tailnet.
 
-Running GUI apps (firefox, Google antigravity) in an Ubuntu docker container∨
+Running GUI apps (firefox, Google antigravity, IntelliJ) in an Ubuntu docker container∨
   - This is the `Dockerfile` (make sure that the account you're using in the host machine has 1000 for uid and gid):
 ```
 FROM ubuntu:24.04
@@ -258,7 +256,7 @@ CMD ["/bin/bash"]
   - Build the docker image: `docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -t my-ubuntu .`
   - Run with:
 ```
-docker run -it --rm \
+paru -Sy xorg-xhost && xhost + && docker run -it --rm \
     --net=host \
     --device /dev/dri \
     --security-opt apparmor:unconfined \
@@ -268,9 +266,12 @@ docker run -it --rm \
     -e GDK_BACKEND=wayland \
     -e MOZ_ENABLE_WAYLAND=1 \
     -e GTK_USE_PORTAL=0 \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -v $HOME/.Xauthority:/home/developer/.Xauthority:ro \
     -v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/run/user/$(id -u)/$WAYLAND_DISPLAY \
     -v /run/user/$(id -u)/bus:/run/user/$(id -u)/bus \
-    -v mount_some_directory_here   my-ubuntu /bin/bash
+    -v /usr/lib/jvm/default:/jdk -v /ideaIU:/ideaIU   my-ubuntu /bin/bash
 ```
   - Run Google antigravity with `antigravity --no-sandbox --ozone-platform=wayland`
 
@@ -284,22 +285,25 @@ groupadd -g 1904 docker && useradd -d /home/*mylinuxaccount* -m -u 1904 -g docke
 mkdir -p ~/.local/bin ~/.ssh && sed -i '$ a export LIBGL_ALWAYS_INDIRECT=1' ~/.bashrc && sed -i "$ a alias ..='cd ..'" ~/.bashrc && sed -i "$ a alias ...='cd ../..'" ~/.bashrc
 ```
 
-sed: substitute, add and delete lines∨
-  - of course, the one I already knew: substitue: `sed -i 's/*a*/*b*/g' *file.txt*`; multiple substitutions `sed -i -e 's/*a*/*b*/g' -e 's/*c*/*d*/' *file.txt*`
-  - print the Nth line in the file: `sed -n '*N*p' *file.txt*`
-  - delete the first N + 1 lines in the file: `sed -i -e '1,*N*d' *file.txt*`
-  - delete lines containing something in the file: `sed -i -e '/*something*/d' file` (no `-e` in Arch)
-  - add a line after the Nth line in the file: `sed '*N* a *line to be added*' *file.txt*` (don't forget to add `-i` to edit the file)
-  - add a line before the Nth line in the file: `sed '*N* i *line to be added*' *file.txt*`, `$` means the last line
-  - add a line after the lines containing a pattern match: `sed '/*PATTERN*/a *line to be added*' *file.txt*`, use `-E` for regex
-  - add a line before the lines containing a pattern match: `sed '/*PATTERN*/i *line to be added*' *file.txt*`
+Script to take screenshots of the current window∨
+  - create new file every `{INTERVAL}` seconds and delete files older than 1.5 mins:
+```
+#!/usr/bin/env bash
 
-grep: filter∨
-  - get lines longer than 82 characters: `grep '.\{82\}'`
-  - count number of lines longer than 82 characters: `grep -c '.\{82\}'` instead of `grep '.\{82\}' | wc -l`
+INTERVAL=5
 
-[jq](https://www.youtube.com/watch?v=j7xZ2VkLYIY)∨
-  - `jq '.' file.json` or `cat file.json | jq '.'`. `.` is like the root, so we can add fields after it.
+while true; do
+    timestamp=$(date +%H%M%S)
+    filename="${timestamp}.png"
+
+    spectacle --no-decoration --no-shadow --nonotify --background --activewindow --output $filename 2>/dev/null
+    optipng $filename
+
+    find . -maxdepth 1 -type f -name "[0-2][0-9][0-5][0-9][0-5][0-9].png" -mmin +1.5 -delete
+
+    sleep "$INTERVAL"
+done
+```
 
 Use our private key on a remote machine without copying it there∨
   - Lists fingerprints of all identities currently represented by the agent: `ssh-add -l` which might return an error if the ssh-agent is not started.
@@ -447,37 +451,34 @@ Add spaces to MacOS dock: `defaults write com.apple.dock persistent-apps -array-
 
 [paged.js](https://pagedjs.org/) paginates any HTML content to produce beautiful print-ready PDF
 
-css property: `-moz-osx-font-smoothing`, Roboto Flex font (Google Fonts [filtered for variable only](https://fonts.google.com/?vfonly=true)): adjustable width
-
-Align `dt` and `dd` in `dl`:
-```
-dl { display: grid; grid-template-columns: max-content auto }
-dt { display: grid; align-content: center; grid-column-start: 1 }
-dd { margin-left: 0; grid-column-start: 2 }
-```
-
 `getComputedStyle(*element*).getPropertyValue('*property*')`: [for example](https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle) `getComputedStyle(p).getPropertyValue('font-size')`
 
 [Insert html code to an element](https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML): `*element*.insertAdjacentHTML(*position*, *text*)` where `*position*` can be `beforebegin`, `afterbegin`, `beforeend` or `afterend` and `*text*` is the string to be parsed as HTML and inserted into the tree.
 
 [Get all attributes](https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes) of a html element
 
-Convert image data to base64:
+Load testing with Grafana k6∨
+  - `paru -Sy k6-bin`
+  - Write a `.js` file like this (`vus`: the number of concurrent requests):
 ```
-function convertImageToBase64(imgUrl, callback) {
-  const image = new Image();
-  image.crossOrigin = 'anonymous';
-  image.onload = () => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.height = image.naturalHeight;
-    canvas.width = image.naturalWidth;
-    ctx.drawImage(image, 0, 0);
-    callback && callback(canvas.toDataURL()) // canvas.toDataURL() is what we want
-  };
-  image.src = imgUrl;
+import http from 'k6/http';
+import { uuidv4 } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
+
+export const options = {
+  scenarios: {
+    contacts: {
+      executor: 'constant-vus',
+      vus: 5000,
+      duration: '10s',
+    },
+  },
+};
+
+export default function () {
+  http.get(`http://localhost:8080/?id=${uuidv4()}`);
 }
 ```
+  - Run it: `k6 run file.js`
 
 Angular∨
   - A component is annotated with `@Component` which takes a css `selector`, a `templateUrl`, 0 or many `styleUrls` and other non-popular properties like `encapsulation: ViewEncapsulation.Emulated | ShadowDom` (so that the css styles of the page don't affect this component and vice versa), ...
@@ -526,11 +527,11 @@ Get [HTTPS](https://lcl.host/) in your local development
 
 [Disable SSL](https://stackoverflow.com/questions/52988677/allow-insecure-https-connection-for-java-jdk-11-httpclient) in Java 11 HttpClient
 
-[Java language changes by release](https://docs.oracle.com/en/java/javase/24/language/java-language-changes-release.html): a very good to see all the changes in 1 place
+[Java language changes by release](https://docs.oracle.com/en/java/javase/25/language/java-language-changes-release.html): a very good to see all the changes in 1 place
 
 Using Datadog + profilers [to understand request latency](https://richardstartin.github.io/posts/wallclock-profiler)
 
-New Language [Features](https://jenkov.com/tutorials/java/index.html) from Java 7 - 23 ~ [Compare](https://javaalmanac.io/) Java API of different JDK versions
+New Language [Features](https://jenkov.com/tutorials/java/index.html) from Java 7 - 25 ~ [Compare](https://javaalmanac.io/) Java API of different JDK versions
 
 [JFR events](https://sap.github.io/SapMachine/jfrevents/21.html): when can I have time to play with JFR?
 
@@ -666,7 +667,7 @@ Concurrency∨
       - `ExecutorService.submit(Runnable): Future&lt;?>`
       - `ExecutorService.submit(Runnable, T result): Future&lt;T>`
       - `ExecutorService.submit(Callable&lt;T>): Future&lt;T>`
-      - `ExecutorService.invokeAny(Collection&lt;Callable&lt;T>>, optional timeout): T`
+      - `ExecutorService.invokeAny(Collection&lt;Callable&lt;T>>, optional timeout): T` _// returns the result of the task that completes successfully first_
       - `ExecutorService.invokeAll(Collection&lt;Callable&lt;T>>, optional timeout): List&lt;Future&lt;T>>`
   - interface `ScheduledExecutorService extends ExecutorService` has `schedule(Runnable | Callable, delay): ScheduledFuture`, `scheduleAtFixedRate(Runnable, initialDelay, period): ScheduledFuture&lt;?>` and `scheduleAtFixedDelay(Runnable, initialDelay, delay): ScheduledFuture&lt;?>`.
   - To get the task results in order of completion, use `var completionService = new ExecutorCompletionService&lt;R>(executorService)` then submit a job `completionService.submit(runnable/callable): Future&lt;R>` then get the next completed task result `completionService.poll/take: Future&lt;R>`
@@ -1250,152 +1251,5 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
   });
 </script>
 
-<script>
-async function concatUint8Arrays(uint8arrays) {
-  const blob = new Blob(uint8arrays);
-  const buffer = await blob.arrayBuffer();
-  return new Uint8Array(buffer);
-}
-
-async function compress(str) { // compress string to Uint8Array (gzip)
-  const stream = new Blob([str]).stream();
-  const compressedStream = stream.pipeThrough(new CompressionStream("gzip"));
-  const chunks = [];
-  for await (const chunk of compressedStream) {
-    chunks.push(chunk);
-  }
-  return await concatUint8Arrays(chunks);
-}
-
-async function decompress(compressedBytes) { // decompress Uint8Array to string (gzip)
-  const stream = new Blob([compressedBytes]).stream();
-  const decompressedStream = stream.pipeThrough(new DecompressionStream("gzip"));
-  const chunks = [];
-  for await (const chunk of decompressedStream) {
-    chunks.push(chunk);
-  }
-  const stringBytes = await concatUint8Arrays(chunks);
-  return new TextDecoder().decode(stringBytes);
-}
-
-function uint8ToBase64(uint8) {
-  let binary = '';
-  for (let i = 0; i < uint8.length; i++) {
-    binary += String.fromCharCode(uint8[i]);
-  }
-  return btoa(binary);
-}
-
-function base64ToUint8(base64) {
-  const binary = atob(base64);
-  const uint8 = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    uint8[i] = binary.charCodeAt(i);
-  }
-  return uint8;
-}
-
-async function deriveKey(password, salt) { // derive AES-GCM key from password + salt
-  const encoder = new TextEncoder();
-  const passwordKey = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(password),
-    "PBKDF2",
-    false,
-    ["deriveBits", "deriveKey"]
-  );
-  return crypto.subtle.deriveKey(
-    {
-      "name": "PBKDF2",
-      salt: salt,
-      "iterations": 100000,
-      "hash": "SHA-256"
-    },
-    passwordKey,
-    { "name": "AES-GCM", "length": 256 },
-    true,
-    ["encrypt", "decrypt"]
-  );
-}
-
-async function encrypt(id) {
-  const el = document.getElementById(id);
-  if (!el) {
-    console.error(`Element with id "${id}" not found`);
-    return;
-  }
-  const content = el.innerHTML;
-  if (!content) {
-    console.log('No content to encrypt');
-    return;
-  }
-  const password = document.body.getAttribute('password');
-  if (!password) {
-    console.error('No password attribute on <body>');
-    return;
-  }
-  try {
-    const compressed = await compress(content);
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    const key = await deriveKey(password, salt);
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const encryptedBuffer = await crypto.subtle.encrypt(
-      { name: "AES-GCM", iv: iv },
-      key,
-      compressed
-    );
-    const encrypted = new Uint8Array(encryptedBuffer);
-    const totalLength = salt.length + iv.length + encrypted.length;
-    const total = new Uint8Array(totalLength);
-    total.set(salt, 0);
-    total.set(iv, salt.length);
-    total.set(encrypted, salt.length + iv.length);
-    const encryptedStr = uint8ToBase64(total);
-    el.innerHTML = encryptedStr;
-    console.log(`Encrypted content for "${id}"`);
-  } catch (e) {
-    console.error('Encryption failed:', e);
-  }
-}
-
-async function decrypt(id) {
-  const el = document.getElementById(id);
-  if (!el) {
-    console.error(`Element with id "${id}" not found`);
-    return;
-  }
-  let encryptedStr = el.innerHTML.trim();
-  if (!encryptedStr) {
-    console.log('No content to decrypt');
-    return;
-  }
-  const password = document.body.getAttribute('password');
-  if (!password) {
-    console.error('No password attribute on <body>');
-    return;
-  }
-  try {
-    const total = base64ToUint8(encryptedStr);
-    if (total.length < 44) { // Min: 16 salt + 12 IV + 16 tag
-      throw new Error('Invalid encrypted data length');
-    }
-    const salt = total.slice(0, 16);
-    const iv = total.slice(16, 28);
-    const ciphertext = total.slice(28);
-    const key = await deriveKey(password, salt);
-    const decryptedBuffer = await crypto.subtle.decrypt(
-      { name: "AES-GCM", iv: iv },
-      key,
-      ciphertext
-    );
-    const compressed = new Uint8Array(decryptedBuffer);
-    const content = await decompress(compressed);
-    el.innerHTML = content;
-    console.log(`Decrypted content for "${id}"`);
-  } catch (e) {
-    console.error('Decryption failed (wrong password or invalid data?):', e);
-  }
-}
-</script>
 </body>
 </html>
