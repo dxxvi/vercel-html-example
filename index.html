@@ -203,6 +203,42 @@ GitHub Codespaces - Tailscale∨
   - In the codespace machine, run `xclock` or `xeyes` to verify the X11Forwarding works. For gedit, [firefox](https://ftp.mozilla.org/pub/firefox/candidates/146.0-candidates/), Intellij (which doesn't seem able to find the browser, so unable to use the Ultimate Edition) this env var `GDK_BACKEND=x11` is needed.
   - We can go to the Settings tab on tailscale website and delete the tailnet.
 
+Running GUI apps (firefox, Google antigravity, IntelliJ, Rust) in a Debian docker container (antigravity seems unstable)∨
+  - This is the `Dockerfile` (make sure that the account you're using in the host machine has 1000 for uid and gid):
+```
+FROM rust:latest
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl gnupg ca-certificates sudo x11-apps firefox-esr && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg | gpg --dearmor -o /etc/apt/keyrings/antigravity-repo-key.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" > /etc/apt/sources.list.d/antigravity.list && \
+    apt-get update && \
+    apt-get install -y antigravity && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -s /bin/bash user && \
+    usermod -aG sudo user && \
+    echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/user && \
+    echo 'user:password' | chpasswd
+
+USER user
+
+CMD ["/bin/bash"]
+```
+  - Build the docker image: `docker build -t my-rust .`
+  - Run with:
+```
+paru -Sy xorg-xhost && xhost + && docker run -it --net=host --security-opt seccomp=unconfined --shm-size=2g -e DISPLAY=$DISPLAY \
+  -e JAVA_HOME=/jdk \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v /usr/lib/jvm/default:/jdk -v /ideaIU:/ideaIU -v ~/.local/share/fonts:/home/user/.local/share/fonts -v ~/IdeaProjects/antigravity:/home/user/projects \
+  my-rust
+```
+  - Run Google antigravity with `antigravity --no-sandbox` and run Firefox with `firefox --no-sandbox`
+
 Running GUI apps (firefox, Google antigravity, IntelliJ) in an Ubuntu docker container∨
   - This is the `Dockerfile` (make sure that the account you're using in the host machine has 1000 for uid and gid):
 ```
@@ -211,8 +247,8 @@ FROM ubuntu:24.04
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 
-RUN apt-get update && apt-get install -y \
-    software-properties-common curl gpg sudo libwayland-client0 libwayland-egl1 mesa-utils \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    software-properties-common curl gpg sudo libwayland-client0 libwayland-egl1 mesa-utils build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 RUN add-apt-repository -y ppa:mozillateam/ppa
@@ -221,7 +257,7 @@ RUN echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
     echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
     echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox
 
-RUN apt-get update && apt-get install -y firefox && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y firefox apt-utils
 
 # Antigravity installation steps
 RUN mkdir -p /etc/apt/keyrings && \
@@ -231,25 +267,26 @@ RUN mkdir -p /etc/apt/keyrings && \
 RUN echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" | \
     tee /etc/apt/sources.list.d/antigravity.list
 
-RUN apt-get update && apt-get install -y antigravity
+RUN apt-get update && apt-get install -y antigravity && rm -rf /var/lib/apt/lists/*
 
 # Configure the existing 'ubuntu' user. We use usermod/groupmod to ensure the IDs match the ARGs.
 # If USER_ID is 1000, this effectively does nothing (which is fine).
-RUN usermod -u ${USER_ID} ubuntu && \
-    groupmod -g ${GROUP_ID} ubuntu && \
-    usermod -aG sudo ubuntu && \
-    chown -R ubuntu:ubuntu /home/ubuntu
+RUN usermod -u ${USER_ID} ubuntu && groupmod -g ${GROUP_ID} ubuntu && \
+    usermod -aG sudo ubuntu && chown -R ubuntu:ubuntu /home/ubuntu
 
-ENV XDG_RUNTIME_DIR=/run/user/${USER_ID}
-ENV WAYLAND_DISPLAY=wayland-0
-ENV MOZ_ENABLE_WAYLAND=1
+ENV XDG_RUNTIME_DIR=/run/user/${USER_ID} WAYLAND_DISPLAY=wayland-0 MOZ_ENABLE_WAYLAND=1
 
-RUN mkdir -p /run/user/${USER_ID} && \
-    chown -R ubuntu:ubuntu /run/user/${USER_ID} && \
-    chmod 0700 /run/user/${USER_ID}
+RUN mkdir -p /home/ubuntu/.local/share && chown -R ubuntu:ubuntu /home/ubuntu/.local/share && \
+    mkdir -p /run/user/${USER_ID} && chown -R ubuntu:ubuntu /run/user/${USER_ID} && chmod 0700 /run/user/${USER_ID}
+RUN echo 'ubuntu:ubuntu' | chpasswd
 
 USER ubuntu
 WORKDIR /home/ubuntu
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain stable
+ENV PATH="/home/ubuntu/.cargo/bin:${PATH}"
+RUN echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> /home/ubuntu/.profile
+RUN rustc --version && cargo --version
 
 CMD ["/bin/bash"]
 ```
@@ -267,11 +304,13 @@ paru -Sy xorg-xhost && xhost + && docker run -it --rm \
     -e MOZ_ENABLE_WAYLAND=1 \
     -e GTK_USE_PORTAL=0 \
     -e DISPLAY=$DISPLAY \
+    -e JAVA_HOME=/jdk \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v $HOME/.Xauthority:/home/developer/.Xauthority:ro \
+    -v $HOME/.Xauthority:/home/ubuntu/.Xauthority:ro \
     -v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/run/user/$(id -u)/$WAYLAND_DISPLAY \
     -v /run/user/$(id -u)/bus:/run/user/$(id -u)/bus \
-    -v /usr/lib/jvm/default:/jdk -v /ideaIU:/ideaIU   my-ubuntu /bin/bash
+    -v /usr/lib/jvm/default:/jdk -v /ideaIU:/ideaIU -v ~/.local/share/fonts:/home/ubuntu/.local/share/fonts \
+    -v ~/IdeaProjects/antigravity:/home/ubuntu/projects my-ubuntu /bin/bash
 ```
   - Run Google antigravity with `antigravity --no-sandbox --ozone-platform=wayland`
 
@@ -966,10 +1005,108 @@ function prompt { // this function make the Windows Terminal tab titles shorter
 oh-my-posh init pwsh --config "C:\path\to\oh-my-posh.json" | Invoke-Expression
 
 ```
-
-  - Uninstall bloatware using Adminstrator PowerShell:
+  - Uninstall bloatware using Adminstrator PowerShell: use winhance
+  - Script to take the screenshot of the currently active window, optimize it with [oxipng](https://github.com/oxipng/oxipng), send it in a web form and delete old files:
 ```
-@("Microsoft.WindowsStore", "Microsoft.GetHelp", "Microsoft.Copilot", "Microsoft.Windows.Ai.Copilot.Provider", "Microsoft.Copilot_8wekyb3d8bbwe", "Microsoft.XboxGamingOverlay", "Microsoft.YourPhone", "Microsoft.XboxIdentityProvider", "Microsoft.XboxSpeechToTextOverlay", "Microsoft.Windows.DevHome", "Microsoft.MicrosoftOfficeHub", "MicrosoftCorporationII.QuickAssist", "MSTeams", "Microsoft.OutlookForWindows", "Microsoft.Edge.GameAssist", "Microsoft.WidgetsPlatformRuntime", "Microsoft.Xbox.TCUI", "Microsoft.MicrosoftStickyNotes", "Microsoft.BingWeather", "Microsoft.WindowsAlarms", "Microsoft.Windows.Photos", "Microsoft.Todos", "Microsoft.MicrosoftSolitaireCollection", "Microsoft.WindowsSoundRecorder", "Microsoft.PowerAutomateDesktop", "Microsoft.GamingApp", "Clipchamp.Clipchamp", "Microsoft.BingNews", "Microsoft.BingSearch", "Microsoft.WindowsCamera", "Microsoft.ZuneMusic", "Microsoft.WindowsFeedbackHub", "Microsoft.XboxApp", "Microsoft.MixedReality.Portal", "Microsoft.Office.OneNote", "Microsoft.People", "Microsoft.Getstarted", "Microsoft.549981C3F5F10", "Microsoft.SkypeApp", "Microsoft.ZuneVideo", "Microsoft.Microsoft3DViewer", "Microsoft.MSPaint", "Microsoft.WindowsCommunicationsApps", "Microsoft.WindowsMaps") | ForEach-Object { Get-AppxPackage -AllUsers -Name $_ | Remove-AppxPackage }
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
+$WinAPI = @"
+using System;
+using System.Runtime.InteropServices;
+public class WinAPI {
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetForegroundWindow();
+    
+    [DllImport("user32.dll")]
+    public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+    }
+}
+"@
+
+# Check if type is already added to avoid errors on repeat runs in the same session
+if (-not ([System.Management.Automation.PSTypeName]'WinAPI').Type) {
+    Add-Type -TypeDefinition $WinAPI
+}
+
+Write-Host "Starting capture loop. Press Ctrl+C to stop." -ForegroundColor Cyan
+$SpringBootUrl = "http://192.168.1.66:8080/"
+
+while ($true) {
+    $hWnd = [WinAPI]::GetForegroundWindow()
+    $rect = New-Object WinAPI+RECT
+    
+    if ([WinAPI]::GetWindowRect($hWnd, [ref]$rect)) {
+        $width = $rect.Right - $rect.Left
+        $height = $rect.Bottom - $rect.Top
+
+        if ($width -gt 0 -and $height -gt 0) {
+            $bitmap = New-Object System.Drawing.Bitmap($width, $height)
+            $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+            
+            try {
+                $graphics.CopyFromScreen($rect.Left, $rect.Top, 0, 0, $bitmap.Size)
+                
+                # Naming format: HHmmss.png (24-hour format)
+                $fileName = "$(Get-Date -Format 'HHmmss').png"
+                $filePath = Join-Path -Path (Get-Location) -ChildPath $fileName
+                
+                $bitmap.Save($filePath, [System.Drawing.Imaging.ImageFormat]::Png)
+                & oxipng -o 4 --strip safe --alpha $filePath 2>$null
+                Write-Host "Captured: $fileName" -ForegroundColor Green
+
+                $fileItem = Get-Item $filePath
+                $response = Invoke-RestMethod -Uri $SpringBootUrl -Method Post -Form @{ file = $fileItem } -ContentType "multipart/form-data"
+                Write-Host "    Uploaded successfully → Response: $response" -ForegroundColor Magenta
+            }
+            catch {
+                Write-Warning "Failed to capture window: $_"
+            }
+            finally {
+                $graphics.Dispose()
+                $bitmap.Dispose()
+            }
+        }
+    }
+
+    # Delete .png files older than 125 seconds
+    $limit = (Get-Date).AddSeconds(-125)
+    Get-ChildItem -Path . -Filter "*.png" | Where-Object { $_.LastWriteTime -lt $limit } | ForEach-Object {
+        try {
+            Remove-Item $_.FullName -Force
+            Write-Host "Deleted old file: $($_.Name)" -ForegroundColor Gray
+        } catch {
+            # File might be locked or already gone
+        }
+    }
+
+    Start-Sleep -Seconds 5
+}
+```
+  - Sprng Boot to accept a file in a web form:
+```
+@PostMapping("/")
+public ResponseEntity<String> upload(@RequestParam("file") MultipartFile multipartFile) {
+  if (multipartFile.isEmpty()) return ResponseEntity.badRequest().body("File empty.");
+
+  try {
+    String originalFilename = multipartFile.getOriginalFilename();
+    Path targetPath = Path.of(".").resolve(originalFilename).normalize();
+    Files.copy(multipartFile.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+    return ResponseEntity.ok("File saved to " + targetPath.toAbsolutePath());
+  } catch (Exception e) {
+    var baos = new ByteArrayOutputStream();
+    e.printStackTrace(new PrintWriter(baos));
+    return ResponseEntity.internalServerError().body("Failed to save file: " + baos);
+  }
+}
 ```
 
 Firefox∨
@@ -1251,5 +1388,152 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
   });
 </script>
 
+<script>
+async function concatUint8Arrays(uint8arrays) {
+  const blob = new Blob(uint8arrays);
+  const buffer = await blob.arrayBuffer();
+  return new Uint8Array(buffer);
+}
+
+async function compress(str) { // compress string to Uint8Array (gzip)
+  const stream = new Blob([str]).stream();
+  const compressedStream = stream.pipeThrough(new CompressionStream("gzip"));
+  const chunks = [];
+  for await (const chunk of compressedStream) {
+    chunks.push(chunk);
+  }
+  return await concatUint8Arrays(chunks);
+}
+
+async function decompress(compressedBytes) { // decompress Uint8Array to string (gzip)
+  const stream = new Blob([compressedBytes]).stream();
+  const decompressedStream = stream.pipeThrough(new DecompressionStream("gzip"));
+  const chunks = [];
+  for await (const chunk of decompressedStream) {
+    chunks.push(chunk);
+  }
+  const stringBytes = await concatUint8Arrays(chunks);
+  return new TextDecoder().decode(stringBytes);
+}
+
+function uint8ToBase64(uint8) {
+  let binary = '';
+  for (let i = 0; i < uint8.length; i++) {
+    binary += String.fromCharCode(uint8[i]);
+  }
+  return btoa(binary);
+}
+
+function base64ToUint8(base64) {
+  const binary = atob(base64);
+  const uint8 = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    uint8[i] = binary.charCodeAt(i);
+  }
+  return uint8;
+}
+
+async function deriveKey(password, salt) { // derive AES-GCM key from password + salt
+  const encoder = new TextEncoder();
+  const passwordKey = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits", "deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    {
+      "name": "PBKDF2",
+      salt: salt,
+      "iterations": 100000,
+      "hash": "SHA-256"
+    },
+    passwordKey,
+    { "name": "AES-GCM", "length": 256 },
+    true,
+    ["encrypt", "decrypt"]
+  );
+}
+
+async function encrypt(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.error(`Element with id "${id}" not found`);
+    return;
+  }
+  const content = el.innerHTML;
+  if (!content) {
+    console.log('No content to encrypt');
+    return;
+  }
+  const password = document.body.getAttribute('password');
+  if (!password) {
+    console.error('No password attribute on <body>');
+    return;
+  }
+  try {
+    const compressed = await compress(content);
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const key = await deriveKey(password, salt);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const encryptedBuffer = await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv: iv },
+      key,
+      compressed
+    );
+    const encrypted = new Uint8Array(encryptedBuffer);
+    const totalLength = salt.length + iv.length + encrypted.length;
+    const total = new Uint8Array(totalLength);
+    total.set(salt, 0);
+    total.set(iv, salt.length);
+    total.set(encrypted, salt.length + iv.length);
+    const encryptedStr = uint8ToBase64(total);
+    el.innerHTML = encryptedStr;
+    console.log(`Encrypted content for "${id}"`);
+  } catch (e) {
+    console.error('Encryption failed:', e);
+  }
+}
+
+async function decrypt(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.error(`Element with id "${id}" not found`);
+    return;
+  }
+  let encryptedStr = el.innerHTML.trim();
+  if (!encryptedStr) {
+    console.log('No content to decrypt');
+    return;
+  }
+  const password = document.body.getAttribute('password');
+  if (!password) {
+    console.error('No password attribute on <body>');
+    return;
+  }
+  try {
+    const total = base64ToUint8(encryptedStr);
+    if (total.length < 44) { // Min: 16 salt + 12 IV + 16 tag
+      throw new Error('Invalid encrypted data length');
+    }
+    const salt = total.slice(0, 16);
+    const iv = total.slice(16, 28);
+    const ciphertext = total.slice(28);
+    const key = await deriveKey(password, salt);
+    const decryptedBuffer = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: iv },
+      key,
+      ciphertext
+    );
+    const compressed = new Uint8Array(decryptedBuffer);
+    const content = await decompress(compressed);
+    el.innerHTML = content;
+    console.log(`Decrypted content for "${id}"`);
+  } catch (e) {
+    console.error('Decryption failed (wrong password or invalid data?):', e);
+  }
+}
+</script>
 </body>
 </html>
