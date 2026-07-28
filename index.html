@@ -59,26 +59,25 @@
     th { font-family: "Noto Serif",serif }
 
     table.vim-motions kbd { font-size: 1.2rem; padding-left: .3rem; padding-right: .3rem; min-width: 2rem }
+
+    code + em.copy { font-style: normal; display: inline-block; margin-left: 1rem; cursor: pointer }
   </style>
 </head>
 <body style="font: 1rem/1.43 'Noto Serif'" password="xxx">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-
 <div class="tab" title="Do these Leetcode in Java and Rust">
 [Design Movie Rental System](https://leetcode.com/problems/design-movie-rental-system/)
 </div>
 <div class="tab" title="Linux (including AWS and Vim)" fontawesome="fa-brands fa-linux">
-Take screenshot in KDE Plasma Wayland: `spectacle -f -b -e -S -n -o /dev/shm/test.png` almost a second (PowerShell can do that too).
+Take screenshot in KDE Plasma Wayland: `spectacle -f -b -e -S -n -o /dev/shm/test.png`*✍︎* (1.4s for png and 900ms for jpg) (PowerShell can do that too).
+
+Delete firefox &amp; google config: `rm -rf ~/.config/google-chrome ~/.var/app/com.google.Chrome ~/.config/mozilla ~/.cache/mozilla ~/.var/app/org.mozilla.firefox ~/.config/mozilla/firefox ~/.cache/mozilla/firefox`*✍︎*
 
 Cloudflare tunnel: to access local apps from outside: `paru -Sy cloudflared && cloudflared tunnel --url http://localhost:8080`
 
 To know how many RAM slots available: `sudo dmidecode --type memory`
-
-To run Apache httpd in a docker container: specify the user/group to use in `/etc/apache2/apache2.conf` port in `/etc/apache2/ports.conf`, in `/etc/apache2/sites-available/000-default.config` change the port (to match the one used in ports.conf), specify the `&lt;Directory ...&gt;` (copied from apache2.conf) and `Alias /uri /path/to/directory`, start with `/usr/sbin/apachectl start`
-
-Ubuntu: ignore SSL certificates when running apt `apt -o "Acquire::https::Verify-Peer=false" update`
 
 Android: list all packages installed for current user `pm list packages` remove a package for current user `pm uninstall -k --user 0 *package*` list all packages on this phone `pm list packages -u` re-install an uninstalled app `pm install-existing *package*`
 
@@ -128,9 +127,9 @@ Display UTF-16 in Bash and Zsh: `snowflake=$(s='\u2744' && printf "$s") && echo 
 | <kbd>y</kbd> yank                                                        | <kbd>d</kbd> cut                                                             | <kbd>p</kbd> paste
 
 Create an isolated environment and run bash in it∨
-  - The environment redirection method (this is the best):
+  - The environment redirection method (this is the best: it works with Antigravity IDE, Antigravity still remembers the account I use the last time):
 ```
-rm -rf /home2/* && ALT_HOME="/home2" && \
+rm -rf /home2/* && rm -rf /home2/.* && rm -rf ~/{.cache,.config}/google-chrome && rm -rf ~/{.cache,.config}/mozilla && ALT_HOME="/home2" && \
   if [ -f "$HOME/.Xauthority" ]; then cp "$HOME/.Xauthority" "$ALT_HOME/.Xauthority"; fi && \
   ln -sf $HOME/.rustup $ALT_HOME/.rustup && \
   mkdir -p $ALT_HOME/.local/share && \
@@ -142,9 +141,9 @@ rm -rf /home2/* && ALT_HOME="/home2" && \
   export XDG_STATE_HOME="$ALT_HOME/.local/state" && \
   exec "$SHELL"
 ```
-  - Then in this new environment, we can run `wezterm --config-file /home/ly/.wezterm.lua`.
-  - `systemd-run`: web browers use the new configuration but IntelliJ still uses the old one
-  - `bwrap` (bubblewrap): antigravity-ide still uses the web browser which is currently open
+  - Then in this new environment, run `wezterm --config-file /home/ly/.wezterm.lua`*✍︎*
+  - Don't change `DBUS_SESSION_BUS_ADDRESS` (already tried, it made Antigravity very slow). Set Firefox as the default browser or delete `.config/google-chrome`.
+  - `xhost +si:localuser:another_account` then `ssh another_account@localhost` then in the other account `export DISPLAY=:1` (use the same value as in the current account)
 
 Install [Arch Linux](https://www.youtube.com/watch?v=1J_Z_pzzbMo) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/features/optimized_repos/)∨
   - Make 1 empty partition in Windows with `diskmgmt`, disable BitLocker (click the Windows icon, type `bitlocker`), disable fast startup (Control Panel, search for power, choose Change what the power buttons do, Change settings that are currently unavailable, uncheck Turn on fast startup), disable Secure Boot in BIOS
@@ -348,7 +347,7 @@ runcmd:
   - curl -fsS https://dl.brave.com/install.sh | sh
   - apt-get update -y
   - apt-get upgrade -y
-  - apt-get install unzip -y
+  - apt-get install unzip openjdk-25-jdk -y
 ' \
   --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=MyUbuntuInstance}]' \
   --query 'Instances[0].InstanceId' \
@@ -520,6 +519,8 @@ Add spaces to MacOS dock: `defaults write com.apple.dock persistent-apps -array-
 
 [Get all attributes](https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes) of a html element
 
+A http server that auto-loads changes: `git clone --depth 1 https://github.com/tapio/live-server && cd live-server && npm install`*✍︎* Then in the directory we want to serve `PORT=xxx node /path/to/live-server/liver-server.js`. If there's no `PORT` env variable, 8080 or a random port (if 8080 is unavailable) will be chosen.
+
 Load testing with Grafana k6∨
   - `paru -Sy k6-bin`
   - Write a `.js` file like this (`vus`: the number of concurrent requests):
@@ -544,8 +545,8 @@ export default function () {
   - Run it: `k6 run file.js`
 
 Angular∨
-  - A component is annotated with `@Component` which takes a css `selector`, a `templateUrl`, 0 or many `styleUrls` and other non-popular properties like `encapsulation: ViewEncapsulation.Emulated | ShadowDom` (so that the css styles of the page don't affect this component and vice versa), ...
-  - Component lifecycle: the Typescript class for the component can implement some interfaces like
+  - A **component** is annotated with `@Component` which takes a css `selector`, a `templateUrl`, 0 or many `styleUrls` and other non-popular properties like `encapsulation: ViewEncapsulation.Emulated | ShadowDom` (so that the css styles of the page don't affect this component and vice versa), ...
+  - **Component lifecycle**: the Typescript class for the component can implement some interfaces like
       - constructor: initialize variables, inject services
       - `OnChanges`: called before `ngOnInit()` and any time `@Input` properties change
       - `OnInit`: called only once, e.g. fetch data from the server, subscribe to Observables
@@ -561,10 +562,12 @@ Angular∨
       - Use `RxJs`: [2 components share a service](https://angular.io/guide/component-interaction#parent-and-children-communicate-using-a-service) which has a `Subject` instance (from `rxjs`) and an observable of that subject. This service must be annotated with `@Injectable()` so that it can be injected to constructors of other services/components. In those other services/components, we need to subscribe to that observable.
   - Content projection: [when](https://angular.io/guide/content-projection) _I have time, I'll write about this_
   - Dynamic components: [also](https://angular.io/guide/dynamic-component-loader) very interesting
-  - Directives: are classes that add additional behavior to elements. 3 directive types:
+  - **Directives**: are classes that add additional behavior to elements. 3 directive types:
       - component directives: e.g. `&lt;app-my-component&gt;&lt;/app-my-component&gt;`
       - attribute directives (`ngClass`, `ngStyle`, `ngModel` to display and update properties)
       - structural directives (`ngIf`, `ngFor`, `ngSwitch`)
+  - A **module** is a class with `@NgModule` that acts as a context for related components, directives, pipes and services. There must be a root module `AppModule`. Other modules are feature modules (if the app is very big).
+  - A **pipe** is a function used in HTML templates (`{{ accountBalance | myPipe }}`) to transform data before it is displayed. Pipes are independent of components, i.e. we don't use a component method to do this transformation.
   - Forms: [a big subject](https://angular.io/guide/forms-overview) with reactive and template-driven forms.
   - HTTP client: I think nobody will ask about [this](https://angular.io/guide/understanding-communicating-with-http) in interviews
   - Observables:
@@ -572,7 +575,7 @@ Angular∨
       - multicasting: I want to subscribe to the observable multiple times to use the data from the observable in multiple places but the observable runs only once. 
 </div>
 <div class="tab" title="Java" fontawesome="fa-brands fa-java">
-To remove IntelliJ in Linux: try this rm -rf ~/.config/JetBrains ~/.cache/JetBrains ~/.local/share/JetBrains ~/.java
+To remove IntelliJ in Linux: try this `rm -rf ~/.config/JetBrains ~/.cache/JetBrains ~/.local/share/JetBrains ~/.java`*✍︎*
 
 Maybe watch this [12-hour video](https://www.youtube.com/watch?v=tseqdcFfTUY) about a patient management system (spring boot, kafka, aws, docker)
 
@@ -646,6 +649,22 @@ void readFileFromQrCode(String qrCodeImagePath) throws Exception {
     Files.write(Path.of("/dev/shm", fileName), fileContent);
 }
 ```
+
+Java SOLID principles∨
+  - **S**ingle responsibility: a class should have only 1 job or responsibility
+  - **O**pen/Closed principle: classes should be open for extension but closed for modification. Ex: PurchaseOrder is an interface, then I can extend it to ShipPurchaseOrder, AviationPurchaseOrder, TruckPurchaseOrder ...
+  - **L**iskov substitution: all the implementations of methods in parent class in a child class must make sense. Ex: `interface Bird { void fly(); }`, this is a violation: `class Penguin implements Bird { public void fly() { throw new UnsupportException() } }`. The fix is: `interface FlyingBird { void fly(); }`
+  - **I**nterface segregation: classes should not be forced to depend on interfaces they don't use. Ex: `interface Worker { void work(); void eat(); }` then `class RobotWorker implements Worker { public void eat() { throw UnsupportedException } }` is a violation.
+  - **D**ependency inversion: high level service shouldn't depend on low level ones. Ex: we don't put a GmailService in an EmailService.
+
+Microservice patterns∨
+  - **Communication** &amp; **Integration** patterns:
+      - API gateway: single entry for all services, handles cross-cutting concerns like authentication and rate-limiting
+      - Backends for Frontends: different backends for different frontends (mobile, web)
+  - **Data** and **Consistency** patterns:
+      - Saga
+      - Outbox: the problem to solve: need to write to DB and publish to Kafka. Solution: write to DB and also write to an outbox table. Another process (or the CDC poller) keeps checking the outbox table to see if there's any event not sent yet.
+  - **Resilience** and **Reliability** patterns: circuit breaker and retry
 
 spotless-maven-plugin∨
   - maven:
@@ -1390,12 +1409,6 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
     });
 
   // make <p> ending with a `∨` and followed by <ul> an accordion
-/* TODO this function is not used?
-  function removePTag(markdown) { // calls converter.makeHtml which returns <p>...</p> then removes <p> and fixes the < or >
-    console.log('markdown', markdown);
-    return converter.makeHtml(markdown).replace('<p>', '').replace('</p>', '').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-  }
-*/
   Array.from(document.querySelectorAll('p + ul'))
     .filter(ul => ul.previousElementSibling.innerText.endsWith('∨'))
     .forEach(ul => {
@@ -1456,6 +1469,26 @@ Preheat the oven to 350oF, pour the boiling water in a large pan, bake for 45 mi
   document.querySelectorAll('th').forEach(th => {
     if (th.innerText === 'vim motions') {
       th.parentElement.parentElement.parentElement.classList.add('vim-motions');
+    }
+  });
+
+  // if there's a <em>✍︎</em> right after a <code> element, when that em is clicked, we copy the code.innerText to clipboard
+  function copyPreviousElementTextToClipboard(event) {
+    const clickedElement = event.target;
+    const previousElement = clickedElement.previousElementSibling;
+    if (previousElement) {
+      const textToCopy = previousElement.innerText || previousElement.textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => console.log('Copied to clipboard!'))
+            .catch(() => console.error('Unable to copy to clipboard'));
+      }
+    }
+  }
+  document.querySelectorAll('code + em').forEach(em => {
+    if (em.innerText === '✍︎') {
+      em.className = 'copy';
+      em.addEventListener('click', copyPreviousElementTextToClipboard);
     }
   });
 </script>
