@@ -60,10 +60,10 @@
 
     table.vim-motions kbd { font-size: 1.2rem; padding-left: .3rem; padding-right: .3rem; min-width: 2rem }
 
-    code + em.copy { font-style: normal; display: inline-block; margin-left: 1rem; cursor: pointer }
+    code + em.copy { font-style: normal; display: inline-block; margin-left: .825rem; margin-right: .825rem; cursor: pointer }
   </style>
 </head>
-<body style="font: 1rem/1.43 'Noto Serif'" password="xxx">
+<body style="font: 1rem/1.43 'Noto Serif',sans-serif" password="xxx">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
@@ -78,6 +78,8 @@ Delete firefox &amp; google config: `rm -rf ~/.config/google-chrome ~/.var/app/c
 Cloudflare tunnel: to access local apps from outside: `paru -Sy cloudflared && cloudflared tunnel --url http://localhost:8080`
 
 To know how many RAM slots available: `sudo dmidecode --type memory`
+
+Set the group permissions equal to the owner permissionsch: `chmod -R g=u`*✍︎*`*/path/to/directory*`
 
 Android: list all packages installed for current user `pm list packages` remove a package for current user `pm uninstall -k --user 0 *package*` list all packages on this phone `pm list packages -u` re-install an uninstalled app `pm install-existing *package*`
 
@@ -444,6 +446,32 @@ AWS Aurora∨
 
 AWS RDS∨
   - Is a service to automate administrative taks (backups, patching, setup ...) for several db engines (MySQL, PostgreSQL, MariaDB, Oracle and SQL Server).
+
+Installing Windows 11 in QEMU∨
+  - Download VirtIO drivers (crucial for speed and network): `curl -LO https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso`*✍︎*
+  - Install packages: `sudo pacman -Sy qemu-full virt-manager virt-viewer libvirt edk2-ovmf swtpm dnsmasq iptables-nft  bridge-utils`*✍︎*
+  - Enable and start service: `sudo systemctl enable --now libvirtd && sudo usermod -aG libvirt,kvm $USER && newgrp libvirt`*✍︎*
+  - Run `sudo virsh net-start default && sudo virsh net-list --all`*✍︎* the State should show active.
+  - Launch Virtual Machine Manager (`virt-manager`) from app launcher or terminal
+  - Enable XML editing: go to Edit &gt; Preferences &gt; Check Enable XML editing
+  - Click Create a new virtual machine (the computer icon at the top left)
+      - Select Local install media (ISO image or CDROM) -&gt; Click Forward
+      - Click Browse... -&gt; Browse Local -&gt; Select your Windows 11 .iso file (uncheck "Automatically detect...", search for and select Microsoft Windows 11)
+      - Allocate RAM and CPU cores (Recommended: 8 GB (8192 MB) RAM, 4 CPU cores or more)
+      - Create a Virtual Hard Disk (Minimum: 64 GB, 80 GB recommended)
+      - IMPORTANT: Check the box "Customize configuration before install" before clicking Finish
+  - In the Customization window that opens:
+      - Overview / Chipset: Ensure Chipset is set to Q35
+      - Firmware: Change to UEFI x86_64: /usr/share/edk2-ovmf/x64/OVMF_CODE.fd
+      - Storage (Disk): Select your primary disk, change Disk bus to VirtIO
+      - NIC (Network): Change Device model to VirtIO
+      - Delete the existing TPM then add TPM 2.0 (Required by Windows 11) (i.e. we'll have 2 CDROM's: 1 for the Windows.iso, another for virtio-win.iso):
+          - Click Add Hardware (bottom left) -> Select TPM
+          - Set Model to Emulated (CRB or TIS) and Version to 2.0
+  - Click Begin Installation at the top left:
+      - When the installation shows an empty drive list, click Load drive -&gt; Browse, select the folder viostor / win11 /amd64, click OK and select Red Hat VirtIO SCSI controller
+      - During installation, if you encounter hardware requirement errors: `Shift + F10` to open Command Prompt, `regedit`, go to HKEY_LOCAL_MACHINE\SYSTEM\Setup, create new key `LabConfig`, add these DWORD (32-bit) values set to 1: BypassTPMCheck, BypassSecureBootCheck, BypassRAMCheck, BypassStorageCheck and BypassCPUCheck.
+  - Post installation: run virtio-win-gt-x64.msi or virtio-win-guest-tools.exe (this installs virtio network, display drivers, Spice guest tools for dynamic resolution, and clipboard sharing).
 </div>
 <div class="tab" title="Docker" fontawesome="fa-brands fa-docker">
 [Docker Compose UI](https://github.com/louislam/dockge)
@@ -519,7 +547,7 @@ Add spaces to MacOS dock: `defaults write com.apple.dock persistent-apps -array-
 
 [Get all attributes](https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes) of a html element
 
-A http server that auto-loads changes: `git clone --depth 1 https://github.com/tapio/live-server && cd live-server && npm install`*✍︎* Then in the directory we want to serve `PORT=xxx node /path/to/live-server/liver-server.js`. If there's no `PORT` env variable, 8080 or a random port (if 8080 is unavailable) will be chosen.
+A http server that auto-loads changes: `git clone --depth 1 https://github.com/tapio/live-server && cd live-server && npm install`*✍︎* Then in the directory we want to serve `PORT=xxx node /path/to/live-server/live-server.js`. If there's no `PORT` env variable, 8080 or a random port (if 8080 is unavailable) will be chosen.
 
 Load testing with Grafana k6∨
   - `paru -Sy k6-bin`
@@ -649,6 +677,19 @@ void readFileFromQrCode(String qrCodeImagePath) throws Exception {
     Files.write(Path.of("/dev/shm", fileName), fileContent);
 }
 ```
+
+JVM memory∨
+  - Stack: contains method execution frames, local variables, primitive data types and pointers to objects; memory is reclaimed when the method exits; private to each thread; StackOverflowError
+  - Heap: contains objects and arrays (even arrays of primitives); memory reclaimed by GC; shared among threads; OutOfMemoryError
+  - Heap has 2 regions:
+      - Young generation: all newly created objects go here (except very large ones). There are 3 regions here:
+          - Eden: when full, a minor GC runs. All survivor objects are moved to S0 or S1 and their survival counts are increased.
+          - S0
+          - S1
+      - Old generation: when objects in S0, S1 have high enough survival counts, they are moved to the old generation.
+  - Off-heap memory: stores class metadata, method structures ..., will not be GC-ed.
+  - How GC runs: from local variables on the stack, mark all reachable objects alive; go through all objects in heap and sweep unmarked ones; move objects in heap so that there are big single continuous blocks memory.
+  - How to debug memory leak and OOM: a memory leak is when objects are no longer needed but still reachable (use the VM option HeapDumpOnOutOfMemoryError). Use tools like Dynatrace, AppDynamics, Datadog ... to track heap usage (we'll see something like a sawtooth pattern).
 
 Java SOLID principles∨
   - **S**ingle responsibility: a class should have only 1 job or responsibility
