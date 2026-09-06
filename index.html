@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" style="font-size: 18px; font-family: 'Noto Serif',serif">
+<html lang="en" style="font-size: 19px; font-family: 'Noto Serif',serif">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Notes</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script src="https://kit.fontawesome.com/aff91b4b46.js" crossorigin="anonymous"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Noto+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
@@ -23,6 +23,7 @@
       --bs-font-sans-serif: "Noto Sans",sans-serif;
       --bs-body-color: #333;
       --a-in-button-margin: .3rem;
+      --fa-width: 2em;
     }
     .accordion {
       --bs-accordion-active-bg: #2c4d6b;
@@ -39,7 +40,7 @@
     code > i.comment { color: var(--code-color-comment) }
     pre code { color: var(--bs-code-color) }
     button.accordion-button {  padding-left: calc(var(--bs-accordion-btn-padding-x) / 2) }
-    button.accordion-button > i:first-child { display: inline-block; width: 1.94em }
+    button.accordion-button > i:first-child { display: inline-block; width: var(--fa-width, 1.25em); margin-right: .25em }
     button.accordion-button > code { color: var(--bs-accordion-btn-color); padding-left: .25rem; padding-right: .25rem }
     button.accordion-button > a { display: inline-block; margin-left: var(--a-in-button-margin); margin-right: var(--a-in-button-margin) }
     h2.accordion-header + div.accordion-collapse { margin-left: 1rem }
@@ -61,12 +62,15 @@
     table.vim-motions kbd { font-size: 1.2rem; padding-left: .3rem; padding-right: .3rem; min-width: 2rem }
 
     code + em.copy { font-style: normal; display: inline-block; margin-left: .825rem; margin-right: .825rem; cursor: pointer }
+
+    .svg-inline--fa { margin-right: .25em }
   </style>
 </head>
 <body style="font: 1rem/1.43 'Noto Serif',sans-serif" password="xxx">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+
 <div class="tab" title="Do these Leetcode in Java and Rust">
 [Design Movie Rental System](https://leetcode.com/problems/design-movie-rental-system/)
 </div>
@@ -291,6 +295,21 @@ while true; do \
 done
 ```
 
+Configure Konsole∨
+  - Hide the title bar: System Settings | Window Management | Window Rules | Add New ...:
+      - Window class (application): choose Exact Match, click Detect Window Properties button (the cursor turns into a cross, click the Konsole window to see all the properties and their values)
+      - Click __＋ Add Property...__ at the bottom, select __No titlebar and frame__, choose Force in the dropdown and chooose the Yes radio button
+  - Hide the toolbar (New Tab, Split View ... buttons): Ctrl+Shift+M to toggle the top text menu bar and change the settings there
+  - Resize:
+      - Super + drag with right mouse button (how to know this: System Settings | Window Management | Window Behavior | Window Action tab)
+      - or Alt+F3 and then select from the menu
+  - Move: Super + drag
+  - Create tab: Ctrl+Shft+T
+  - Make the background transparent: Ctrl+Shift+M | Settings | Edit current profile | Appearance | Color scheme &amp; font | Edit... | Background color transparency
+  - Panes: Ctrl+Shft+9 to split left/right, Ctrl+Shft+0 to split top/bottom, Shft+Tab to move between panes
+  - Hide the scrollbar: Konsole profile settings | Scrolling; Shft+Page Up/Down to scroll
+  - Change the paddings: Konsole profile settings | Appearance | Miscellaneous | Margins
+
 Use our private key on a remote machine without copying it there∨
   - Lists fingerprints of all identities currently represented by the agent: `ssh-add -l` which might return an error if the ssh-agent is not started.
   - In [PowerShell](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement), check the status of ssh-agent with `Get-Service ssh-agent`, start it `Start-Service ssh-agent`: hm ... doesn't work for me
@@ -346,10 +365,12 @@ runcmd:
   - curl -L https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.zip -o /tmp/FiraCode.zip
   - chown ubuntu:ubuntu /tmp/FiraCode.zip
   - chown -R ubuntu:ubuntu /home/ubuntu
-  - curl -fsS https://dl.brave.com/install.sh | sh
+  - curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+  - curl -fsSLo /etc/apt/sources.list.d/brave-browser-release.sources https://brave-browser-apt-release.s3.brave.com/brave-browser.sources
   - apt-get update -y
   - apt-get upgrade -y
-  - apt-get install unzip openjdk-25-jdk -y
+  - apt-get install unzip openjdk-25-jdk brave-origin 7zip neovim -y
+  - curl -f https://zed.dev/install.sh | sh
 ' \
   --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=MyUbuntuInstance}]' \
   --query 'Instances[0].InstanceId' \
@@ -486,11 +507,13 @@ To mount a volume to an existing docker container: create an image from the exis
 
 Oracle database docker image: https://hub.docker.com/r/gvenzl/oracle-free
 
+[Localstack](https://www.localstack.cloud/) and [floci](https://floci.io/) _(from RedHat)_ are used to test cloud behaviors.
+
 Expose docker daemon on tcp port and access it from Powershell∨
   - Running `systemctl start docker` shows something like `/usr/lib/systemd/system/docker.service`. Edit the line `ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 ...`
   - Powershell: install chocolatey and `choco install docker-cli` with admin right. Then `$env:DOCKER_HOST="tcp://x.x.x.x:2375"`, `docker image ls` will work.
 </div>
-<div class="tab" title="Kubernetes">
+<div class="tab" title="Kubernetes" fontawesome="fa-brands fa-kubernetes">
 `kubectl` *[command]* *[TYPE]* *[NAME's]* *[flags]*:
   - command: `create`, `get`, `describe`, `delete`, `apply` ...:
       - `kubectl create -f *FILENAME* [flags] // create 1 or more resources from a file`
@@ -547,7 +570,58 @@ Add spaces to MacOS dock: `defaults write com.apple.dock persistent-apps -array-
 
 [Get all attributes](https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes) of a html element
 
-A http server that auto-loads changes: `git clone --depth 1 https://github.com/tapio/live-server && cd live-server && npm install`*✍︎* Then in the directory we want to serve `PORT=xxx node /path/to/live-server/live-server.js`. If there's no `PORT` env variable, 8080 or a random port (if 8080 is unavailable) will be chosen.
+A http server that auto-loads changes: `git clone --depth 1 https://github.com/tapio/live-server &amp;&amp; cd live-server &amp;&amp; npm install`*✍︎* Then in the directory we want to serve `PORT=xxx node /path/to/live-server/live-server.js`. If there's no `PORT` env variable, 8080 or a random port (if 8080 is unavailable) will be chosen. A typescript + Deno solution written by AI works but unreliably.
+
+Sending HTML from browser to Deno endpoint∨
+  - Run this in the browser console:
+```
+fetch('http://localhost:9000', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+        body: document.getElementById('sbo-rt-content').outerHTML
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.text();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+```
+  - Write a `server.ts` and run it `deno run --allow-all server.ts`:
+```
+Deno.serve({ port: 9000 }, (request: Request) => {
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+
+  if (request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
+
+  if (request.method === "POST") {
+    return request.text().then(async (body) => {
+      await Deno.writeTextFile("/dev/shm/test.txt", body + "\n", { 
+        append: true 
+      });
+      
+      return new Response("OK", { 
+        status: 200, 
+        headers: { ...corsHeaders, "Content-Type": "text/plain" }
+      });
+    });
+  }
+
+  return new Response("Method not allowed", { status: 405, headers: corsHeaders });
+});
+```
 
 Load testing with Grafana k6∨
   - `paru -Sy k6-bin`
@@ -1078,6 +1152,8 @@ In `settings.json`:
     "[Our Theme Name - it might not needed]": {
       "editorInlayHint.foreground": "#yourColorHere",
       "editorInlayHint.background": "#01020304" // #RGBA
+      "editor.linkedEditingBackground": "#ff15167b", //
+      "editor.wordHighlightBackground": "#00ff0058" // matched html tags
     }
   }
 }
@@ -1283,18 +1359,8 @@ pipeline {
 }
 ```
 </div>
-<div class="tab" title="LocalStack">
-Start: `docker run --rm -it -p 4566:4566 -p 4510-4559:4510-4559 -p 443:443 -e LOCALSTACK_AUTH_TOKEN=ls-JEXAbUGA-buJo-qOME-xejU-318280160ae5 -v /var/run/docker.sock:/var/run/docker.sock localstack/localstack-pro:4.2.0` the auth token is from [here](https://app.localstack.cloud/workspace/auth-tokens), the version is from [here](https://github.com/localstack/localstack/releases)
-
-Add these files to use with the AWS cli: `~/.aws/config` and `~/.aws/credentials`, then `export AWS_PROFILE=localstack`
-```
-[profile localstack]                          [localstack]
-region=us-east-1                              aws_access_key_id=test
-output=json                                   aws_secret_access_key=test
-endpoint_url=http://localhost:4566
-```
-
-
+<div class="tab" title="Redis">
+Redis is a non-relational database that stores a mapping of keys to 5 different types (string, list, set, hash (map) and sorted set (ZSET)) of values.
 </div>
 <div class="tab" title="Terraform">
 DevOps: to make software delivery better - Terraform: Infrastructure as Code to define, deploy, update and destroy the infrastructure
@@ -1316,7 +1382,7 @@ Terraform workflow:
   - Apply: `terraform apply`.
   - Destroy: `terraform destroy` destroy resources
 </div>
-<div class="tab" title="Android">
+<div class="tab" title="Android" fontawesome="fa-brands fa-android">
 [ReVanced Manager](https://revanced.app) download and install [GmsCore](https://github.com/revanced/gmscore) and [ReVanced Manager](https://revanced.app/download) with `adb install` (don't forget to disable auto update in Google Play Store).
 </div>
 <div class="tab" title="Bánh Flan Caramel" fontawesome="fa-solid fa-cake-candles">
