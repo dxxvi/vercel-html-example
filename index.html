@@ -765,12 +765,38 @@ JVM memory∨
   - How GC runs: from local variables on the stack, mark all reachable objects alive; go through all objects in heap and sweep unmarked ones; move objects in heap so that there are big single continuous blocks memory.
   - How to debug memory leak and OOM: a memory leak is when objects are no longer needed but still reachable (use the VM option HeapDumpOnOutOfMemoryError). Use tools like Dynatrace, AppDynamics, Datadog ... to track heap usage (we'll see something like a sawtooth pattern).
 
-Java SOLID principles∨
+Java SOLID principles and GoF design patterns∨
   - **S**ingle responsibility: a class should have only 1 job or responsibility
   - **O**pen/Closed principle: classes should be open for extension but closed for modification. Ex: PurchaseOrder is an interface, then I can extend it to ShipPurchaseOrder, AviationPurchaseOrder, TruckPurchaseOrder ...
   - **L**iskov substitution: all the implementations of methods in parent class in a child class must make sense. Ex: `interface Bird { void fly(); }`, this is a violation: `class Penguin implements Bird { public void fly() { throw new UnsupportException() } }`. The fix is: `interface FlyingBird { void fly(); }`
   - **I**nterface segregation: classes should not be forced to depend on interfaces they don't use. Ex: `interface Worker { void work(); void eat(); }` then `class RobotWorker implements Worker { public void eat() { throw UnsupportedException } }` is a violation.
   - **D**ependency inversion: high level service shouldn't depend on low level ones. Ex: we don't put a GmailService in an EmailService.
+  - **5 Creational Patterns**:
+      - Factory Method: there's an `abstract` method, which returns an abstract class / interface, in an abstract class. For example, there's an `abstract class CarFactory` with this method `abstract Car createCar()`. Now we have `ToyotaCarFactory` creating `ToyotaCar`.
+      - Abstract Factory: there's an `abstract Factory` class with many `abstract Stuff createStuff()` methods. Stuffs from the same factory must make sense when being with each others. For example, there is `ToyotaFactory` with methods `createLogo()` and `createNameBadge()` methods.
+      - Builder: we don't want to have 1000 constructors for 1000 combinations of the constructor's arguments.
+      - Prototype: given a prototype, I'll create another instance similar to it.
+      - Singleton
+  - **7 Structural Patterns**:
+      - Adapter (Wrapper)
+      - Bridge: e.g. I'm building different Remote Controls (basic, advanced) for different Devices (tv, radio, projector). I don't create classes like `BasicRemoteControlForTV` but I have an abstract class `RemoteControl` which has a property of the `Device` type. Why is it good? Reasons: 1&#41; we can independently have new remote controls and new devices 2&#41; we can switch the device in a remote at run time
+      - Composite: e.g. each item in a file system is a file or a directory, a file system item has a name and a size. So, in the `Folder` class, there's a list of `FileSystemItem` items.
+      - Decorator: add new responsibilities to an object, e.g. `new BufferedReader(new InputStreamReader(new FileInputStream("/path/to/myfile.txt")))` 
+      - Facade
+      - Flyweight: e.g. there's this method `plantTree(x, y, WoodTypeEnum, ColorEnum)` and later we need to know the wood type and the color of the tree at a particular position. We don't create a map like this `(x, y) -> (WoodTypeEnum, ColorEnum)` as we'll have different map values having the same wood type and color. So we'll have this map `(x, y) -> TreeType` where `TreeType` is an enum of which the number of instances = the number of `WoodTypeEnum` instances ✕ the number of `ColorEnum` instances. Or we can use a map to remember if we've ever created a `TreeType` instance for a particular wood type and color.
+      - Proxy
+    **11 Behavioral Patterns**:
+      - Chain of Responsibility
+      - Command: put all the arguments for a method in an object so that we can have a list of commands sent to that method to replay or undo.
+      - Interpreter: too complicated?
+      - Iterator: implement the `Iterator` interface so that people can access our elements but we hide how we store those elements
+      - Mediator
+      - Memento
+      - Observer (publish/subscribe): like JMS
+      - State: an object can be in multiple states (i.e. there are multiple implementations of the abstract class/interface State). A state will receive that object and decide what that object can do. For example, a jira ticket can be in new, ready for develop, test, cancel and done states. Calling the next method of the state object can do different things to the ticket.
+      - Strategy
+      - Template Method
+      - Visitor: e.g. we have `BookItem` and `ComputerItem`. The requirement is that each item must be able to return its price (calculated based on the item's properties). So, each item will have this method `double calculatePrice(priceVisitor) { priceVisitor.calculatePrice(this) }`. In `PriceVisitor`, we have methods like `calculatePrice(BookItem)`, `calculatePrice(ComputerItem)`. The code is structured like that so that when there's a new item type, we don't touch the existing code of `calculatePrice(BookItem)`, `calculatePrice(ComputerItem)` but we add a new method `calculatePrice(NewItem)`.
 
 Microservice patterns∨
   - **Communication** &amp; **Integration** patterns:
