@@ -785,7 +785,7 @@ Java SOLID principles and GoF design patterns∨
       - Facade
       - Flyweight: e.g. there's this method `plantTree(x, y, WoodTypeEnum, ColorEnum)` and later we need to know the wood type and the color of the tree at a particular position. We don't create a map like this `(x, y) -> (WoodTypeEnum, ColorEnum)` as we'll have different map values having the same wood type and color. So we'll have this map `(x, y) -> TreeType` where `TreeType` is an enum of which the number of instances = the number of `WoodTypeEnum` instances ✕ the number of `ColorEnum` instances. Or we can use a map to remember if we've ever created a `TreeType` instance for a particular wood type and color.
       - Proxy
-    **11 Behavioral Patterns**:
+  - **11 Behavioral Patterns**:
       - Chain of Responsibility
       - Command: put all the arguments for a method in an object so that we can have a list of commands sent to that method to replay or undo.
       - Interpreter: too complicated?
