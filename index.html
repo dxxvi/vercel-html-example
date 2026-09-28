@@ -79,11 +79,11 @@ Take screenshot in KDE Plasma Wayland: `spectacle -f -b -e -S -n -o /dev/shm/tes
 
 Delete firefox &amp; google config: `rm -rf ~/.config/google-chrome ~/.var/app/com.google.Chrome ~/.config/mozilla ~/.cache/mozilla ~/.var/app/org.mozilla.firefox ~/.config/mozilla/firefox ~/.cache/mozilla/firefox`*✍︎*
 
-Cloudflare tunnel: to access local apps from outside: `paru -Sy cloudflared && cloudflared tunnel --url http://localhost:8080`
+Cloudflare tunnel: to access local apps from outside: `pacman -Sy cloudflared && cloudflared tunnel --url http://localhost:8080`
 
 To know how many RAM slots available: `sudo dmidecode --type memory`
 
-Set the group permissions equal to the owner permissionsch: `chmod -R g=u`*✍︎*`*/path/to/directory*`
+Set the group permissions equal to the owner permission: `chmod -R g=u`*✍︎*`*/path/to/directory*`
 
 Android: list all packages installed for current user `pm list packages` remove a package for current user `pm uninstall -k --user 0 *package*` list all packages on this phone `pm list packages -u` re-install an uninstalled app `pm install-existing *package*`
 
@@ -149,7 +149,7 @@ rm -rf /home2/* && rm -rf /home2/.* && rm -rf ~/{.cache,.config}/google-chrome &
 ```
   - Then in this new environment, run `wezterm --config-file /home/ly/.wezterm.lua`*✍︎*
   - Don't change `DBUS_SESSION_BUS_ADDRESS` (already tried, it made Antigravity very slow). Set Firefox as the default browser or delete `.config/google-chrome`.
-  - `xhost +si:localuser:another_account` then `ssh another_account@localhost` then in the other account `export DISPLAY=:1` (use the same value as in the current account)
+  - `xhost +si:localuser:another_account` then `ssh another_account@localhost` then in the other account `export DISPLAY=:1`*✍︎* (use the same value as in the current account)
 
 Install [Arch Linux](https://www.youtube.com/watch?v=1J_Z_pzzbMo) 17:27 shows how to remove Arch. [Use CachyOS packages in Arch](https://wiki.cachyos.org/features/optimized_repos/)∨
   - Make 1 empty partition in Windows with `diskmgmt`, disable BitLocker (click the Windows icon, type `bitlocker`), disable fast startup (Control Panel, search for power, choose Change what the power buttons do, Change settings that are currently unavailable, uncheck Turn on fast startup), disable Secure Boot in BIOS
@@ -558,17 +558,9 @@ Cannot be opened because the developer cannot be verified:
 Add spaces to MacOS dock: `defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'; killall Dock`
 </div>
 <div class="tab" title="NodeJS - HTML - CSS" fontawesome="fa-brands fa-node-js">
-[Encrypt and password protect](https://github.com/robinmoisson/staticrypt) the content of your public static HTML file, to be decrypted in-browser without any back-end
-
-[HTML codes](https://www.rapidtables.com/web/html/html-codes.html) for example `&#123;` is `&#38;#123;`
+[HTML codes](https://www.rapidtables.com/web/html/html-codes.html) for example `&#123;` is `&#38;#123;` `₀`*✍︎* `⁰`*✍︎* `₁`*✍︎* `¹`*✍︎* `₂`*✍︎* `²`*✍︎* `₃`*✍︎* `³`*✍︎* `₄`*✍︎* `⁴`*✍︎* `₅`*✍︎* `⁵`*✍︎* `₆`*✍︎* `⁶`*✍︎* `₇`*✍︎* `⁷`*✍︎* `₈`*✍︎* `⁸`*✍︎* `₉`*✍︎* `⁹`*✍︎* `√`*✍︎* `∞`*✍︎* `∠`*✍︎*
 
 [paged.js](https://pagedjs.org/) paginates any HTML content to produce beautiful print-ready PDF
-
-`getComputedStyle(*element*).getPropertyValue('*property*')`: [for example](https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle) `getComputedStyle(p).getPropertyValue('font-size')`
-
-[Insert html code to an element](https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML): `*element*.insertAdjacentHTML(*position*, *text*)` where `*position*` can be `beforebegin`, `afterbegin`, `beforeend` or `afterend` and `*text*` is the string to be parsed as HTML and inserted into the tree.
-
-[Get all attributes](https://developer.mozilla.org/en-US/docs/Web/API/Element/attributes) of a html element
 
 A http server that auto-loads changes: `git clone --depth 1 https://github.com/tapio/live-server &amp;&amp; cd live-server &amp;&amp; npm install`*✍︎* Then in the directory we want to serve `PORT=xxx node /path/to/live-server/live-server.js`. If there's no `PORT` env variable, 8080 or a random port (if 8080 is unavailable) will be chosen. A typescript + Deno solution written by AI works but unreliably.
 
@@ -608,12 +600,12 @@ Deno.serve({ port: 9000 }, (request: Request) => {
 
   if (request.method === "POST") {
     return request.text().then(async (body) => {
-      await Deno.writeTextFile("/dev/shm/test.txt", body + "\n", { 
-        append: true 
+      await Deno.writeTextFile("/dev/shm/test.txt", body + "\n", {
+        append: true
       });
-      
-      return new Response("OK", { 
-        status: 200, 
+
+      return new Response("OK", {
+        status: 200,
         headers: { ...corsHeaders, "Content-Type": "text/plain" }
       });
     });
@@ -674,7 +666,7 @@ Angular∨
   - HTTP client: I think nobody will ask about [this](https://angular.io/guide/understanding-communicating-with-http) in interviews
   - Observables:
       - `observable.subscribe(nextFunction)` or `observable.subscribe({ next: f1, error: f2 })` an observable runs only when we subscribe to it. If we subscribe to it twice, it'll run twice.
-      - multicasting: I want to subscribe to the observable multiple times to use the data from the observable in multiple places but the observable runs only once. 
+      - multicasting: I want to subscribe to the observable multiple times to use the data from the observable in multiple places but the observable runs only once.
 </div>
 <div class="tab" title="Java" fontawesome="fa-brands fa-java">
 To remove IntelliJ in Linux: try this `rm -rf ~/.config/JetBrains ~/.cache/JetBrains ~/.local/share/JetBrains ~/.java`*✍︎*
@@ -765,38 +757,12 @@ JVM memory∨
   - How GC runs: from local variables on the stack, mark all reachable objects alive; go through all objects in heap and sweep unmarked ones; move objects in heap so that there are big single continuous blocks memory.
   - How to debug memory leak and OOM: a memory leak is when objects are no longer needed but still reachable (use the VM option HeapDumpOnOutOfMemoryError). Use tools like Dynatrace, AppDynamics, Datadog ... to track heap usage (we'll see something like a sawtooth pattern).
 
-Java SOLID principles and GoF design patterns∨
+Java SOLID principles∨
   - **S**ingle responsibility: a class should have only 1 job or responsibility
   - **O**pen/Closed principle: classes should be open for extension but closed for modification. Ex: PurchaseOrder is an interface, then I can extend it to ShipPurchaseOrder, AviationPurchaseOrder, TruckPurchaseOrder ...
   - **L**iskov substitution: all the implementations of methods in parent class in a child class must make sense. Ex: `interface Bird { void fly(); }`, this is a violation: `class Penguin implements Bird { public void fly() { throw new UnsupportException() } }`. The fix is: `interface FlyingBird { void fly(); }`
   - **I**nterface segregation: classes should not be forced to depend on interfaces they don't use. Ex: `interface Worker { void work(); void eat(); }` then `class RobotWorker implements Worker { public void eat() { throw UnsupportedException } }` is a violation.
   - **D**ependency inversion: high level service shouldn't depend on low level ones. Ex: we don't put a GmailService in an EmailService.
-  - **5 Creational Patterns**:
-      - Factory Method: there's an `abstract` method, which returns an abstract class / interface, in an abstract class. For example, there's an `abstract class CarFactory` with this method `abstract Car createCar()`. Now we have `ToyotaCarFactory` creating `ToyotaCar`.
-      - Abstract Factory: there's an `abstract Factory` class with many `abstract Stuff createStuff()` methods. Stuffs from the same factory must make sense when being with each others. For example, there is `ToyotaFactory` with methods `createLogo()` and `createNameBadge()` methods.
-      - Builder: we don't want to have 1000 constructors for 1000 combinations of the constructor's arguments.
-      - Prototype: given a prototype, I'll create another instance similar to it.
-      - Singleton
-  - **7 Structural Patterns**:
-      - Adapter (Wrapper)
-      - Bridge: e.g. I'm building different Remote Controls (basic, advanced) for different Devices (tv, radio, projector). I don't create classes like `BasicRemoteControlForTV` but I have an abstract class `RemoteControl` which has a property of the `Device` type. Why is it good? Reasons: 1&#41; we can independently have new remote controls and new devices 2&#41; we can switch the device in a remote at run time
-      - Composite: e.g. each item in a file system is a file or a directory, a file system item has a name and a size. So, in the `Folder` class, there's a list of `FileSystemItem` items.
-      - Decorator: add new responsibilities to an object, e.g. `new BufferedReader(new InputStreamReader(new FileInputStream("/path/to/myfile.txt")))` 
-      - Facade
-      - Flyweight: e.g. there's this method `plantTree(x, y, WoodTypeEnum, ColorEnum)` and later we need to know the wood type and the color of the tree at a particular position. We don't create a map like this `(x, y) -> (WoodTypeEnum, ColorEnum)` as we'll have different map values having the same wood type and color. So we'll have this map `(x, y) -> TreeType` where `TreeType` is an enum of which the number of instances = the number of `WoodTypeEnum` instances ✕ the number of `ColorEnum` instances. Or we can use a map to remember if we've ever created a `TreeType` instance for a particular wood type and color.
-      - Proxy
-  - **11 Behavioral Patterns**:
-      - Chain of Responsibility
-      - Command: put all the arguments for a method in an object so that we can have a list of commands sent to that method to replay or undo.
-      - Interpreter: too complicated?
-      - Iterator: implement the `Iterator` interface so that people can access our elements but we hide how we store those elements
-      - Mediator
-      - Memento
-      - Observer (publish/subscribe): like JMS
-      - State: an object can be in multiple states (i.e. there are multiple implementations of the abstract class/interface State). A state will receive that object and decide what that object can do. For example, a jira ticket can be in new, ready for develop, test, cancel and done states. Calling the next method of the state object can do different things to the ticket.
-      - Strategy
-      - Template Method
-      - Visitor: e.g. we have `BookItem` and `ComputerItem`. The requirement is that each item must be able to return its price (calculated based on the item's properties). So, each item will have this method `double calculatePrice(priceVisitor) { priceVisitor.calculatePrice(this) }`. In `PriceVisitor`, we have methods like `calculatePrice(BookItem)`, `calculatePrice(ComputerItem)`. The code is structured like that so that when there's a new item type, we don't touch the existing code of `calculatePrice(BookItem)`, `calculatePrice(ComputerItem)` but we add a new method `calculatePrice(NewItem)`.
 
 Microservice patterns∨
   - **Communication** &amp; **Integration** patterns:
@@ -1050,6 +1016,8 @@ This is Scala
 _scope functions_ are built-in functions used to manage the scope of variables, access properties of objects and execute a block of code in a specific context: `run`, `with`, `let`, `also` and `apply`.
 </div>
 <div class="tab" title="Rust" fontawesome="fa-brands fa-rust">
+[Are mutexes slow?](https://www.youtube.com/watch?v=rXr3veBOfaIL) by Jon Gjengset: coordination is expensive because of hardware cache coherence, not the locks themselves and performance bottlenecks depend heavily on the length of the critical section and the read/write ratio. Developers should evaluate these access patterns and hardware interactions rather than assuming one primitive is universally faster.
+
 `rustup doc`: to read The Book and the standard library reference.
 
 100 exercises to learn Rust [https://rust-exercises.com/](https://rust-exercises.com/), resources to [learn](https://github.com/ImplFerris/LearnRust) Rust
@@ -1170,6 +1138,7 @@ Use a non-default private key with git (recent versions only): `$env:GIT_SSH_COM
 |<kbd>⇧</kbd>+<kbd>Ctrl</kbd>+<kbd>]</kbd>              | unfold region             |<kbd>option</kbd>+<kbd>command</kbd>+<kbd>]</kbd>        |
 
 In `settings.json`:
+  - To change the scrollbar size: search for `editor.scrollbar`
   - `"editor.guides.indentation": false` to disable the indentation guide lines
   - To change the inlay hint color:
 ```
@@ -1251,7 +1220,7 @@ using System.Runtime.InteropServices;
 public class WinAPI {
     [DllImport("user32.dll")]
     public static extern IntPtr GetForegroundWindow();
-    
+
     [DllImport("user32.dll")]
     public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
@@ -1276,7 +1245,7 @@ $SpringBootUrl = "http://192.168.1.66:8080/"
 while ($true) {
     $hWnd = [WinAPI]::GetForegroundWindow()
     $rect = New-Object WinAPI+RECT
-    
+
     if ([WinAPI]::GetWindowRect($hWnd, [ref]$rect)) {
         $width = $rect.Right - $rect.Left
         $height = $rect.Bottom - $rect.Top
@@ -1284,14 +1253,14 @@ while ($true) {
         if ($width -gt 0 -and $height -gt 0) {
             $bitmap = New-Object System.Drawing.Bitmap($width, $height)
             $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
-            
+
             try {
                 $graphics.CopyFromScreen($rect.Left, $rect.Top, 0, 0, $bitmap.Size)
-                
+
                 # Naming format: HHmmss.png (24-hour format)
                 $fileName = "$(Get-Date -Format 'HHmmss').png"
                 $filePath = Join-Path -Path (Get-Location) -ChildPath $fileName
-                
+
                 $bitmap.Save($filePath, [System.Drawing.Imaging.ImageFormat]::Png)
                 & oxipng -o 4 --strip safe --alpha $filePath 2>$null
                 Write-Host "Captured: $fileName" -ForegroundColor Green
