@@ -70,7 +70,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-
 <div class="tab" title="Do these Leetcode in Java and Rust">
 [Design Movie Rental System](https://leetcode.com/problems/design-movie-rental-system/)
 </div>
@@ -306,6 +305,7 @@ Configure Konsole∨
   - Move: Super + drag
   - Create tab: Ctrl+Shft+T
   - Make the background transparent: Ctrl+Shift+M | Settings | Edit current profile | Appearance | Color scheme &amp; font | Edit... | Background color transparency
+  - Use the Color scheme &amp; font Campbell because its colors work best with Rust
   - Panes: Ctrl+Shft+9 to split left/right, Ctrl+Shft+0 to split top/bottom, Shft+Tab to move between panes
   - Hide the scrollbar: Konsole profile settings | Scrolling; Shft+Page Up/Down to scroll
   - Change the paddings: Konsole profile settings | Appearance | Miscellaneous | Margins
@@ -1208,6 +1208,98 @@ function prompt { // this function make the Windows Terminal tab titles shorter
 
 oh-my-posh init pwsh --config "C:\path\to\oh-my-posh.json" | Invoke-Expression
 
+```
+  - Script to move mouse:
+```
+# Runs with Windows PowerShell 5.1 (built into Windows 11)
+
+Add-Type -AssemblyName System.Windows.Forms
+
+Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+public class MouseHelper {
+    [DllImport("user32.dll")]
+    public static extern bool SetCursorPos(int X, int Y);
+}
+"@
+
+function Get-MousePosition {
+    $pos = [System.Windows.Forms.Cursor]::Position
+    return @{ X = $pos.X; Y = $pos.Y }
+}
+
+function Move-Mouse {
+    param([int]$X, [int]$Y)
+    [MouseHelper]::SetCursorPos($X, $Y) | Out-Null
+}
+
+function Get-ScreenBounds {
+    $screen = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+    return @{
+        MinX = $screen.Left
+        MinY = $screen.Top
+        MaxX = $screen.Right  - 1
+        MaxY = $screen.Bottom - 1
+    }
+}
+
+$prev = Get-MousePosition
+Write-Host "Starting position: X=$($prev.X), Y=$($prev.Y)"
+
+while ($true) {
+    Start-Sleep -Seconds 240   # 4 minutes
+
+    $cur = Get-MousePosition
+    $bounds = Get-ScreenBounds
+
+    # Check if current position is out of screen
+    $isOutOfScreen = (
+        $cur.X -lt $bounds.MinX -or $cur.X -gt $bounds.MaxX -or
+        $cur.Y -lt $bounds.MinY -or $cur.Y -gt $bounds.MaxY
+    )
+
+    if ($isOutOfScreen) {
+        Move-Mouse -X 9 -Y 9
+        $prev = @{ X = 9; Y = 9 }
+        Write-Host "Out of screen -> moved to (9, 9)"
+        continue
+    }
+
+    # Check if position changed
+    if ($cur.X -ne $prev.X -or $cur.Y -ne $prev.Y) {
+        $prev = $cur
+        Write-Host "Position changed -> saved new previous: X=$($prev.X), Y=$($prev.Y)"
+        continue
+    }
+
+    # Position is the same as previous -> jiggle it. Pick a new valid position at least 100px away
+    $minDistSq = 100 * 100
+    $newPos = $null
+    for ($i = 0; $i -lt 100; $i++) {
+        $candidateX = Get-Random -Minimum $bounds.MinX -Maximum ($bounds.MaxX + 1)
+        $candidateY = Get-Random -Minimum $bounds.MinY -Maximum ($bounds.MaxY + 1)
+
+        $dx = $candidateX - $prev.X
+        $dy = $candidateY - $prev.Y
+        if (($dx * $dx + $dy * $dy) -ge $minDistSq) {
+            $newPos = @{ X = $candidateX; Y = $candidateY }
+            break
+        }
+    }
+
+    if ($null -eq $newPos) {
+        # Fallback: just try to pick a corner far from prev
+        $newPos = @{ X = $bounds.MinX; Y = $bounds.MinY }
+        Write-Host "Fallback position used"
+    }
+
+    Move-Mouse -X $newPos.X -Y $newPos.Y
+    Start-Sleep -Milliseconds 500
+    Move-Mouse -X $prev.X -Y $prev.Y
+
+    Write-Host "Jiggle: moved to ($($newPos.X), $($newPos.Y)) and back to ($($prev.X), $($prev.Y))"
+}
 ```
   - Script to take the screenshot of the currently active window, optimize it with [oxipng](https://github.com/oxipng/oxipng), send it in a web form and delete old files:
 ```
